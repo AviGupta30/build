@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human-Like Content Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div id="preloader">
+        <canvas id="preloader-canvas"></canvas>
+        <h1 class="loader-title">Human-Like Content Manager</h1>
+        <p class="loader-p"><span id="loader-text"></span></p>
+    </div>
+
+    <div class="main-container" style="visibility: hidden;">
+        <header class="header">
+            <h1>Human-Like Content Manager</h1>
+            <p>Infuse Intelligence. Craft Authenticity.</p>
+        </header>
+
+        <main class="main-grid">
+            <div class="glass-card">
+                <h2>1. Fuel Your Ideas</h2>
+                <textarea id="idea-input" placeholder="Feed your ideas..."></textarea>
+                <p class="card-subtitle">Drop your altagnaties</p>
+                <div class="network-canvas-container">
+                    <canvas id="plexus-canvas"></canvas>
+                </div>
+                <p class="card-subtitle">Novel-AI suggestion</p>
+                <div class="suggestion-grid" id="suggestion-grid">
+                    <button class="suggestion-btn">Launch a new product</button>
+                    <button class="suggestion-btn">Share a customer success story</button>
+                    <button class="suggestion-btn">Explain a complex topic simply</button>
+                    <button class="suggestion-btn">Post a weekly team update</button>
+                    <button class="suggestion-btn">Announce a limited-time offer</button>
+                    <button class="suggestion-btn">Share a behind-the-scenes look</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>2. Direct & Refine</h2>
+                <div class="platform-selector" id="platform-selector">
+                    <button class="platform-btn active" data-platform="Instagram"><i class="fab fa-instagram"></i></button>
+                    <button class="platform-btn" data-platform="LinkedIn"><i class="fab fa-linkedin-in"></i></button>
+                    <button class="platform-btn" data-platform="X"><i class="fab fa-x-twitter"></i></button>
+                    <button class="platform-btn" data-platform="Blog"><i class="fas fa-blog"></i></button>
+                </div>
+                <div class="input-group">
+                    <label for="brand-voice">Brand Voice Profile</label>
+                    <input type="text" id="brand-voice" value="Professional & Confident">
+                </div>
+                <div class="input-group">
+                    <label for="target-audience">Target Audience (Optional)</label>
+                    <input type="text" id="target-audience" placeholder="e.g., Tech Enthusiasts, Small Business Owners">
+                </div>
+                <div class="tone-section">
+                    <div class="tone-header"><label>Tone & Nuance</label></div>
+                    <div class="tone-content-grid">
+                        <div class="tone-graphic-container">
+                                <svg viewBox="0 0 100 100">
+                                    <defs>
+                                        <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+                                        <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+                                    </defs>
+                                    <g stroke="#4a4a70" stroke-width="0.5"><line x1="50" y1="50" x2="25" y2="25"></line><line x1="50" y1="50" x2="75" y2="25"></line><line x1="50" y1="50" x2="25" y2="75"></line><line x1="50" y1="50" x2="75" y2="75"></line><line x1="25" y1="25" x2="75" y2="75"></line><line x1="75" y1="25" x2="25" y2="75"></line></g>
+                                    <circle cx="50" cy="50" r="4" fill="#6a6a8a"></circle>
+                                    <circle cx="25" cy="25" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="25" cy="25" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
+                                    <circle cx="75" cy="25" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="75" cy="25" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
+                                    <circle cx="25" cy="75" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="25" cy="75" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
+                                    <circle cx="75" cy="75" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="75" cy="75" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
+                                </svg>
+                        </div>
+                        <div class="tone-options">
+                            <div class="tone-option-item toggleable-option" data-active="true" id="smart-emojis-toggle">
+                                <div class="label-group"><span class="legend-dot magenta"></span><span>Smart Emojis</span></div>
+                                <i class="fas fa-check checkmark-icon"></i>
+                            </div>
+                            <div class="tone-option-item">
+                                <div class="label-group"><span class="legend-circle grey"></span><span>Formality</span></div>
+                                <input type="range" id="formality-slider" class="tone-slider" min="0" max="100" value="50">
+                            </div>
+                        </div>
+                        <div class="tone-toggles-section">
+                            <div class="toggle-item toggleable-option" data-active="true" id="auto-hashtag-toggle">
+                                <div class="label-group"><span class="legend-dot magenta"></span><span>Auto-Hashtag</span></div>
+                                <i class="fas fa-check checkmark-icon"></i>
+                            </div>
+                            <div class="toggle-item toggleable-option" data-active="true" id="contextual-suggestions-toggle">
+                                <div class="label-group"><span class="legend-dot magenta"></span><span>Contextual Suggestions</span></div>
+                                <i class="fas fa-check checkmark-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="creativity-section">
+                    <label>Creativity Level</label>
+                    <input type="range" id="creativity-slider" min="0" max="100" value="50">
+                    <div class="slider-labels">
+                        <span>Safe</span><span>Balanced</span><span>Inventive</span><span>Disruptive</span>
+                    </div>
+                </div>
+                <button id="generate-btn">Generate Content</button>
+            </div>
+
+            <div class="glass-card">
+                <h2>3. Creative Output & Analysis</h2>
+                <div class="output-tabs-container" id="output-tabs"></div>
+
+                <div class="textarea-wrapper">
+                    <textarea id="output-text" readonly placeholder="Your generated content will appear here..."></textarea>
+                    <button id="copy-btn" class="output-action-btn" title="Copy Content"><i class="fas fa-copy"></i></button>
+                </div>
+
+                <div id="justification-box" class="justification-box hidden"></div>
+                
+                <div class="tts-controls" id="tts-controls">
+                    <div class="voice-selector" id="voice-selector">
+                        <button class="voice-btn active" data-gender="female" id="female-voice-btn"><i class="fas fa-female"></i> Female</button>
+                        <button class="voice-btn" data-gender="male" id="male-voice-btn"><i class="fas fa-male"></i> Male</button>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="play-btn" class="tts-btn"><i class="fas fa-play"></i></button>
+                        <button id="stop-btn" class="tts-btn"><i class="fas fa-stop"></i></button>
+                        <button id="edit-btn" class="output-action-btn" title="Edit Content"><i class="fas fa-pencil-alt"></i></button>
+                        <button id="humanize-btn" class="output-action-btn" title="Humanize Text"><i class="fas fa-wand-magic-sparkles"></i></button>
+                    </div>
+                </div>
+
+                <div id="refine-container" class="refine-container hidden">
+                    <input type="text" id="refine-input" placeholder="e.g., Make it funnier...">
+                    <div class="refine-actions">
+                        <button id="cancel-refine-btn" class="refine-btn cancel">Cancel</button>
+                        <button id="submit-refine-btn" class="refine-btn submit">Refine</button>
+                    </div>
+                </div>
+
+                <div class="score-section">
+                    <div class="score-header">
+                        <p class="card-subtitle">Authenticity Score</p>
+                        <button id="refine-btn" class="output-action-btn" title="Refine Content"><i class="fas fa-lightbulb"></i></button>
+                    </div>
+                    <div class="scores-grid" id="scores-grid">
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-1"></canvas></div>
+                            <span class="score-percent" id="readability-score">0%</span>
+                            <p>Readability</p>
+                            <span class="score-sub-label">Clarity & Flow</span>
+                        </div>
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-2"></canvas></div>
+                            <span class="score-percent" id="engagement-score">0%</span>
+                            <p>Engagement Potential</p>
+                            <span class="score-sub-label">Audience Hook</span>
+                        </div>
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-3"></canvas></div>
+                            <span class="score-percent" id="human-likeness-score">0%</span>
+                            <p>Human-Likeness</p>
+                            <span class="score-sub-label">Authentic Voice</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-section">
+                    <button id="generate-video-btn" class="generate-video-btn">
+                        <i class="fas fa-film"></i> Generate Video Reel
+                    </button>
+                    <div id="video-player-container" class="video-player-container hidden">
+                        <video id="video-player" controls></video>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer"></footer>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
