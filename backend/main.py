@@ -9,19 +9,21 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, ValidationError, model_validator
 from typing import List, Literal, Union, Optional
+from pathlib import Path  # <-- ADD THIS IMPORT FOR THE FIX
+from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
+                            concatenate_videoclips, TextClip)
+from pexels_api import API
+from gtts import gTTS
 from dotenv import load_dotenv
-
-# --- FIX: Temporarily comment out video/audio libraries to allow the server to run ---
-# from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
-#                             concatenate_videoclips, TextClip)
-# from pexels_api import API
-# from gtts import gTTS
-# ------------------------------------------------------------------------------------
-
 
 # --- SETUP ---
 load_dotenv()
 app = FastAPI()
+
+# --- FIX: Define absolute path to the static directory for deployment ---
+STATIC_DIR = Path(__file__).parent / "static"
+# --------------------------------------------------------------------
+
 
 # --- CONFIGURE ALL APIS ---
 try:
@@ -56,12 +58,11 @@ class InstagramContent(BaseModel):
 
 class XContent(BaseModel):
     thread: List[str]
-
+    
 class RefineRequest(GenerationRequest):
     original_content: Union[str, InstagramContent, XContent]
     refinement_instruction: str
 
-    # --- FIX: Added validator to correctly process original_content for refinement ---
     @model_validator(mode='before')
     @classmethod
     def check_original_content_type(cls, data):
@@ -74,8 +75,6 @@ class RefineRequest(GenerationRequest):
                 elif platform == 'X' and 'thread' in original_content:
                     data['original_content'] = XContent(**original_content)
         return data
-    # ------------------------------------------------------------------------------
-
 
 class AnalysisScores(BaseModel):
     readability: int
@@ -310,15 +309,6 @@ async def humanize_text(request: HumanizeRequest):
 # --- VIDEO GENERATION ENDPOINT ---
 @app.post("/generate-video")
 async def generate_video(request: VideoRequest):
-    # This endpoint is preserved but will fail gracefully if libraries are not installed.
-    try:
-        from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
-                                    concatenate_videoclips, TextClip)
-        from pexels_api import API
-        from gtts import gTTS
-    except ImportError:
-        raise HTTPException(status_code=501, detail="Video generation libraries (moviepy, pexels_api, gtts) are not installed or enabled on the server.")
-
     print("\n--- [START] Video Generation ---")
     
     video_dir = "static/videos"
@@ -412,9 +402,9 @@ async def generate_video(request: VideoRequest):
                 try: os.remove(f)
                 except Exception as e: print(f"Error cleaning up file {f}: {e}")
 
-# --- FILE SERVING ---
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# --- FILE SERVING (FIXED FOR DEPLOYMENT) ---
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 @app.get("/")
 async def read_index():
-    return FileResponse('static/index.html')
+    return FileResponse(STATIC_DIR / "index.html")
 
