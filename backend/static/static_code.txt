@@ -10,11 +10,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human-Like Content Manager</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <div class="main-container">
+    <div id="preloader">
+        <canvas id="preloader-canvas"></canvas>
+        <h1 class="loader-title">Human-Like Content Manager</h1>
+        <p class="loader-p"><span id="loader-text"></span></p>
+    </div>
+
+    <div class="main-container" style="visibility: hidden;">
         <header class="header">
             <h1>Human-Like Content Manager</h1>
             <p>Infuse Intelligence. Craft Authenticity.</p>
@@ -29,13 +35,13 @@
                     <canvas id="plexus-canvas"></canvas>
                 </div>
                 <p class="card-subtitle">Novel-AI suggestion</p>
-                <div class="suggestion-grid">
-                    <button class="suggestion-btn">Kaysee Hook</button>
-                    <button class="suggestion-btn">Soo manabe</button>
-                    <button class="suggestion-btn">Narako Dolosa</button>
-                    <button class="suggestion-btn">Rimrefen Ikaat</button>
-                    <button class="suggestion-btn">Homan Liboboot</button>
-                    <button class="suggestion-btn">Renrehen How</button>
+                <div class="suggestion-grid" id="suggestion-grid">
+                    <button class="suggestion-btn">Launch a new product</button>
+                    <button class="suggestion-btn">Share a customer success story</button>
+                    <button class="suggestion-btn">Explain a complex topic simply</button>
+                    <button class="suggestion-btn">Post a weekly team update</button>
+                    <button class="suggestion-btn">Announce a limited-time offer</button>
+                    <button class="suggestion-btn">Share a behind-the-scenes look</button>
                 </div>
             </div>
 
@@ -50,24 +56,27 @@
                 <div class="input-group">
                     <label for="brand-voice">Brand Voice Profile</label>
                     <input type="text" id="brand-voice" value="Professional & Confident">
-                    <button class="create-new-btn">Create New</button>
+                </div>
+                <div class="input-group">
+                    <label for="target-audience">Target Audience (Optional)</label>
+                    <input type="text" id="target-audience" placeholder="e.g., Tech Enthusiasts, Small Business Owners">
                 </div>
                 <div class="tone-section">
                     <div class="tone-header"><label>Tone & Nuance</label></div>
                     <div class="tone-content-grid">
                         <div class="tone-graphic-container">
-                               <svg viewBox="0 0 100 100">
-                                   <defs>
-                                       <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
-                                       <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
-                                   </defs>
-                                   <g stroke="#4a4a70" stroke-width="0.5"><line x1="50" y1="50" x2="25" y2="25"></line><line x1="50" y1="50" x2="75" y2="25"></line><line x1="50" y1="50" x2="25" y2="75"></line><line x1="50" y1="50" x2="75" y2="75"></line><line x1="25" y1="25" x2="75" y2="75"></line><line x1="75" y1="25" x2="25" y2="75"></line></g>
-                                   <circle cx="50" cy="50" r="4" fill="#6a6a8a"></circle>
-                                   <circle cx="25" cy="25" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="25" cy="25" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
-                                   <circle cx="75" cy="25" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="75" cy="25" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
-                                   <circle cx="25" cy="75" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="25" cy="75" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
-                                   <circle cx="75" cy="75" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="75" cy="75" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
-                               </svg>
+                                <svg viewBox="0 0 100 100">
+                                    <defs>
+                                        <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+                                        <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="coloredBlur"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+                                    </defs>
+                                    <g stroke="#4a4a70" stroke-width="0.5"><line x1="50" y1="50" x2="25" y2="25"></line><line x1="50" y1="50" x2="75" y2="25"></line><line x1="50" y1="50" x2="25" y2="75"></line><line x1="50" y1="50" x2="75" y2="75"></line><line x1="25" y1="25" x2="75" y2="75"></line><line x1="75" y1="25" x2="25" y2="75"></line></g>
+                                    <circle cx="50" cy="50" r="4" fill="#6a6a8a"></circle>
+                                    <circle cx="25" cy="25" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="25" cy="25" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
+                                    <circle cx="75" cy="25" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="75" cy="25" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
+                                    <circle cx="25" cy="75" r="3" fill="#32b9f7" filter="url(#glowBlue)"></circle><circle cx="25" cy="75" r="6" fill="none" stroke="#32b9f7" stroke-width="1" opacity="0.6" filter="url(#glowBlue)"></circle>
+                                    <circle cx="75" cy="75" r="3" fill="#e040fb" filter="url(#glowPink)"></circle><circle cx="75" cy="75" r="6" fill="none" stroke="#e040fb" stroke-width="1" opacity="0.6" filter="url(#glowPink)"></circle>
+                                </svg>
                         </div>
                         <div class="tone-options">
                             <div class="tone-option-item toggleable-option" data-active="true" id="smart-emojis-toggle">
@@ -75,8 +84,8 @@
                                 <i class="fas fa-check checkmark-icon"></i>
                             </div>
                             <div class="tone-option-item">
-                                <div class="label-group"><span class="legend-circle grey"></span><span>Sus factions</span></div>
-                                <input type="range" class="tone-slider" min="0" max="100" value="50">
+                                <div class="label-group"><span class="legend-circle grey"></span><span>Formality</span></div>
+                                <input type="range" id="formality-slider" class="tone-slider" min="0" max="100" value="50">
                             </div>
                         </div>
                         <div class="tone-toggles-section">
@@ -104,52 +113,78 @@
             <div class="glass-card">
                 <h2>3. Creative Output & Analysis</h2>
                 <div class="output-tabs-container" id="output-tabs"></div>
-                <textarea id="output-text"></textarea>
+
+                <div class="textarea-wrapper">
+                    <textarea id="output-text" readonly placeholder="Your generated content will appear here..."></textarea>
+                    <button id="copy-btn" class="output-action-btn" title="Copy Content"><i class="fas fa-copy"></i></button>
+                </div>
+
+                <div id="justification-box" class="justification-box hidden"></div>
+                
                 <div class="tts-controls" id="tts-controls">
                     <div class="voice-selector" id="voice-selector">
-                        <button class="voice-btn active" data-gender="female" id="female-voice-btn">
-                            <i class="fas fa-female"></i> Female
-                        </button>
-                        <button class="voice-btn" data-gender="male" id="male-voice-btn">
-                            <i class="fas fa-male"></i> Male
-                        </button>
+                        <button class="voice-btn active" data-gender="female" id="female-voice-btn"><i class="fas fa-female"></i> Female</button>
+                        <button class="voice-btn" data-gender="male" id="male-voice-btn"><i class="fas fa-male"></i> Male</button>
                     </div>
                     <div class="action-buttons">
                         <button id="play-btn" class="tts-btn"><i class="fas fa-play"></i></button>
                         <button id="stop-btn" class="tts-btn"><i class="fas fa-stop"></i></button>
+                        <button id="edit-btn" class="output-action-btn" title="Edit Content"><i class="fas fa-pencil-alt"></i></button>
+                        <button id="humanize-btn" class="output-action-btn" title="Humanize Text"><i class="fas fa-wand-magic-sparkles"></i></button>
                     </div>
                 </div>
-                <p class="card-subtitle">Authenticity Score</p>
-                <div class="waveform-svg-container">
-                    <svg viewBox="0 0 300 60"><path d="M0 30 Q 15 10, 30 30 T 60 30 Q 75 50, 90 30 T 120 30 Q 135 15, 150 30 T 180 30 Q 195 45, 210 30 T 240 30 Q 255 20, 270 30 T 300 30" stroke="#6a6aff" fill="none" stroke-width="2"></path></svg>
+
+                <div id="refine-container" class="refine-container hidden">
+                    <input type="text" id="refine-input" placeholder="e.g., Make it funnier...">
+                    <div class="refine-actions">
+                        <button id="cancel-refine-btn" class="refine-btn cancel">Cancel</button>
+                        <button id="submit-refine-btn" class="refine-btn submit">Refine</button>
+                    </div>
                 </div>
-                <div class="scores-grid">
-                    <div class="score-card">
-                        <div class="shape-container"><canvas id="shape-canvas-1"></canvas></div>
-                        <span class="score-percent" id="mentality-score">0%</span>
-                        <p>Mentality Score</p>
-                        <span class="score-sub-label">Beoordeling Transacties</span>
+
+                <div class="score-section">
+                    <div class="score-header">
+                        <p class="card-subtitle">Authenticity Score</p>
+                        <button id="refine-btn" class="output-action-btn" title="Refine Content"><i class="fas fa-lightbulb"></i></button>
                     </div>
-                    <div class="score-card">
-                        <div class="shape-container"><canvas id="shape-canvas-2"></canvas></div>
-                        <span class="score-percent" id="novelty-score">0%</span>
-                        <p>Novelty</p>
-                        <span class="score-sub-label">Inventiviteit</span>
+                    <div class="scores-grid" id="scores-grid">
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-1"></canvas></div>
+                            <span class="score-percent" id="readability-score">0%</span>
+                            <p>Readability</p>
+                            <span class="score-sub-label">Clarity & Flow</span>
+                        </div>
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-2"></canvas></div>
+                            <span class="score-percent" id="engagement-score">0%</span>
+                            <p>Engagement Potential</p>
+                            <span class="score-sub-label">Audience Hook</span>
+                        </div>
+                        <div class="score-card">
+                            <div class="shape-container"><canvas id="shape-canvas-3"></canvas></div>
+                            <span class="score-percent" id="human-likeness-score">0%</span>
+                            <p>Human-Likeness</p>
+                            <span class="score-sub-label">Authentic Voice</span>
+                        </div>
                     </div>
-                    <div class="score-card">
-                        <div class="shape-container"><canvas id="shape-canvas-3"></canvas></div>
-                        <span class="score-percent" id="emotional-pulse-score">0%</span>
-                        <p>Emotional Pulse</p>
-                        <span class="score-sub-label">Beoordeeld</span>
+                </div>
+
+                <div class="video-section">
+                    <button id="generate-video-btn" class="generate-video-btn">
+                        <i class="fas fa-film"></i> Generate Video Reel
+                    </button>
+                    <div id="video-player-container" class="video-player-container hidden">
+                        <video id="video-player" controls></video>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="footer"><p>Built with Jarvis AI</p></footer>
+        <footer class="footer"></footer>
     </div>
     <script src="/static/script.js"></script>
 </body>
 </html>
+
 ```
 
 |-- script.js
@@ -161,27 +196,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandVoiceInput = document.getElementById('brand-voice');
     const creativitySlider = document.getElementById('creativity-slider');
     const generateBtn = document.getElementById('generate-btn');
+    const suggestionGrid = document.getElementById('suggestion-grid');
+    const formalitySlider = document.getElementById('formality-slider'); 
+    const targetAudienceInput = document.getElementById('target-audience');
     const outputText = document.getElementById('output-text');
-    const mentalityScoreEl = document.getElementById('mentality-score');
-    const noveltyScoreEl = document.getElementById('novelty-score');
-    const emotionalPulseScoreEl = document.getElementById('emotional-pulse-score');
-
     const outputTabsContainer = document.getElementById('output-tabs');
-
-    // TTS Element Selection
+    const editBtn = document.getElementById('edit-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const humanizeBtn = document.getElementById('humanize-btn');
+    const refineBtn = document.getElementById('refine-btn');
     const ttsControls = document.getElementById('tts-controls');
+    const scoreSection = document.querySelector('.score-section');
+    const refineContainer = document.getElementById('refine-container');
+    const refineInput = document.getElementById('refine-input');
+    const submitRefineBtn = document.getElementById('submit-refine-btn');
+    const cancelRefineBtn = document.getElementById('cancel-refine-btn');
     const voiceSelector = document.getElementById('voice-selector');
     const maleVoiceBtn = document.getElementById('male-voice-btn');
     const femaleVoiceBtn = document.getElementById('female-voice-btn');
     const playBtn = document.getElementById('play-btn');
     const stopBtn = document.getElementById('stop-btn');
-
+    const readabilityScoreEl = document.getElementById('readability-score');
+    const engagementScoreEl = document.getElementById('engagement-score');
+    const humanLikenessScoreEl = document.getElementById('human-likeness-score');
+    const justificationBox = document.getElementById('justification-box');
+    const generateVideoBtn = document.getElementById('generate-video-btn');
+    const videoPlayerContainer = document.getElementById('video-player-container');
+    const videoPlayer = document.getElementById('video-player');
+    
     // --- STATE VARIABLES ---
     let selectedPlatform = 'Instagram';
     let generatedVersions = [];
     let maleVoice = null;
     let femaleVoice = null;
     let selectedGender = 'female';
+    let activeVersionIndex = 0;
 
     // --- INITIALIZE SPEECH SYNTHESIS ---
     const synth = window.speechSynthesis;
@@ -189,21 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ttsControls.style.display = 'none';
         console.warn('Browser does not support the Web Speech API.');
     }
-
     function findAndSetVoices() {
         let voices = synth.getVoices();
         if (voices.length === 0) return;
-
         maleVoice = voices.find(voice => voice.lang.startsWith('en') && (voice.name.toLowerCase().includes('male') || voice.name.includes('David') || voice.name.includes('Mark')));
         femaleVoice = voices.find(voice => voice.lang.startsWith('en') && (voice.name.toLowerCase().includes('female') || voice.name.includes('Zira') || voice.name.includes('Susan')));
-        
         if (!maleVoice) maleVoiceBtn.style.display = 'none';
         if (!femaleVoice) femaleVoiceBtn.style.display = 'none';
-
-        console.log("Found male voice:", maleVoice ? maleVoice.name : "None");
-        console.log("Found female voice:", femaleVoice ? femaleVoice.name : "None");
     }
-
     if (synth) {
         speechSynthesis.onvoiceschanged = findAndSetVoices;
         findAndSetVoices();
@@ -218,9 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedPlatform = button.dataset.platform;
         }
     });
-
     generateBtn.addEventListener('click', generateContent);
-
     outputTabsContainer.addEventListener('click', (e) => {
         const button = e.target.closest('.output-tab-btn');
         if (button) {
@@ -228,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showVersion(index);
         }
     });
-
     voiceSelector.addEventListener('click', (e) => {
         const button = e.target.closest('.voice-btn');
         if (button) {
@@ -237,37 +276,183 @@ document.addEventListener('DOMContentLoaded', () => {
             femaleVoiceBtn.classList.toggle('active', selectedGender === 'female');
         }
     });
+    suggestionGrid.addEventListener('click', (e) => {
+        const button = e.target.closest('.suggestion-btn');
+        if (button) {
+            ideaInput.value = button.textContent;
+            ideaInput.focus();
+        }
+    });
+    editBtn.addEventListener('click', () => {
+        const isReadOnly = outputText.hasAttribute('readonly');
+        if (isReadOnly) {
+            outputText.removeAttribute('readonly');
+            editBtn.classList.add('active');
+            outputText.focus();
+        } else {
+            outputText.setAttribute('readonly', true);
+            editBtn.classList.remove('active');
+        }
+    });
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(outputText.value).then(() => {
+            const originalIcon = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalIcon;
+            }, 1500);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    });
+    humanizeBtn.addEventListener('click', async () => {
+        const currentText = outputText.value;
+        if (!currentText.trim() || humanizeBtn.disabled) {
+            return;
+        }
+        const originalIcon = humanizeBtn.innerHTML;
+        humanizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        humanizeBtn.disabled = true;
+        editBtn.disabled = true;
+        try {
+            const response = await fetch('/humanize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: currentText }),
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred." }));
+                throw new Error(`HTTP error! Status: ${response.status} - ${errorData.detail}`);
+            }
+            const data = await response.json();
+            outputText.value = data.humanized_text;
+        } catch (error) {
+            console.error('Humanize Error:', error);
+            alert(`Could not humanize text. \nDetails: ${error.message}`);
+        } finally {
+            humanizeBtn.innerHTML = originalIcon;
+            humanizeBtn.disabled = false;
+            editBtn.disabled = false;
+        }
+    });
+    refineBtn.addEventListener('click', () => {
+        if (outputText.value.trim() === '') return;
+        ttsControls.classList.add('hidden');
+        scoreSection.classList.add('hidden');
+        refineContainer.classList.remove('hidden');
+        refineInput.focus();
+    });
+    cancelRefineBtn.addEventListener('click', () => {
+        refineContainer.classList.add('hidden');
+        ttsControls.classList.remove('hidden');
+        scoreSection.classList.remove('hidden');
+        refineInput.value = '';
+    });
+    submitRefineBtn.addEventListener('click', async () => {
+        const instruction = refineInput.value;
+        if (!instruction || !instruction.trim() || submitRefineBtn.disabled) {
+            return;
+        }
+        const originalText = submitRefineBtn.textContent;
+        submitRefineBtn.textContent = 'Refining...';
+        submitRefineBtn.disabled = true;
+        cancelRefineBtn.disabled = true;
+        const currentSettings = {
+            idea: ideaInput.value,
+            platform: selectedPlatform,
+            tone: brandVoiceInput.value,
+            creativity: parseFloat(creativitySlider.value),
+            formality: parseFloat(formalitySlider.value),
+            smart_emojis: document.getElementById('smart-emojis-toggle').dataset.active === 'true',
+            auto_hashtag: document.getElementById('auto-hashtag-toggle').dataset.active === 'true',
+            contextual_suggestions: document.getElementById('contextual-suggestions-toggle').dataset.active === 'true',
+            target_audience: targetAudienceInput.value,
+            original_content: generatedVersions[activeVersionIndex].content,
+            refinement_instruction: instruction
+        };
+        try {
+            const response = await fetch('/refine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(currentSettings),
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred." }));
+                throw new Error(`HTTP error! Status: ${response.status} - ${errorData.detail}`);
+            }
+            const newVersion = await response.json();
+            generatedVersions[activeVersionIndex] = newVersion;
+            showVersion(activeVersionIndex);
+        } catch (error) {
+            console.error('Refine Error:', error);
+            alert(`Could not refine content. \nDetails: ${error.message}`);
+        } finally {
+            submitRefineBtn.textContent = originalText;
+            submitRefineBtn.disabled = false;
+            cancelRefineBtn.disabled = false;
+            refineContainer.classList.add('hidden');
+            ttsControls.classList.remove('hidden');
+            scoreSection.classList.remove('hidden');
+            refineInput.value = '';
+        }
+    });
+    generateVideoBtn.addEventListener('click', async () => {
+        if (selectedPlatform !== 'Instagram' || !generatedVersions[activeVersionIndex]) {
+            alert("Please generate an Instagram post with a script first to create a video.");
+            return;
+        }
+        const currentVersion = generatedVersions[activeVersionIndex];
+        const scriptText = currentVersion.content.script;
+        const originalIdea = ideaInput.value;
+        if (!scriptText) {
+            alert("The current version does not have a script to generate a video from.");
+            return;
+        }
+        generateVideoBtn.disabled = true;
+        generateVideoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assembling Video...';
+        videoPlayerContainer.classList.add('hidden');
+        try {
+            const response = await fetch('/generate-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ script: scriptText, idea: originalIdea }),
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred." }));
+                throw new Error(`HTTP error! Status: ${response.status} - ${errorData.detail}`);
+            }
+            const data = await response.json();
+            videoPlayer.src = data.video_url + `?t=${new Date().getTime()}`;
+            videoPlayerContainer.classList.remove('hidden');
+            videoPlayer.load();
+        } catch (error) {
+            console.error('Video Generation Error:', error);
+            alert(`Could not generate video. \nDetails: ${error.message}`);
+        } finally {
+            generateVideoBtn.disabled = false;
+            generateVideoBtn.innerHTML = '<i class="fas fa-film"></i> Generate Video Reel';
+        }
+    });
 
+    // --- TTS FUNCTIONS ---
     function speakText() {
         if (synth.speaking) { return; }
-        if (outputText.value.trim() !== '') {
+        const textToSpeak = outputText.value;
+        if (textToSpeak.trim() !== '') {
             synth.cancel();
-            const utterance = new SpeechSynthesisUtterance(outputText.value);
-
-            if (selectedGender === 'male' && maleVoice) {
-                utterance.voice = maleVoice;
-            } else if (selectedGender === 'female' && femaleVoice) {
-                utterance.voice = femaleVoice;
-            }
-            
-            console.log(`Attempting to speak with ${selectedGender} voice.`);
-
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            if (selectedGender === 'male' && maleVoice) utterance.voice = maleVoice;
+            else if (selectedGender === 'female' && femaleVoice) utterance.voice = femaleVoice;
             utterance.onstart = () => { playBtn.disabled = true; stopBtn.disabled = false; };
             utterance.onend = () => { playBtn.disabled = false; stopBtn.disabled = true; };
-            utterance.onerror = (e) => { 
-                console.error('Speech synthesis error:', e);
-                playBtn.disabled = false; stopBtn.disabled = true;
-            };
-            
+            utterance.onerror = (e) => { console.error('Speech synthesis error:', e); playBtn.disabled = false; stopBtn.disabled = true; };
             synth.speak(utterance);
         }
     }
-
     function stopText() {
         synth.cancel();
     }
-
-    if(synth) {
+    if (synth) {
         playBtn.addEventListener('click', speakText);
         stopBtn.addEventListener('click', stopText);
         stopBtn.disabled = true;
@@ -276,61 +461,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CORE API FUNCTION ---
     async function generateContent() {
         if (generateBtn.classList.contains('loading')) return;
-
         const idea = ideaInput.value;
         const tone = brandVoiceInput.value;
         const creativity = parseFloat(creativitySlider.value);
-
-        // Read the state of the toggleable options
+        const formality = parseFloat(formalitySlider.value);
         const smartEmojis = document.getElementById('smart-emojis-toggle').dataset.active === 'true';
         const autoHashtag = document.getElementById('auto-hashtag-toggle').dataset.active === 'true';
         const contextualSuggestions = document.getElementById('contextual-suggestions-toggle').dataset.active === 'true';
-
+        const targetAudience = targetAudienceInput.value;
         if (!idea.trim() || !tone.trim()) {
             alert('Please fill in the idea and brand voice fields.');
             return;
         }
-
         setLoadingState(true);
         clearResults();
-
         try {
             const response = await fetch('/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    idea, 
-                    platform: selectedPlatform, 
-                    tone, 
-                    creativity,
-                    smart_emojis: smartEmojis,
-                    auto_hashtag: autoHashtag,
-                    contextual_suggestions: contextualSuggestions
-                }),
+                body: JSON.stringify({ idea, platform: selectedPlatform, tone, creativity, formality, smart_emojis: smartEmojis, auto_hashtag: autoHashtag, contextual_suggestions: contextualSuggestions, target_audience: targetAudience }),
             });
-
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred." }));
                 throw new Error(`HTTP error! Status: ${response.status} - ${errorData.detail}`);
             }
-
             const data = await response.json();
-            
             if (data.versions && data.versions.length > 0) {
                 displayResults(data.versions);
             } else {
                 throw new Error("Received an empty or invalid versions array from the server.");
             }
-
         } catch (error) {
             console.error('Error:', error);
-            outputText.value = `An error occurred. Could not generate content. \n\nDetails: ${error.message}`;
-            outputText.readOnly = false; 
+            outputText.value = `A frontend error occurred. \n\nDetails: ${error.message}`;
         } finally {
             setLoadingState(false);
         }
     }
-    
+
+    // --- HELPER FUNCTIONS ---
     function setLoadingState(isLoading) {
         if (isLoading) {
             generateBtn.classList.add('loading');
@@ -340,33 +509,41 @@ document.addEventListener('DOMContentLoaded', () => {
             generateBtn.textContent = 'Generate Content';
         }
     }
-    
+
     function clearResults() {
         if (synth && synth.speaking) { synth.cancel(); }
         outputText.value = '';
-        outputText.readOnly = false; 
         outputTabsContainer.innerHTML = '';
         generatedVersions = [];
-
-        mentalityScoreEl.textContent = '0%';
-        noveltyScoreEl.textContent = '0%';
-        emotionalPulseScoreEl.textContent = '0%';
+        readabilityScoreEl.textContent = '0%';
+        engagementScoreEl.textContent = '0%';
+        humanLikenessScoreEl.textContent = '0%';
         updateShape(0, 0);
         updateShape(1, 0);
         updateShape(2, 0);
+        document.querySelectorAll('.char-count').forEach(el => el.remove());
+        justificationBox.innerHTML = '';
+        justificationBox.classList.add('hidden');
+        videoPlayerContainer.classList.add('hidden');
+        videoPlayer.src = "";
     }
 
     function displayResults(versions) {
         generatedVersions = versions;
-
+        outputTabsContainer.innerHTML = ''; 
         versions.forEach((version, index) => {
             const button = document.createElement('button');
             button.classList.add('output-tab-btn');
             button.textContent = `Version ${index + 1}`;
             button.dataset.index = index;
+            if (version.virality_score) {
+                const scoreSpan = document.createElement('span');
+                scoreSpan.className = 'virality-score';
+                scoreSpan.innerHTML = `🔥 ${version.virality_score}`;
+                button.appendChild(scoreSpan);
+            }
             outputTabsContainer.appendChild(button);
         });
-
         if (versions.length > 0) {
             showVersion(0);
         }
@@ -374,207 +551,180 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showVersion(index) {
         if (index >= generatedVersions.length || index < 0) return;
+        activeVersionIndex = index;
         if (synth && synth.speaking) { synth.cancel(); }
-
+        outputText.setAttribute('readonly', true);
+        editBtn.classList.remove('active');
         const buttons = outputTabsContainer.querySelectorAll('.output-tab-btn');
-        buttons.forEach((btn, i) => {
-            btn.classList.toggle('active', i === index);
-        });
-
+        buttons.forEach((btn, i) => btn.classList.toggle('active', i === index));
         const versionData = generatedVersions[index];
-        const { mentality, novelty, emotional_pulse } = versionData.analysis;
-        
-        outputText.value = versionData.generated_content;
-        outputText.readOnly = true;
+        const { content, analysis, justification } = versionData;
+        let formattedContent = "";
+        document.querySelectorAll('.char-count').forEach(el => el.remove());
+        if (typeof content === 'string') {
+            formattedContent = content;
+        } else if (content.caption && content.script) {
+            formattedContent = `${content.caption}\n\n${content.script}`;
+        } else if (content.thread && Array.isArray(content.thread)) {
+            const X_CHAR_LIMIT = 280;
+            formattedContent = "";
+            const wrapper = outputText.parentElement;
+            content.thread.forEach((tweet, i) => {
+                const lineCount = (formattedContent.match(/\n/g) || []).length;
+                formattedContent += `[${i + 1}/${content.thread.length}]\n${tweet}\n\n`;
+                const charCountEl = document.createElement('div');
+                charCountEl.className = 'char-count';
+                const charLength = tweet.length;
+                charCountEl.textContent = `${charLength} / ${X_CHAR_LIMIT}`;
+                charCountEl.style.top = `${2 + (lineCount * 1.5)}rem`;
+                if (charLength > X_CHAR_LIMIT) { charCountEl.classList.add('over-limit'); }
+                wrapper.appendChild(charCountEl);
+            });
+        }
+        outputText.value = formattedContent.trim();
 
-        mentalityScoreEl.textContent = `${mentality}%`;
-        noveltyScoreEl.textContent = `${novelty}%`;
-        emotionalPulseScoreEl.textContent = `${emotional_pulse}%`;
+        if (justification) {
+            justificationBox.innerHTML = `<p><strong>AI Analyst:</strong> <em>"${justification}"</em></p>`;
+            justificationBox.classList.remove('hidden');
+        } else {
+            justificationBox.innerHTML = '';
+            justificationBox.classList.add('hidden');
+        }
 
-        updateShape(0, mentality);
-        updateShape(1, novelty);
-        updateShape(2, emotional_pulse);
+        readabilityScoreEl.textContent = `${analysis.readability}%`;
+        engagementScoreEl.textContent = `${analysis.engagement_potential}%`;
+        humanLikenessScoreEl.textContent = `${analysis.human_likeness}%`;
+        updateShape(0, analysis.readability);
+        updateShape(1, analysis.engagement_potential);
+        updateShape(2, analysis.human_likeness);
     }
-    
-    // --- THREE.JS LOGIC & OTHER FUNCTIONS ---
+
+    // --- THREE.JS & PRELOADER LOGIC ---
     let scoreScenes = [], scoreCameras = [], scoreRenderers = [], wireframeMeshes = [], solidMeshes = [];
-
-    function initScoreShapes() {
-        const canvases = [ document.getElementById('shape-canvas-1'), document.getElementById('shape-canvas-2'), document.getElementById('shape-canvas-3') ];
-        canvases.forEach(canvas => {
-            if (!canvas) return;
-            const scene = new THREE.Scene(); scoreScenes.push(scene);
-            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            camera.position.z = 2; scoreCameras.push(camera);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true });
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio); scoreRenderers.push(renderer);
-            const geometry = new THREE.IcosahedronGeometry(1, 0);
-            const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x6a6aff, wireframe: true });
-            const wireframeMesh = new THREE.Mesh(geometry, wireframeMaterial);
-            scene.add(wireframeMesh); wireframeMeshes.push(wireframeMesh);
-            const solidMaterial = new THREE.MeshBasicMaterial({ color: 0x8282ff, transparent: true, opacity: 0.5 });
-            const solidMesh = new THREE.Mesh(geometry, solidMaterial);
-            solidMesh.scale.set(0, 0, 0);
-            scene.add(solidMesh); solidMeshes.push(solidMesh);
-        });
-    }
-
-    function animateScoreShapes() {
-        wireframeMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; });
-        solidMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; });
-        for (let i = 0; i < scoreScenes.length; i++) { scoreRenderers[i].render(scoreScenes[i], scoreCameras[i]); }
-    }
-
-    function updateShape(index, percentage) {
-        if (!solidMeshes[index]) return;
-        const targetScale = percentage / 100;
-        const mesh = solidMeshes[index];
-        const startScale = mesh.scale.x;
-        const deltaScale = targetScale - startScale;
-        let duration = 1000; let startTime = null;
-        function animationStep(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            const newScale = startScale + deltaScale * progress;
-            mesh.scale.set(newScale, newScale, newScale);
-            if (progress < 1) { requestAnimationFrame(animationStep); }
-        }
-        requestAnimationFrame(animationStep);
-    }
-
-    let plexusScene, plexusCamera, plexusRenderer, particles, group;
-    
-    function initPlexusAnimation() {
-        const container = document.querySelector('.network-canvas-container');
-        const canvas = document.getElementById('plexus-canvas');
-        if (!container || !canvas) return;
-        plexusScene = new THREE.Scene();
-        plexusCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-        plexusCamera.position.z = 15;
-        plexusRenderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true });
-        plexusRenderer.setSize(container.clientWidth, container.clientHeight);
-        plexusRenderer.setPixelRatio(window.devicePixelRatio);
-        const particleCount = 100;
-        const particlesGeometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 30;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-        }
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x32b9f7, size: 0.1, blending: THREE.AdditiveBlending, transparent: true });
-        particles = new THREE.Points(particlesGeometry, particleMaterial);
-        const lineGeometry = new THREE.BufferGeometry();
-        const linePositions = new Float32Array(particleCount * particleCount * 3);
-        lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x32b9f7, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending });
-        const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-        group = new THREE.Group();
-        group.add(particles);
-        group.add(lines);
-        plexusScene.add(group);
-    }
-    
-    function animatePlexus() {
-        if (!particles || !group || !plexusRenderer) return;
-        group.rotation.y += 0.0005;
-        const positions = particles.geometry.attributes.position.array;
-        const linePositions = group.children[1].geometry.attributes.position.array;
-        let vertexPos = 0;
-        const particleCount = positions.length / 3;
-        for (let i = 0; i < particleCount; i++) {
-            for (let j = i + 1; j < particleCount; j++) {
-                const dx = positions[i * 3] - positions[j * 3];
-                const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-                const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
-                const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                if (dist < 4) {
-                    linePositions[vertexPos++] = positions[i * 3];
-                    linePositions[vertexPos++] = positions[i * 3 + 1];
-                    linePositions[vertexPos++] = positions[i * 3 + 2];
-                    linePositions[vertexPos++] = positions[j * 3];
-                    linePositions[vertexPos++] = positions[j * 3 + 1];
-                    linePositions[vertexPos++] = positions[j * 3 + 2];
-                }
-            }
-        }
-        group.children[1].geometry.setDrawRange(0, vertexPos / 3);
-        group.children[1].geometry.attributes.position.needsUpdate = true;
-        plexusRenderer.render(plexusScene, plexusCamera);
-    }
-    
-    function animate() {
-        requestAnimationFrame(animate);
-        animateScoreShapes();
-        animatePlexus();
-    }
-
-    const toggleableOptions = document.querySelectorAll('.toggleable-option');
-    toggleableOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            const isActive = option.dataset.active === 'true';
-            option.dataset.active = !isActive;
-        });
-    });
-
-    function onWindowResize() {
-        if (plexusCamera && plexusRenderer) {
-            const plexusContainer = document.querySelector('.network-canvas-container');
-            plexusCamera.aspect = plexusContainer.clientWidth / plexusContainer.clientHeight;
-            plexusCamera.updateProjectionMatrix();
-            plexusRenderer.setSize(plexusContainer.clientWidth, plexusContainer.clientHeight);
-        }
-        for (let i = 0; i < scoreCameras.length; i++) {
-            const container = scoreRenderers[i].domElement.parentElement;
-            scoreCameras[i].aspect = container.clientWidth / container.clientHeight;
-            scoreCameras[i].updateProjectionMatrix();
-            scoreRenderers[i].setSize(container.clientWidth, container.clientHeight);
-        }
-    }
-    window.addEventListener('resize', onWindowResize, false);
-
+    function initScoreShapes() { const canvases = [document.getElementById('shape-canvas-1'), document.getElementById('shape-canvas-2'), document.getElementById('shape-canvas-3')]; canvases.forEach(canvas => { if (!canvas) return; const scene = new THREE.Scene(); scoreScenes.push(scene); const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000); camera.position.z = 2; scoreCameras.push(camera); const renderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true }); renderer.setSize(canvas.clientWidth, canvas.clientHeight); renderer.setPixelRatio(window.devicePixelRatio); scoreRenderers.push(renderer); const geometry = new THREE.IcosahedronGeometry(1, 0); const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x6a6aff, wireframe: true }); const wireframeMesh = new THREE.Mesh(geometry, wireframeMaterial); scene.add(wireframeMesh); wireframeMeshes.push(wireframeMesh); const solidMaterial = new THREE.MeshBasicMaterial({ color: 0x8282ff, transparent: true, opacity: 0.5 }); const solidMesh = new THREE.Mesh(geometry, solidMaterial); solidMesh.scale.set(0, 0, 0); scene.add(solidMesh); solidMeshes.push(solidMesh) }) }
+    function animateScoreShapes() { wireframeMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); solidMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); for (let i = 0; i < scoreScenes.length; i++) { scoreRenderers[i].render(scoreScenes[i], scoreCameras[i]); } }
+    function updateShape(index, percentage) { if (!solidMeshes[index]) return; const targetScale = percentage / 100; const mesh = solidMeshes[index]; const startScale = mesh.scale.x; const deltaScale = targetScale - startScale; let duration = 1000; let startTime = null; function animationStep(timestamp) { if (!startTime) startTime = timestamp; const progress = Math.min((timestamp - startTime) / duration, 1); const newScale = startScale + deltaScale * progress; mesh.scale.set(newScale, newScale, newScale); if (progress < 1) { requestAnimationFrame(animationStep); } } requestAnimationFrame(animationStep); }
+    let plexusScene, plexusCamera, plexusRenderer, particles, group; function initPlexusAnimation() { const container = document.querySelector('.network-canvas-container'); const canvas = document.getElementById('plexus-canvas'); if (!container || !canvas) return; plexusScene = new THREE.Scene(); plexusCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000); plexusCamera.position.z = 15; plexusRenderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true }); plexusRenderer.setSize(container.clientWidth, container.clientHeight); plexusRenderer.setPixelRatio(window.devicePixelRatio); const particleCount = 100; const particlesGeometry = new THREE.BufferGeometry(); const positions = new Float32Array(particleCount * 3); for (let i = 0; i < particleCount; i++) { positions[i * 3] = (Math.random() - 0.5) * 30; positions[i * 3 + 1] = (Math.random() - 0.5) * 15; positions[i * 3 + 2] = (Math.random() - 0.5) * 10 } particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)); const particleMaterial = new THREE.PointsMaterial({ color: 0x32b9f7, size: 0.1, blending: THREE.AdditiveBlending, transparent: true }); particles = new THREE.Points(particlesGeometry, particleMaterial); const lineGeometry = new THREE.BufferGeometry(); const linePositions = new Float32Array(particleCount * particleCount * 3); lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3)); const lineMaterial = new THREE.LineBasicMaterial({ color: 0x32b9f7, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending }); const lines = new THREE.LineSegments(lineGeometry, lineMaterial); group = new THREE.Group(); group.add(particles); group.add(lines); plexusScene.add(group) }
+    function animatePlexus() { if (!particles || !group || !plexusRenderer) return; group.rotation.y += 0.0005; const positions = particles.geometry.attributes.position.array; const linePositions = group.children[1].geometry.attributes.position.array; let vertexPos = 0; const particleCount = positions.length / 3; for (let i = 0; i < particleCount; i++) { for (let j = i + 1; j < particleCount; j++) { const dx = positions[i * 3] - positions[j * 3]; const dy = positions[i * 3 + 1] - positions[j * 3 + 1]; const dz = positions[i * 3 + 2] - positions[j * 3 + 2]; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz); if (dist < 4) { linePositions[vertexPos++] = positions[i * 3]; linePositions[vertexPos++] = positions[i * 3 + 1]; linePositions[vertexPos++] = positions[i * 3 + 2]; linePositions[vertexPos++] = positions[j * 3]; linePositions[vertexPos++] = positions[j * 3 + 1]; linePositions[vertexPos++] = positions[j * 3 + 2] } } } group.children[1].geometry.setDrawRange(0, vertexPos / 3); group.children[1].geometry.attributes.position.needsUpdate = true; plexusRenderer.render(plexusScene, plexusCamera) }
+    let preloaderScene, preloaderCamera, preloaderRenderer, preloaderParticles, preloaderGroup; function initPreloaderPlexus() { const canvas = document.getElementById('preloader-canvas'); if (!canvas) return; preloaderScene = new THREE.Scene(); preloaderCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); preloaderCamera.position.z = 25; preloaderRenderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true }); preloaderRenderer.setSize(window.innerWidth, window.innerHeight); preloaderRenderer.setPixelRatio(window.devicePixelRatio); const particleCount = 150; const particlesGeometry = new THREE.BufferGeometry(); const positions = new Float32Array(particleCount * 3); for (let i = 0; i < particleCount; i++) { positions[i * 3] = (Math.random() - 0.5) * 50; positions[i * 3 + 1] = (Math.random() - 0.5) * 50; positions[i * 3 + 2] = (Math.random() - 0.5) * 50; } particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)); const particleMaterial = new THREE.PointsMaterial({ color: 0x6a6aff, size: 0.15, blending: THREE.AdditiveBlending, transparent: true }); preloaderParticles = new THREE.Points(particlesGeometry, particleMaterial); const lineMaterial = new THREE.LineBasicMaterial({ color: 0x6a6aff, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending }); const lineGeometry = new THREE.BufferGeometry(); const linePositions = new Float32Array(particleCount * particleCount * 3); lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3)); const lines = new THREE.LineSegments(lineGeometry, lineMaterial); preloaderGroup = new THREE.Group(); preloaderGroup.add(preloaderParticles); preloaderGroup.add(lines); preloaderScene.add(preloaderGroup); }
+    function animatePreloaderPlexus() { if (!preloaderGroup || !preloaderRenderer) return; preloaderGroup.rotation.y += 0.001; preloaderGroup.rotation.x += 0.0005; const positions = preloaderParticles.geometry.attributes.position.array; const linePositions = preloaderGroup.children[1].geometry.attributes.position.array; let vertexPos = 0; const particleCount = positions.length / 3; for (let i = 0; i < particleCount; i++) { for (let j = i + 1; j < particleCount; j++) { const dx = positions[i * 3] - positions[j * 3]; const dy = positions[i * 3 + 1] - positions[j * 3 + 1]; const dz = positions[i * 3 + 2] - positions[j * 3 + 2]; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz); if (dist < 6) { linePositions[vertexPos++] = positions[i * 3]; linePositions[vertexPos++] = positions[i * 3 + 1]; linePositions[vertexPos++] = positions[i * 3 + 2]; linePositions[vertexPos++] = positions[j * 3]; linePositions[vertexPos++] = positions[j * 3 + 1]; linePositions[vertexPos++] = positions[j * 3 + 2]; } } } preloaderGroup.children[1].geometry.setDrawRange(0, vertexPos / 3); preloaderGroup.children[1].geometry.attributes.position.needsUpdate = true; preloaderRenderer.render(preloaderScene, preloaderCamera); }
+    function animate() { requestAnimationFrame(animate); animateScoreShapes(); animatePlexus(); animatePreloaderPlexus(); }
+    const toggleableOptions = document.querySelectorAll('.toggleable-option'); toggleableOptions.forEach(option => { option.addEventListener('click', () => { const isActive = option.dataset.active === 'true'; option.dataset.active = !isActive }) });
+    function onWindowResize() { if (plexusCamera && plexusRenderer) { const plexusContainer = document.querySelector('.network-canvas-container'); plexusCamera.aspect = plexusContainer.clientWidth / plexusContainer.clientHeight; plexusCamera.updateProjectionMatrix(); plexusRenderer.setSize(plexusContainer.clientWidth, plexusContainer.clientHeight) } for (let i = 0; i < scoreCameras.length; i++) { const container = scoreRenderers[i].domElement.parentElement; scoreCameras[i].aspect = container.clientWidth / container.clientHeight; scoreCameras[i].updateProjectionMatrix(); scoreRenderers[i].setSize(container.clientWidth, container.clientHeight) } }; window.addEventListener('resize', onWindowResize, false);
     initScoreShapes();
     initPlexusAnimation();
+    initPreloaderPlexus();
     animate();
+    function startLoaderAnimation() { const texts = ["Activating Systems...", "Calibrating Nuance Engine...", "Loading Creative Matrix...", "Authenticating Voice Profiles..."]; let textIndex = 0; let charIndex = 0; const loaderTextEl = document.getElementById('loader-text'); if (!loaderTextEl) return; function type() { if (charIndex < texts[textIndex].length) { loaderTextEl.textContent += texts[textIndex].charAt(charIndex); charIndex++; setTimeout(type, 50); } else { setTimeout(erase, 1500); } } function erase() { if (charIndex > 0) { loaderTextEl.textContent = texts[textIndex].substring(0, charIndex - 1); charIndex--; setTimeout(erase, 30); } else { textIndex = (textIndex + 1) % texts.length; setTimeout(type, 500); } } type(); }
+    startLoaderAnimation();
 });
+window.onload = () => {
+    const MIN_LOAD_TIME = 3500;
+    const startTime = Date.now();
+    const hideLoader = () => {
+        const timeElapsed = Date.now() - startTime;
+        const remainingTime = MIN_LOAD_TIME - timeElapsed;
+        if (remainingTime <= 0) {
+            const preloader = document.getElementById('preloader');
+            const mainContainer = document.querySelector('.main-container');
+            if (preloader) preloader.classList.add('hidden');
+            if (mainContainer) mainContainer.style.visibility = 'visible';
+        } else {
+            setTimeout(hideLoader, remainingTime);
+        }
+    };
+    hideLoader();
+};
+
 ```
 
 |-- styles.css
 ```
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DInter:wght%40300%3B400%3B500%3B600%3B700%26display%3Dswap');
 
 :root {
-    --bg-color: #050411;
-    --card-bg: rgba(18, 16, 45, 0.4);
-    --border-color: rgba(128, 128, 255, 0.25);
-    --text-primary: #e0e0ff;
-    --text-secondary: #a0a0c0;
-    --accent-color: #6a6aff;
-    --accent-glow: rgba(106, 106, 255, 0.5);
-    --interactive-blue: #3c65fe;
-    --glow-line-cyan: #32b9f7;
-    --grad-cyan: #32b9f7;
-    --grad-magenta: #e040fb;
+--bg-color: #050411;
+--card-bg: rgba(18, 16, 45, 0.4);
+--border-color: rgba(128, 128, 255, 0.25);
+--text-primary: #e0e0ff;
+--text-secondary: #a0a0c0;
+--accent-color: #6a6aff;
+--accent-glow: rgba(106, 106, 255, 0.5);
+--interactive-blue: #3c65fe;
+--glow-line-cyan: #32b9f7;
+--grad-cyan: #32b9f7;
+--grad-magenta: #e040fb;
+--error-color: #ff5555;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+#preloader {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: var(--bg-color);
+z-index: 9999;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+color: var(--text-primary);
+opacity: 1;
+visibility: visible;
+transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#preloader.hidden {
+opacity: 0;
+visibility: hidden;
+}
+.loader-title {
+font-size: 2.5rem;
+font-weight: 700;
+letter-spacing: 1px;
+margin-bottom: 1rem;
+z-index: 2;
+text-shadow: 0 0 10px var(--grad-cyan), 0 0 20px var(--grad-magenta);
+}
+.loader-p {
+color: var(--text-secondary);
+font-size: 1.25rem;
+z-index: 2;
+}
+#loader-text::after {
+content: '_';
+opacity: 1;
+animation: blink 1s infinite;
+}
+@keyframes blink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0; }
+}
+#preloader-canvas {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 1;
+}
+
+{ box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    background-image: url('/static/images/background.png');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
+font-family: 'Inter', sans-serif;
+background-color: var(--bg-color);
+color: var(--text-primary);
+background-image: url('/static/images/background.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+padding: 2rem;
 }
 
 .main-container { width: 100%; max-width: 1400px; }
@@ -585,44 +735,44 @@ body {
 .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 
 .glass-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+background: var(--card-bg);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border: 1px solid var(--border-color);
+border-radius: 1.5rem;
+padding: 2rem;
+display: flex;
+flex-direction: column;
+gap: 1.25rem;
+box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
 }
 
 .glass-card:nth-child(1)::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 2px; height: 100%; background: var(--glow-line-cyan);
-    box-shadow: 0 0 10px 1px var(--glow-line-cyan), 0 0 20px 3px rgba(50, 185, 247, 0.5), 0 0 40px 8px rgba(50, 185, 247, 0.2);
-    filter: blur(1.5px); pointer-events: none;
+content: ''; position: absolute; top: 0; left: 0;
+width: 2px; height: 100%; background: var(--glow-line-cyan);
+box-shadow: 0 0 10px 1px var(--glow-line-cyan), 0 0 20px 3px rgba(50, 185, 247, 0.5), 0 0 40px 8px rgba(50, 185, 247, 0.2);
+filter: blur(1.5px); pointer-events: none;
 }
 
 .glass-card:nth-child(3)::before {
-    content: ''; position: absolute; top: 0; right: 0;
-    width: 2px; height: 100%; background: var(--glow-line-cyan);
-    box-shadow: 0 0 10px 1px var(--glow-line-cyan), 0 0 20px 3px rgba(50, 185, 247, 0.5), 0 0 40px 8px rgba(50, 185, 247, 0.2);
-    filter: blur(1.5px); pointer-events: none;
+content: ''; position: absolute; top: 0; right: 0;
+width: 2px; height: 100%; background: var(--glow-line-cyan);
+box-shadow: 0 0 10px 1px var(--glow-line-cyan), 0 0 20px 3px rgba(50, 185, 247, 0.5), 0 0 40px 8px rgba(50, 185, 247, 0.2);
+filter: blur(1.5px); pointer-events: none;
 }
 
 .glass-card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
 .card-subtitle { color: var(--text-secondary); font-size: 0.9rem; }
 
 textarea, input[type="text"] {
-    width: 100%; background: rgba(0, 0, 0, 0.25);
-    border: 1px solid var(--border-color); border-radius: 0.5rem;
-    padding: 0.75rem; color: var(--text-primary);
-    font-family: inherit; font-size: 1rem; resize: none;
-    transition: all 0.2s ease-in-out;
+width: 100%; background: rgba(0, 0, 0, 0.25);
+border: 1px solid var(--border-color); border-radius: 0.5rem;
+padding: 0.75rem; color: var(--text-primary);
+font-family: inherit; font-size: 1rem; resize: none;
+transition: all 0.2s ease-in-out;
 }
 textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
 
@@ -633,11 +783,18 @@ textarea::-webkit-scrollbar-thumb { background-color: rgba(106, 106, 255, 0.7); 
 textarea::-webkit-scrollbar-thumb:hover { background-color: rgba(136, 136, 255, 0.9); }
 
 #idea-input { height: 6rem; }
-#output-text { height: 8rem; }
+
+#output-text:not([readonly]) {
+border-color: var(--grad-cyan);
+box-shadow: 0 0 10px var(--grad-cyan);
+}
+#output-text::placeholder {
+color: var(--text-secondary);
+opacity: 0.6;
+}
 
 .network-canvas-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; min-height: 150px; }
 #plexus-canvas { display: block; width: 100%; height: 100%; }
-.waveform-svg-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; }
 
 .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
 .suggestion-btn { background: rgba(43, 42, 83, 0.5); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.5rem; border-radius: 0.5rem; text-align: center; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; }
@@ -650,9 +807,7 @@ textarea::-webkit-scrollbar-thumb:hover { background-color: rgba(136, 136, 255, 
 
 .input-group { position: relative; margin-bottom: 1.5rem; }
 .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
-.input-group input[type="text"] { padding-right: 80px; }
-.create-new-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease; }
-.create-new-btn:hover { background: rgba(60, 101, 254, 0.2); color: var(--text-primary); }
+.input-group input[type="text"] { padding-right: 1rem; }
 
 .tone-section { margin-top: 1rem; }
 .tone-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
@@ -689,99 +844,178 @@ textarea::-webkit-scrollbar-thumb:hover { background-color: rgba(136, 136, 255, 
 .slider-labels span::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #4a4a80; border-radius: 50%; }
 
 #generate-btn {
-    width: 100%; padding: 1.1rem; border-radius: 12px; background: transparent; border: 1px solid transparent;
-    background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(to right, #e040fb, #32b9f7);
-    background-origin: border-box; background-clip: padding-box, border-box;
-    color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-    box-shadow: 0 0 15px rgba(224, 64, 251, 0.3), 0 0 15px rgba(50, 185, 247, 0.3);
-    margin-top: 2rem;
+width: 100%; padding: 1.1rem; border-radius: 12px; background: transparent; border: 1px solid transparent;
+background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(to right, #e040fb, #32b9f7);
+background-origin: border-box; background-clip: padding-box, border-box;
+color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+box-shadow: 0 0 15px rgba(224, 64, 251, 0.3), 0 0 15px rgba(50, 185, 247, 0.3);
+margin-top: 2rem;
 }
 #generate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(224, 64, 251, 0.5), 0 5px 20px rgba(50, 185, 247, 0.5); }
 #generate-btn.loading { opacity: 0.8; cursor: not-allowed; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.01); } }
 
 .output-tabs-container {
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-    margin-bottom: -0.5rem;
+display: flex;
+gap: 0.5rem;
+border-bottom: 1px solid var(--border-color);
+padding-bottom: 0.75rem;
+margin-bottom: 0.75rem;
 }
 .output-tab-btn {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: 8px 8px 0 0;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-family: inherit;
-    transition: all 0.2s ease;
+background: transparent;
+border: 1px solid transparent;
+color: var(--text-secondary);
+padding: 0.5rem 1rem;
+border-radius: 8px 8px 0 0;
+cursor: pointer;
+font-size: 0.9rem;
+font-family: inherit;
+transition: all 0.2s ease;
+display: flex;
+align-items: center;
+gap: 0.5rem;
 }
 .output-tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+background: rgba(255, 255, 255, 0.05);
+color: var(--text-primary);
 }
 .output-tab-btn.active {
-    color: white;
-    background: linear-gradient(rgba(18, 16, 45, 0.1), rgba(18, 16, 45, 0.1)), linear-gradient(to right, var(--grad-magenta), var(--grad-cyan));
-    background-clip: padding-box, border-box;
-    background-origin: border-box;
-    border-bottom: 1px solid transparent;
+color: white;
+background: linear-gradient(rgba(18, 16, 45, 0.1), rgba(18, 16, 45, 0.1)), linear-gradient(to right, var(--grad-magenta), var(--grad-cyan));
+background-clip: padding-box, border-box;
+background-origin: border-box;
+border-bottom: 1px solid transparent;
+}
+.virality-score {
+font-size: 0.8rem;
+font-weight: 600;
+padding: 2px 6px;
+border-radius: 5px;
+background: linear-gradient(135deg, var(--grad-cyan), var(--grad-magenta));
+color: white;
+text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.justification-box {
+padding: 0.75rem;
+margin-top: -0.5rem;
+margin-bottom: 0.5rem;
+border-radius: 8px;
+background: rgba(0,0,0,0.2);
+font-size: 0.9rem;
+color: var(--text-secondary);
+border-left: 3px solid var(--accent-color);
+}
+.justification-box strong {
+color: var(--text-primary);
+}
+.justification-box em {
+font-style: italic;
+}
+
+.textarea-wrapper {
+position: relative;
+display: flex;
+flex-grow: 1;
+min-height: 14rem;
+}
+.textarea-wrapper > textarea {
+flex-grow: 1;
+padding-right: 3rem;
+}
+
+.output-action-btn {
+width: 38px;
+height: 38px;
+flex-shrink: 0;
+border-radius: 10px;
+border: 1px solid var(--border-color);
+background: transparent;
+color: var(--text-secondary);
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+.output-action-btn:hover {
+border-color: var(--grad-cyan);
+color: var(--text-primary);
+}
+.output-action-btn.active {
+color: var(--grad-cyan);
+border-color: var(--grad-cyan);
+box-shadow: 0 0 8px rgba(50, 185, 247, 0.5);
+}
+#copy-btn {
+position: absolute;
+top: 8px;
+right: 8px;
+background-color: rgba(18, 16, 45, 0.6);
+z-index: 10;
 }
 
 .tts-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: -0.5rem;
-    margin-bottom: 0.5rem;
-    justify-content: space-between;
+display: flex;
+align-items: center;
+gap: 0.75rem;
+margin-top: 0;
+margin-bottom: 0.5rem;
+justify-content: space-between;
 }
 .voice-selector { display: flex; gap: 0.5rem; }
-.action-buttons { display: flex; gap: 0.75rem; }
+.action-buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
 .voice-btn {
-    background: rgba(43, 42, 83, 0.5);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+background: rgba(43, 42, 83, 0.5);
+border: 1px solid var(--border-color);
+color: var(--text-secondary);
+padding: 0.5rem 1rem;
+border-radius: 0.5rem;
+font-size: 0.9rem;
+cursor: pointer;
+transition: all 0.2s ease;
+display: flex;
+align-items: center;
+gap: 0.5rem;
 }
 .voice-btn:hover {
-    background-color: rgba(60, 101, 254, 0.3);
-    color: var(--text-primary);
+background-color: rgba(60, 101, 254, 0.3);
+color: var(--text-primary);
 }
 .voice-btn.active {
-    color: white;
-    background: linear-gradient(135deg, var(--grad-cyan), var(--grad-magenta));
-    border-color: transparent;
+color: white;
+background: linear-gradient(135deg, var(--grad-cyan), var(--grad-magenta));
+border-color: transparent;
 }
 .voice-btn i { font-size: 0.8rem; }
 
 .tts-btn {
-    width: 38px;
-    height: 38px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+width: 38px;
+height: 38px;
+flex-shrink: 0;
+border-radius: 10px;
+border: 1px solid var(--border-color);
+background: transparent;
+color: var(--text-secondary);
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s ease;
 }
 .tts-btn:hover { border-color: var(--grad-cyan); color: var(--text-primary); }
 .tts-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.score-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: -0.75rem;
+}
 
 .scores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center; }
 .score-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -791,24 +1025,1677 @@ textarea::-webkit-scrollbar-thumb:hover { background-color: rgba(136, 136, 255, 
 .shape-container canvas { width: 100% !important; height: 100% !important; }
 
 .score-percent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.25rem;
-    font-weight: 600;
-    pointer-events: none;
-    color: var(--text-primary);
-    text-shadow: 0 0 8px var(--bg-color), 0 0 10px rgba(0, 0, 0, 0.7);
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 1.25rem;
+font-weight: 600;
+pointer-events: none;
+color: var(--text-primary);
+text-shadow: 0 0 8px var(--bg-color), 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 .footer { text-align: center; margin-top: 3rem; color: var(--text-secondary); font-size: 0.9rem; }
 
-@media (max-width: 1200px) {
-    body { padding: 1rem; }
-    .main-grid { grid-template-columns: 1fr; }
-    .header h1 { font-size: 2rem; }
+.hidden {
+display: none !important;
 }
+
+.refine-container {
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+margin-top: 1rem;
+}
+
+#refine-input {
+background: rgba(0, 0, 0, 0.4);
+}
+
+.refine-actions {
+display: flex;
+gap: 0.75rem;
+justify-content: flex-end;
+}
+
+.refine-btn {
+padding: 0.5rem 1rem;
+border-radius: 8px;
+font-family: inherit;
+font-size: 0.9rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.refine-btn.cancel {
+background: transparent;
+border: 1px solid var(--border-color);
+color: var(--text-secondary);
+}
+.refine-btn.cancel:hover {
+background: rgba(255, 255, 255, 0.1);
+color: var(--text-primary);
+}
+
+.refine-btn.submit {
+background: var(--accent-color);
+border: 1px solid var(--accent-color);
+color: white;
+}
+.refine-btn.submit:hover {
+box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.char-count {
+position: absolute;
+font-size: 0.8rem;
+color: var(--text-secondary);
+right: 8px;
+pointer-events: none;
+background: rgba(18, 16, 45, 0.6);
+padding: 2px 5px;
+border-radius: 4px;
+}
+
+.char-count.over-limit {
+color: var(--error-color);
+font-weight: 600;
+}
+
+.video-section {
+margin-top: 1rem;
+border-top: 1px solid var(--border-color);
+padding-top: 1.25rem;
+}
+
+.generate-video-btn {
+width: 100%;
+padding: 0.8rem;
+border-radius: 8px;
+background: var(--accent-color);
+border: none;
+color: white;
+font-family: inherit;
+font-size: 1rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.2s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+}
+.generate-video-btn:hover {
+box-shadow: 0 0 15px var(--accent-glow);
+transform: translateY(-2px);
+}
+.generate-video-btn:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+
+.video-player-container {
+margin-top: 1rem;
+width: 100%;
+aspect-ratio: 9 / 16;
+background: #000;
+border-radius: 8px;
+overflow: hidden;
+}
+
+#video-player {
+width: 100%;
+height: 100%;
+}
+
+/* --- Global Scrollbar Styles --- */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--bg-color); }
+::-webkit-scrollbar-thumb { background-color: var(--accent-color); border-radius: 6px; border: 3px solid var(--bg-color); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background-color: #8282ff; }
+html { scrollbar-width: thin; scrollbar-color: var(--accent-color) var(--bg-color); }
+
+/* --- RESPONSIVE STYLES FOR MOBILE --- */
+@media (max-width: 1200px) {
+.main-grid {
+grid-template-columns: 1fr;
+}
+}
+
+@media (max-width: 768px) {
+body {
+padding: 1rem;
+}
+.header {
+margin-bottom: 2rem;
+}
+.header h1, .loader-title {
+font-size: 1.8rem;
+}
+.glass-card {
+padding: 1.5rem;
+}
+.tone-content-grid {
+grid-template-columns: 1fr;
+grid-template-areas:
+"graphic"
+"options"
+"toggles";
+}
+.tone-graphic-container {
+margin: 0 auto 1rem;
+}
+}
+```
+
+|-- temp_audio.mp3
+```
+                                                                                                                                                                                             & VCBĿX!b1,?
+Oӎ`
+nwvM; B "c#Nɦbxc y;͈0dɓ'{d@\avzwdA b	4w~h|@PH$gj0SERjE;'@  := DC(yJDt߽OXϺ?fgfgv!/ \ko{";Bl@9;__=\n
+ۗNǷbT `D&}
+(\aeaUtEM\N'U9-*tS=@cØp!2P̽;ҍyx|z
+LXm,2` ޘUfwg&TDT<7C7W21N800QX\D
+E];$7/ͽFجV`b 0^g|De<K:I
+'dyb|29hb,q٘L	5KkxD?ߙ3I%Rg +*j ޘe4 Ffg``C292e
+ZjPeAe"	X*4g̲K[C(~??&[P*C+0t1%g8Ј
+SM,+uibբSoG=q4q'>01]j^0&(5 e/PYHKP.* 9`:sRl"F5^	vauq@p| aU_-$bv5&VFead0?0b݇u{%	ϓ(Kk0٠SFc\%^:ImS2"r_X۵PT4'Cf'b͉OHƊt+a o@g`,y'q 5<
+W`g8(sdYEHn<Χ;xkח5mdGg plk
+bMu{?j}8DCǐa)X{ߨiYgZ2L0@㉅@E2܋00$b55NJ*,
+t ؘj'LM|7E$C &b!/uFAkUޕ[;j.[n(<
+$~}Zg*u23iUjˬZfgkV9evWb
+
+bPTDxtlaB
+aͶ,(FRqP3&j2óW{*.@ ޒ=bZ0)X
+*T'3HC4]pۙowwB+:i2jV){g'%iT3dy*7J
+@{Z
+	XDjԥzeLE*(Z{Z#sX9悁3%1@)Yť݃!.@`AbQ%%k
+4 ц}坼-ͷfoԮw!ԅ CWh%M"Z]GƅW4ڿS[W4&`[+N98>u~\bRBHԾsQn5Tz*ދ./XT3Ll&p}f!i9=ɶB><5C&NB+2P !,B}}M kb*Qf!؄ɖOc!L,̽kC# =hzABa~Dӂӊ2;le؎@0]:lo
+t[B?Ja\QAC	a1q,̎I#/)q"RxyF9:h {ńTGu 
+h*<=E	-Jލ8q
+4(/oZEvkYaB9Ĥ;H
+${<dI1Ra=,Q	y|qG_HX`'
+έiAuMB#]?0tM뢂, &}g`*5p,\:t c_[Ĭ#2H2[&̱ Hb^&!OyMs!>7	No_Ks
+.6`kCR:YqDju&*'^71jj<Jje9G6ƞgag.<ꑣlWAJ.hTⷘy)P(q10<#d 撔M{!-d,h4iD_ʋQNXԫKDͤYzOF?ߊ*VWq+Ҳ!L	HHm﫨ӪoVֵ1׺M:\ ꢆ^(U'0hȌnSiDtK!'K$3b}mjZ:'L
+h ܎a}[{s_zoӉqӅ "GF_FtoΧS#(!$)C΄`!NUA.fO(0aŹi]) j#*8! e.jc"̐ݹ _O&
+x RDԟt+QMf&Q^!ÔXtt4tєȐ49P*ތIE;vCL̗gRmfC&*&% Tm`!Dh$ PhjAHAk
+eu>
+]\e!e¡h`Чg); At**8ӅO=*3){1!xiX瘌DYs+Ӕڳ=-K1MB觱BXAAJJic>CO˥-eǷZ+UKipɫg\Kt$T:5u)K N(YO8+	[ՕaJJCO$hY똁,IU5Ǣpˠ UEC;Ijԭ5[ڗD3jٍ?ne8r߅9jfer|T,D:|	lnˡ3%2'TYda]Ă){r 暽H7ߪ]nn0q?Z2@?a/-22c
+2H{7 AD;r"RavB|Y!vK{_w|S[oWimܢ{gwzΙPyQhh{F+gXk7_sY8g4U{ď% :+S[QАUk1x
+a1t ^	
+"^4*(ͤѵ˳+,u_HI\PΥ_S'*LUK8eT␩!@2h	NBP\&̊D*
+kHf>kUg*1e';䠨*<t;:j	!"`RaĪ'qp |?j4aa) @
+Op*F*}Ҳ37$n'cP.
+
+ 衢B			*Mb1TX^gE4Mƾvg:׳G_~fΠń2}z^\û!(i  ]\@J@RTL!*Ŀ'D ̕ Ea7"}C.DJ|PH3Dg}<*0چ=^͹nl?JV ANy(7puJݕMiޑ~9?~
+rR2qs3l;uWqͶw]]C!^6oXfL@Q(A̓,qR+!?F"Z	;*%D R'MkiZcqJZυua! 
+Y60 %ù	$f⊋edB,;?
+qVʰI㟝lcd
+A@ dD*,)2
+=dSrզnTw3/aK&'rjKQK$5a,2< FâyisR8*<5:zj'Zŧ@
+p7YcgDgm
+ r/Ͼȴr%.2MSǆ7"LQ/4:6}3sLF*u$TNdN{abkvVSơ0`ḎfWw-,<Y0-߷
+5᥼TFP9 XX~M/N9jiSoTvfyj)8o
+*`a4Әo:-ߌ^D 7b[`
+ ,Ȑ0 Рl.i^w%7\[.LQ,JW۞έMK+v)vR~UeO:L w"yA5$`
+W(b*=$/ۿkIs9~3E13*r~0
+Vwĩ~'-C9Y%cq`>KԊ֋*k߽O}BN2{诣ָnqf8zf2TH`3!FjS;I1g55+2%b2<a?2x\<'J}\n9.c00D0.Tj1
+RzcܖBY'R^Reı)'=鞰1$]
+|VEb7B!0ǫlO6[$y<ژ=>aطef3&UٚѯBlm~n$*Js=3]qzrG{)` mXp(bPȎ*')ҧT%t9J/Bͪ/XLٖn*OsnU.=lQmzӽJo|ONl۲>zϙiKsf 8ua0Y]4`V;x٨T"0b ҽغ 1=.mXzBvOB:hQN|IWĪED0%*S$&kvl,!CHTDDIbj$0DԼq
+qkm"޲+tMJMJS1gnKr1͌ctsO{O
+;2ਂq$]_ qkv sL*C 
+WpLYU,ݝrY7io\}ER9R*H
+v5mmfL~ W`K_QݫVni}Ud1ц+H$arwvRZy_v;Ag)0@8$T> *bC*eAEf V2@8`b>0ZȌ `,D 
+ɳH+tNd6})~͸ZJ;vI,gU,&F!Ew{-Y:6"0n֎NRLۯ߸4qcPh9$DC5L҆c:ãSGȜMRyU«}U_a	>LN*#&Mf`}!̓ 'r NR+	Ψ%mRaV}zHj?lNfQ6_n%V?I#88玈0Ps(Daq	˘5BdKG1L+ i$P)hZ 嚐ڰ"#r UrRF`Ԥ̍ȘbWmi?ƴ4'y ޘEb-ȟʻŻUDf*Y![*ڏ^?~ByQXxujֱoyq{EԵݿRAGQXX<lpH:ZlJ1qQ3l4[~iY-~Vx+]OeY/_Yf?2YƳqoi&,V/傭I%a ޞ!raK6˦N-
+2W+-<ٕYX1 OG⢧zwLuI{R ,+*RHX#=
+&@TBzՃxoa#;kmq6zP3\Ұ{:bW2vm*Veptxf% HFQ[wTF#uMA"q*n`)J3D(z=j
+6'wL(ubO`#\g:3Ň
+/kw	ay,hե&4msă'l O_Qd&Cwӌ} :3̚f&(
+Kǀ2:ձ<Jܞ]o;9^+藿{f'SpesgiJB@  J誟QN#l* Y8TD\h\"_lpVTĖ$[p ^SCCcSB}H#Ar`2Smguӂԁc; %R.:d`_bos}>qRֽd6DMUwoJ7{	,Xts8u!\[[8qjK"ƚ%hpŊ+Wij8 ($(:&< ķ$p JuB)deylZ"'6U	!9D
++bDC9p><;(v./r
+..E,= q֞4s;xIw2"&e)G :2~pS:5|RJr+3w\l޳4!Ni0(C Pݥ|!8.o
+&ey|zv 5<nr7fUV]o iAowĚN2Ԫf",NS>MFP
+ZgZ@[xݚ	KfeFeOj2kđL
+ kLIApۊ.u,X;ː*yEB.kN: {*6BֻƭDuK&)zN'dY=m2eEJP^\Ksgi]R[v4d=l)RPyI[ܴ\*\<G=`<<P'#0:3kޭr\.]ArO5-GzU7vށ糅ܭ=_=42 (|<CS
+6s$M}<V`*eV:Ć6{
+v3͔,iCOBVUy< NqVykh8]j/g#;).(7IG;Cnf+ ̿^"2G\7dg.: ^ܘgt_Y5/ձ*)^3X`Ŝ&tK,BJceB!,QBF02g+1Nez&,Eί1Ve%35:`v
+j1?Drtr*d: XLLLO3fgњ^z*"d˪#&UiNDD d2cp.4,n?$X 8?Z=BʉeRrpà(Th,!qll*-,84'~*g0IN^
+^Vy&$2 RݹonoJN+M7sG"ʆqPQ,S42DdR`2I3
+			fRIʲ:E2 HD8U8%N<؈H^ڹB7%|QZJ"Mh) sc@'eUp5Ϊtt8}bT7&ڠ P8MM;zh4Nx^fyX^JA5j+Be0XV*ehbM(Z:fxRR'U*++U,S7@NQT`S
+8.Ӑ	R"oܢkrvefA!O& cO:c즏ʕC Xt2NM5K,^<y=9AR< N
+BZ䪭܃'XD>"y"mV=F=fcDwͻ{.m[SawV17#dn-YScn5߽:C<$q@;VTi%b 
+2;;_3ib\kL.ylsrEjcێ D7Lu<Ń
+d**h)ַ+
+wp!ee0XVͪwP|lU/Jg3&M4i/[MAg-0Ʊć'" R0pI
+^
+?]Aj g\f($VitδHّAZ}3?0,9cmMR+5CJ!5wIg
+|Ƌ&(2Qb<znrm\%]֒Y2DxEĝ' RUHV@]$!~ tP&4Μ0H
+a?OF!,oZWyف7y
+!:1TigB0792]~?kߵ9߿+n;tLͪ7<<HI^\8ekURCFL
+NPı'cjt м`Dc@,7ɛc}1%u[O*؎#Y)x
+ʱ"EU&V2g%x>y,nVqD<zN/Ѭ&w_M鯻߫i}2"PD!4m	:]|"ѪcILrZ1(<v
+ Aw It|(' R
+.'΀ AL8賋56/7jRjSfi,zoܾ✟`eMVYo
+oWUxK'jHE,Iӌ(q!Q95G34]KT4勍
+Ʀ0S>b
+۱`!^U@Q?H"Pj" S( D2
+-{ހ K\T 8c *ؒ,.xGŶք'^ZXŔXAp_RuP(վGW"#2U
+,ްJ 00 s4)P:
+قـ.Tr 85N8.¿N%ۢt ʼ1YNB&]\1N9lÑ[٤)ŧ$AF5`ϒvkm/yUiirvw;ᐰ:4ѳ
+4֥
+Zh:+(i"T{ IA&\%``Pam."`@Fa@"0	!2SAYH]/y< HSذMd[[э|r`rqrh,kG,&G
+ 
+:@rvҎpu!$#Ww~&ty+]$X}	}$!gNt0(h.GCf:ib0`黑J
+-!
+c1Xp
+WF-< Ƽrn]R!)K  LuHPA+i*-ᨉ|xao;h̲2靉c(nn{XڿAaI1ez0`yT"
+c+ٟιa_ʹv"UzYVǞT@E}8vX^:jȽ/BF2P X9x=7Xgg8p'/F;Cq|ǗSy/2KǪIcUǘ@@o @0:hTb0,t
+aM&e
+M@` cJP
+&d.bh%:^0`<atSÏ|E2\ 
+^|M"=V.)^7Iv3'kǓ?X%ȝߢٵC3vLokֶݕfyڴOO-}b7N:w[0S07lrU6EVu7VXz:}aRJ*GUtޘ:(o.qF	*+x +H&݆KtiիTlJJCͩV	HٖQ\O B،%0l/)D	&ߵ5 pSO!֤fCIG>U-f#PFfLΝAb	H
+SLcXR=_dI!)&*ld	".
+x *2lT\rWUT2B9]D#:PC0qYt9{V,_~W᯽~&yfs2Ç7;h2cb$ŊA ƢƅI!)x<:ɏݵʖƜrJ@H$Tqc*	CQ-dx ܸ{<KHswاCK!2CQBY߱{op[;?jI^8_Gr")x)bO8d$'abjX|(7!&()RAK('*Ls܅[35p`0	d4T4*x 
+S[no-PɹQqg+}52Mݾj zHvh`
+l+J,2k]&NU9" %u3s'UڿUH]6+QPEHcâg 2B⊉U 0v |
+#a;C󵕋X"%,x 
+a
+Ϟ.T:R檭rk$cyTdIw+	ݪ|MO[4% A8(#J9t;3ݍܥ!DV)G*G]P&r`AK&&. jCȱ#A >_*㴸a\WZ
+7_*pqhQ
+B@%	l ޔSxz,tL^Fo'74'+6g13^浴jwN	oWz
+JhI	c+jLрƿ,diJƉ7d >k~ 
+RYq*MD@.lA(^?K)(Q
+2k̬;|aW?M'})s^'<\0m^j6v6c;hTY?_/E2:9H%֑Nݩ~+חX+k痈oe]CЅVbƦ^FrL.h(.kY{"!;怳,1yvQts_a0[ٵ<3@8͑	Ht.` mV-%vrC:P |OJ2  y$Y^nH@@C_0IFd ͗Oǻ=-fsIkKӳwe
+3 f}yf.3ֿ<-׻s.<mS|ekRʲnKդ+KQk͝?b֢5-x >w6_U-cC\:ܳf>#^1g	G;49tX$(JV\[j-
+5V#Մa1PݫESQ[#<c>i}}9f`VkFic8{SK *zՆ.y0(D q'9x ͑_J3ʤ<Ͻ=j޳GoW2flT7dnY1#$rF1uo;y|O|_74_cbs}$j
+]er&ȬCIZ2: ERǀ9\J[8	>p5,i4CG:.e'*'l jΡZŷbǷnQ4^Wd+:㟻2N3	4ޏ[B_ǪL0\qa=5T4cӢrќ]gь.+SAC=E5ia\Mo_{x(d?&{ހ ݅B\Nxw*;e)\c[RFͺr 	SM4&MjuQXv.jjƝyTgUWkAiJ&;@ThGM "^H/fXFMT>,|8ֵ_$֮bIHnm{_y3\X$Cp y`iVf2ͷ_yoN<8$07B&\S (P(h't訙Qp͠InbjQ*hu`|&)o*;ܳb`d
+|.נlڝmEdz&h FP? BL rL3
+?gJb[#OAC ۙ!+޽e?R햎&|6=-k11gE7MRxj:}dJS7ϧ6iﲫfU8tj֮9د:$Q p`	Ē%#l J>} @4T`l IyK
+zP=$rwNrs",|<k0o-{*scǺ CCp:u+4{^#+،(F1"D(,5tՌM$Tagbİ'p  b(y-"NX@Dc
+rltL1qШʦcnb6 qp91P{:PAmގ;$΍%G+-iD֜ZLN@*R:A:N	
+/fP(da
+=p4&!Z& J?ke!)jmJ9
+e_$Y~rq5.
+1L"8TC+:+[TCDX:9_Mt9 () q7,+y3zk:
+MM
+% H@cRH#A  Y@@cP%yr $Ⱥ+Eܙr:\I/ Y<&Cr 
+a,RU4sj,%jF%rܾjSV~e4sa{Ʈ3[7芶ÎAaaM	Z,ntqX!deR.28&ʆuR TQxpDXP 5S( Ztyӟe*X,!,H.h 
+u<OF }6KVW:zzr= %k<xuMR3rjC6w_޶|_DvRD
+G @5te`CBwO%
+8(Mih` :`"F,@B/ܸRz~#U[Qq5~	kL,` Dӓ_U7,v9YYj9rKe׹-r*$^\5Ѷci3moDXLXx8XB)")AtL
+AUL aqTw<@H$`L BAdΖЗNJ$8d.\ j
+'VmK0,A߹-QvqޝWUzڒpQ,vFT?gʻYzP
+tw2Xy
+$1V4tJ
+#Ɇ	~H	 Y1 t !@uJIفF,d ݊BpMs˥ޟo_C2+gxlYT͌_{1֛"щ1[D`y_wF#; _?/-ÅGHD!(PPG 0x@C&
+}K*X!Y =D" 
+'4DNUa2K` 8t	؆<I*m5cbesS:rڂ2eac@GEB":Bn@j (IJ̤vdNߗK1zF˦ݠt	Nu3ؿorGY~iLB U`93k>8o}g>XlqQde.;5UF:\ ^ͩg=)X!<Ovtc4l6K\2!Ըmls2MosN8RW~R,`x&e ÐEb`A3Y;S~E^]Yc߆?9}vҖ2ax@lƜY;Lq$bInTln>x4"jA:h ^W.Örn35*暼Bܒ3G|woUH344M|AQl034Mb/{hƇw}fJ0s],/b?,&<,OGIFgC|ٗ038ΜHOUޟE-a{g<#{BHIQ0P% + rI8z1=-D
+)]bj~#XQ!
+vC|v7\#s$Ұ6)Q
+~NPsyy־JdkN9kyfB2#E!v4Rb2j9!e$9x̄l/Ph0ȈH ,XU`'T* Yd
+g+-dN}f
+>7~?Mzլv$J:N=KXPU6_öq)y"+@Â!M pU:F_-/kկ۩*GURE̅MJcd4̕pME9fz{jJ[i 43o_kk.) ܚk:=0܇
+UKqY^pj39-	~"6p|mreH6UjtI-W-!㎚Wi#ƎeB\:`M[pp`%C XpxnNu8Mw+mABm9WY$.Q@ ȫ9%+z P &VH}lnb$&D$sM{C-B?TuL
+';NzujvHX"M5ҭ#
+ASLz;J
+}Ht8	Tm(pJ"Ѕ4%Iu9M4BBhP)hƣ%>?l۬W%Jd LOjs~cG9Yaѳ	kuB<(BKVn8dWC--5qnPs=Oj[63III<j]xn0K.M+3ީO~ba^ʚfJih]t$nc|aגsD\:t @1p$H4Bqs\̹du#ASX[vҽt'Hc!vg܊ʹ2k
+MΊsaȨ{յWWƚNtTsLqC>!&_xJ]C7f_>f* ޽|,jAV18\FeTIӲlH\Yįg&	j
+jľ7dͦU:fRj8o!W;Ź<xseַ&Mj׼ڵKhA٦T40ij}=*E{Mf	 &a
+Yʿq\r?) ޹سwM IÒ&y7F INm }^V'(9*nUa''*͡[PXf߳bb=n{wRYt{/kZ
+}bb;1I"U=7s^+wm6.	J!4
+qdw]JP'(&cr ʼLAro
+fQ*l>W/_SuPжT` QiTQPD
+cRk_Y
+?VYJotFaYPPY~BHoAG6wqSph@C~BF=@`O6S<`rDvkSqA(c 
+ݮ;{%YE⍁{D(SjsuY]sc\Z)TM1l2~[0ٌMG8|*6EΑ2l)m00$S!	08ʆ8rqfJݙhr<Qg(mm" tĺTצOkR%| 昔8HOAW}|O!TW潵&:x$nc30m偳+ qfOaڲJzu 
+v@(FM~
+1)lwL")r:̇ նo֘-kqݚNZ49ֵ;}[n'h 
+	vFFY}noiRE$bUQE 3t JϘ#
+L8KL~jP\x2(pSXj8!\k̪CX{G{)īr)W3޷{sD6Xa"n֒VTā'h 
+s_TA
+b=JDAҪULy4J ~O
+xjukTQlR(:݈]i[َ˦Cmjn==\7SY[;5eպyַ	+++Q
++XQ;:Ni@lė&kl [		*ed 0: |p E0-Xp!դN!yc\3@_]8u#["wr:?ϛۙJXß;'ԻOkwJH^:(@ݝ^O}iU9Y  %pIca*%6UwR6*İ&t mszaK<'ipCa 9Ok)0$s3/yͧyL]0h`$w{\ZZ铁Pyq` .Ml#O?"v'cX(HAA 1L860CS_3`RQ@) y$Y ֖(TH1`F_bWVvUWe:0(]&VeL:aPʉ DE@$2*Ψir
+5ȯٷ7iƪ4R'*UC wj9hٱAA%!_b$,2qS Y|X.@jn-zx ν~â\L }0EZSc#Kr~]sբqz7Ys 4ƛrCQCOJyI5_fYCГl?sr҄ucJ^FHqEJ '$|(P1PO2\RbC
+*[&| νI])ET~6q;ټ+,9e
+76br/]##%,Ĩy_!Z8iv1cbb^lJX3.P\zѩ=B@>WGI(D,9o+ GHSqIB4Qe/z.{Rx ԼZq:˓Q-XsWqv)Rţl!ʚ1~[
+嘜o#fg iKT`F8
+s_krQutr8{yʧQ٨g.i}5*'s4&ߙL<'unfP#!JT_-| 5-_FUMbxLezeV~9d:lY޷?ܫKwVS6h( @j{
+TubװPzdBj8ʇ>bEQJW]PAlu+LL"h1jSU˂Ө1Z薌0p!ʅ:[_&Ht/x JuNō6]be?C3m-ZꇥKf/w{*/ozVbpŋsk}ץ+=-煃ӔվOݮ`)T8N5.Xl
+ϋ4(fOR,RTy'kJGUXʃZ0!r(i
+e.t MP	0rᘵDoSʻD2Hu?4_ὦdf)͗Sַ3x' YRUU,sOOJU\n߿ږ2X0Juaubĥ@w*(M5$ NnƑ8$e&|iFu#7\**[p +_#]_77l>|.$H[:-ִsv(@5]M*oVD_U/s1Qwͥ?3O|ܞ37?q2OUt4ѨUI`2ye&B QIJ1җynXd*DsQa4E1PPbJH](#t NgYC$lx ԗaO'SI!Õ>0A\]ZVwq4$,oOKoY[3Mm>ĹZC.~+&evUH2i_f3b[	%c
+<?>Z%~΋;NiI<2h3ms(C>(!|?:l ^TEc\\cف!3J"Dkݺb{3B%6"x943WĠwwֱ[}&M<gndַ#>gK`ƊPp..iUD<q
+BBS)3>+(J8ɡ&=7'̧<GĞ8: Hܬ{R \X=ǭ1¼q/暍Rh&(O{D)%/$3
+(Z\!dQGo
+R/6ﭜ 3k;ͮr+(oyzE0rb㎏EZ`&Ǣ"*JKl
+Kຠ+I}2R~(n.: XcBI8d\%"-M6SK'^b9ɲC¦,.<U̊[jgOwрL o^Sٽu@DԈʧı$OµIK<^1^EG<pPZ7R/ |h& X^Z̉_ds+YÒ|@zZ^Ӝ/uZ݌TP!m7C%9,f$_xSV\sG:^vXJ,2Z)8h'*^×Ngnisr9Z&Y(Ӵx)/1gqꅇvQːX|'iĀ($ ݪ"]?Nm]znW>zVCڭJZͽ)x9&˙lYhj
+U;0$)>rY#սaJ1ZI$#dA&vj˶Z7a:D:%UH'sdթƗ-Ē&
+ {mZ:od'INtR=i<c&+j,	H䪨
+FLȵkH*P/XЄJDp	q2zbGYmxՋ)
+%U6epzإ߷H^IXgKc%ylth`d005PȂĩ(#\MH cہpvS±vlBS,Áw3Bx0`Sp<3e7?_՜㋬ V:k׵(ɝ
+" S@`Ήdԧ]O&Ɓ1GpƌgIZb͌YX\;3t"F`ĻG*<%/5u|_;{NیW.\Mbr^TiaxsWu}L+~ǿjyc7f9oYWep;/%Vm79~):
+aI:CԲab,#0zٟ[G帊Cnqm]okKN:
+xNX.LIco.XƸPI%8\OZcD=^FM7)|(/i湄?U9l.ZFCA$xlDH[*k/AJ<ݦm3bzoxf$<ZK^>٦4{x6:<%n|F8i@xLi)*|h h@$7^ 乎iі $ER-&bTKD"|uN>Re##bX^>ȩ5-jRt&K^-@LȼRMh_$[/IVVm0dˇgyX&MF5` prpd**:l  Bxfa1<" uґ'a#M"Hd4e/)ױnߺ^v-%=eܻr4{hYnKWeEr;]ucO:0XAԒ7Ch4	U
+]P
+bi"AAy#(` DݥaaB,	1(2}T9i-3/yKo~~v3w
+e9w{بiW bYonGSg!nM}3T_L*[N pc@ иDDfb8 	Q`@ef+e5'X 1qlS8.kWf<RO?ƫM[T'Ʊ_z[v8oƴ]9VQ)G{oVTr	cjGUC"YHɿ@NZ]]ɘPA7̟a4L ,ph)G,?QQF7U@'Bd׊.x.^[-J#an\ 挔2I	(<[wϑf3ds{:D4EǤNa_Ƥ6
+@C&FE3:pUXD=1fF0H<Ȗ%DyH&d#`>,is`I{!:6Ӗl_]R:*̲W{Ic3ֹ_{o&` ݛ^\?V!
+{̋ 7?E{aDqra	db 8!ESS8ԬRPAư@ Q@K !,۪Wp}JMhť̪uC3wMG{~[͢Ć%CX 3)RH՗rs.񀀙%ٌ!!0hMӈT!7lCq~Dr:D:F<#i祹QMfmTM[	dW\_;\!OE 2(fFWoWk)?db2yyB^Z"O29$DĤ%ÞP (?fi, Pxx"J"/9M֣w&-tߕx+:'.BgBFr{
+j,5Lz9:ѠMMH+=WB/ۧ["_UZrjWBB
+ LPO<
+QgL 3r` 'L 	5[yXpY0L!'2L+pjYAi^f,6B,	4hƽ,1+pn s 
++3z?RWBM+U:]rEE bq|aN
+m;΁FW  `
+D nXE ;OenWv(;L ĽS}
+C LCTUKj~'j|.O%ob#gq1'eC!GGaVW}u"`sJInmoQjJ ҩ么EBAqڄn`cX`	|  M;2rw2"|u0++D ,6ycQ\Щ* F)e^T%:Ryya]gA!uhU.oUiTTDv!NkV< #
+c2cc5.S
+f~Trf`!Dd RaZ'vec+KSǡݻ1T	u,< 
+=[jm94-GVjim5rR챽[x*w]؀=eQ$9ƒŖUYZhxgƲhnXjP;ӫynwaUAQ$*D9!q$Aa1yXSC.LJu5O9,822G$#d-0 i1i%_D"T,;,}jJbw[-D5hNZ|Q.0]wߏ޾f;]!:jsVު%;ڄ>ߑ
+;5
+Ȗ{6tlge
+WK @4ujKW*;m3g(Ji&É
+z-$ 4?
+ɇfđsxѱǅ]_ĖWTxwbt7 טJ6)1/kYII@K3B
+6#ݲc9g5vĪ6toBjU?Q.Қ0̠#,2RS$;gS½EQ%(YmM44=1LDX.,  O5 AAKY;yIǛmPǢ[I1drvҙkRpD%rN}zMMA1@PTrtLے
+z栫
+ 4䮭4@Ss쫍N GNӾV475+|(;%U/: L+TA:vPqܓ<]?Hv*xv[REK<$]Ljvd|x7:no KÜZ0ōKfq
+9mȔ;T|?5s9ŤMEUG1X%=E:HCҘ̷SeojW (%[daո*t2 A$[-2TQigd͘[뮕L4c *SȘ&34bkK$Jk2g5+DBe.0UZ*(aVL`ªR;ТTjrU*
+6*+W+mZXCUubphϽ/Q:vÖ'U!,E',X,K{0h{ѬLP& Ɇ	,Qkh,Ғ(YyNb)GqcM褉LIi'GQ3&pT5<(3'Feފ`fHR$}0Q%č=yizŖbէ9'dcʻfktjO|.KQ$r#'UOQoAW2.ZX.|9 L0M\K}!ui#}AuD9Frr$XL2tlM<'!E:e{k;u~Vbt|lqTz˽z>TY8]iq&+ognrj,=Zk@C)4@HiBDH,
+"yuuٴD)_#ku*	 Lj7%chz
+C$pMjAgSJUr'IX5)
+.=-$)_T&sSdOZ]Y"oD*	&b(
+ :ۚBKCOqxj+αV[ef9(sqm5PBibzIL3%t
+X9U$
+
+D.9 Ld'ti$P`j,L#l 	ya L H4Mm@[[=L VDVG-4-x<ZƢ(wU'nZSI4՞Rܾe'@R*T)6p<
+dъghf-\! LCSfQye$<tW"YqD%>8	-G2X^oU%$R6ʪ2NMER2STjG)pQz"Su'FlH}OzH)$4Z
+)LO)jt&樶܄Z,%hg+ȜEg9V-t9 LC4u~$<t؄(
+rڮOBFu/HYO]d|^r:]<ҫYAO).ӻ{@ǗU#
+w
+**;I1vܪlNXw
+K		ѕD?*:TlܮGArJ/( LIDO}:akuvdZf%Jy
+jeg[D1e#֔,9bhK%>*=
+#ĥ&ej(fl6gIrU4]MXnLHWc3iMQmU])l_y+9oZrWݽs[M
+84l9 =%r'9Drwӓi"K+7!gKj(Xz"a;%`Lhdcc;y%*+C'ws=!(L_a̔Ð'S
+sccS'UA%u:jؘ`@CL&_-ߗ֌;_RpPFhHWFrmlZכ'L9 ن܊ƺ.@6oF(H#S6ln	Zk
+
+s 1礃α(+Y%ʃ5Є3=4Sl}g;L-4IGt$F._aTu;QC[.ɺK5lҼ9(9\TLAMxD6a,3
+wlCNӽ_B!
+IlR)%ŅBi.|9 LBB1c,HjJʪ_٘P33z37UR3uWU_ͨP]삂Q࠹
+/₂+
+7 dLAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU%z FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU:8@6q18Ñ07+2!Ap46c@2TCew0mWLAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU|8  UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU                                                                                                                                                                                             &  @WQrȥw.F/S;+{ J]܁HX1EopZywn]lkˢ{>8^ ",wy=3bGlr{ce{i8G>;"
+({4dWI٭K5b{1:{%0 ݏIL j!aP#2a@7MF6r/>YEiXJo	c@8ͻ+%=&.tB̎(DKO?Gߊc өR#ʮ=I~jwLo$g
+lcy2)}
+ɮtJZ{i !Nd508 ђݺH#=.PTasF}脞4aKc~,Ҩ٠VkH
+,8ƨ c[A(e[0\l%Q[[Pcԛ[
+<(.k'7AKG63 
+29 $$F3Uz[	r  U6>|L?=;3?b؂;cA
+A'1:| 1;]gte=C'_oъ0)|ƐXl`O^\1t,!ۚ膨	lBc\o``s
+``yIcdH CI3HX3ǌYUK> A˕	pyD%`<*gATfGWB*t* RUޯbFSȤg:ѷh޾F{R:rr
+9%6$|D2+"+9
+l!YTN)@!'%6@V#K.g<u3H
+(QoK۽%>eA>+<}GIa4/R/a'|Ae_sC@T0fl,sҤ R`v^hdj*i.܄dzI>Q:0AI:PO' Q4LacC^aZ:]H]YANS$|(A2B`i%KҥE9(|\EM!O]n'v%%ZLa(~6PofH'MLS'y]`mڶ', +\#532,8ʛ%pi)%K8tPDpk V3@\^nGL81dkgir[QԑVduL^oUN-;<Gʥ?9ܿYߋ߫Sxeږ?o:$ޖZƾsfX˕-S {ؽx)["Ub3'LxrhӬTDL9zuO)R.ymZ.zԭ`irj4wbo޲ܮ5:iufm6{%;zwkͳk5왦KxsW	G6*1+8K+O.-[ 1v%s\=7"}$#HeNLfzfQ7)R1*㣔*HSz:;s
+Ы2xB|(nqrV2Lݟ~9RZy_˳nDDͰvՠpIhudN>ZsV9 S(, ݴ+|ʫ沚2`ef#,""gNyhъJ{+M߆o3`e4ĚJs$`d$iaT~W/0z9	Qdli)4eY*:!9dbhH\.FYaXRܭByx
+$ƌ I "$Կ\\ģ2g_o7wu/(ȯSMjlsZZԟituƧi沵K1,ySN8Ck~AQ t K[5A
+UQPIqPQ<
+- @&KG7_R}'M޺Dse5$ Vlƒ =
+"E?P1Uèu"'H\唶tӵvgtMfq?У5
+na'7G,!pIX`"
+cx,@Bj'}h?{00g=Ga pyq 7$V=
+8A#%U' ZP7%MG͉PuA}7/,{dM%KdԵuWYh&Υ\FTx8: ƪZgcŦW:N`Ajg#mz&d hqb_ B$n_0E}[SV'"Pkg?>gv7k#: X<U.ֺz@&<{܏[
+av, dCfEG8y:z*f~`aQnQy)O:)O|9;E7+#3a7B1883Js^YL^+Q<h@^yO&[㜭=3^`j<E?>#:R\qb$c 0ď$B ظ5aCT"hb6c!a4=Աp9
+bf5Jq/xr&bzʑ:.▐MV;d9M%rbaՐ`pS{s희	 8#=ƛha"L\˂KmZI9	Cį&B ظ	QW[#hoVBeB2-nM]F
+6X^ȯ8Y(~#z6eŤm']:<,kRv37rcnXu
+k`dhq Y殷ŮK*5^=<-Kp.Qל8F@[r0Ԫk}ZqbA)f,b2!zI*ԫE,v%a ؘME8:ro߽BéԫRݧ^g"zxqy	k`&8Ǯ]i!5SgJ54a3CF!K֎fQed `Yw`I
+UBP5\NS#J9 "x"̠"XĽ[p1!ފ9&" ^]I_|svx@=jYP.uWq-ɤ!yds[
+țT" 
+2A+L
+dxH+N-SB~[R//<qtBM<\#<@2 %
+M&$6(ͻRY*q 
+ ƌ
+T|09x c(-M(A,ӕjI.t61$x/&]y[D/'Ϻԣaն3tqXykdeѝUxcBlqQ)P{*g-&Υӭts uLqeE3
+>
+qegdq'M\M,^<y_"	 / J݌P4:`HqF#Av[7p
+E
+|sO%˸IM7*nKbU3-RWi󙢦8H(AT1o+iΆ7XƹL!n2)GutSDqu"+(?i\qĺ,4
+ 
+aX`mqVȴjC1sj)*]fJڿQ<-]Mˊ:-.?~SPwZ[ǟϿB+A:\dY,48d7KͿתU{-BkVg_IQM[$I#'e:]']'SТfkJʬļ-p @ Z#A'*@0 HH@,TSՆv[Z\vzmlLЊ82*,s9ܱpmsYA67)Mk9lɑ$+dHdA4I{-^U[}__Z*oQE_]d)JAh9t_S$J&!RIķ/|d ݲ)&vr\fZ]Pgcs
+E	/FzmQ],K&CgAe[j` <*٘Td`ra5gxG\5uWq5}:e)oqR5g/ވbՆtj82;"R{A[T}T1bP!,/Ĭ(l  |hYps 	u杶!)i Ke.Wi_*i/_[*ךJ5"JTPbݮ\5|njQmKmJ[Rm:w5"M:)?ZGPHA!'gTkcˤ&CPpr$g]#ľE2p ݭGKp|%d]xp;Ndzt˯_n]n2<,Xa7tT^بUa 8<$->P`	jn5(J!FOXP=ŉ
+Bh
+:C=`WR,[[˞k6*t34Y/j нjTl`|+DB0t
+ڇ	Mܑ]a
+rR%uFZ
+U5Śl-;ܝ{uj9|{RYuUn5*봂P9`0`!wul
+|_&9RG"W;ԥ/ @<ɀ<$.|ZL-t Jݧ6˹ `WK*-!wEYcxk,M&R\ۛ+1)!EF	hxx|0~e(>E~UYa &o$D  DuL8Wb?ծv:^IvnZP-1+64H62l {N.au VCk*ȩHڄ܌C>ܻof($7A??,646iaMW,xQP&x"JiJ/ F%0]ҡO-w`(0У `TAat TH"-*x ܕ FM쐰8sX`-Kj6󙇊HbYׁp./K茈#[X-nn0^jZ5+i"b?MkY)ǵPqybB(LkR3Ē';0!%jA#Q pj\	Lh-Lz&fh 0K$?jZUbUM~ix_zZkyk
+3޵دe.]M)!eɔ$`ØR]M
+Fu[;;VК%ДoJQAT$
+XjX  0	SUK4S @N0 R M6I472xUg25%H _@,ZzöszkE*2j|Kvx>	Udlt4m_Pp."uzEQf7liJ.rL~eijB$ *ziu>)E65xpvǬab@eBEm9yĵDa\Q:dh XP<`>P.P="	â|h
+֒9!<x OؓS$"}	"NOe"-qPe9JS7;?^XqUEo66:@9o{u__aeR;9׻k
+cQF`%aM0HWj-c^x T6!\̛tM`BudA+=t.F0YZLQɉ=JF֡¡TJ**h6<`.1J$mp|,<fFFLl,Aб'rILStqwZq=+9{kjVkZZT%EGhfE-fF4$>Eb$| Ҙ?:6}GxlW:__XX1P@ND6LRIz8Sʅ_9A
+7ԶkA經Dkc"1# 8ZIWf Os /)R ƐA6*y|C=$eZm>7'x -zGuv#L>P,	^m_
+:A^x{x:1FubNȪZtokVmƲ+U9l%TΎEF1Lw=̧!}eO	`Lb8`D#lR(WY5NSV}܌)l`9.l#QG	Uԉ<K%| Yqxi|B6%yye"WW\'p5JoSع|ىo{ƵwtJg\k#>k9?wO3X)3+~bJBs
+͇pBm5P P0JDUQ)ȕfD08"bi&f 
+4.N?FviTac˗Sb-uʬ hpaTN&q`>owXORۘu%g!.2T)3ɰ
+Q7vwdEQt=Bkhv%&-MIWrSā' G7#J Dc	9eχ_^զbbwnQ]r>(;Q2yEF:mh:NYH46*!(
+q ôX54x$YK#'쟳߸4GLLS]#y_㶺xۏ>QE4ޞ;<lJ*ė%K d63^Gbؐ~(N˵W??{m{BBS)JN[2;s͸\,h:}<& T$.PC4F
+}SY69C7q:0̗C/s(
+wĴ'Cʄ s%ժ&Pbf%]9uZd/Ɠ2I tHttl:1xjAr,XTQC""A'CB<Κ}RP7_)j*"$X!**iYHa R pFHԑZNaQfQRE"$z| Ji6SPM!3HgPsHH`i	{B*"DL](VrciI:I3/2MD|7ꢳ-[ϭ̶~̻yqEU0!c4^f"LrpIPn9̢=.;Y
+ ̖%'h=,L LIA|&V`=7bŗZ*6iIB~s!fTZBhЌ>_{kjm}u:pcc9]cb<AH*^4˂ *> q(RH~wCΑo^ZR\:,L
+4[0X}76lYϭ>/(Z"0$ɛ3L;ݨr*N<
+XYGy9a|_" 6"ll&!+|Ǚ翟Դ=+20  DfENc9am~E=QRS.Qoga 'd}ԛ\qMT:T Ba*l_XcOo+,n?{J&W&%uin2;u'~}˞\2֜4z)&B)j),.^rjd'5_-yiT"Cibg2l=DƆe<^aYMHmWa{<#EO!#qfIHA.QGtZrX>Inh:$x `a<`G'QW+SSlULLGď+2zzg&'aš}]+b3E
+$hOjRľbOͷ\e-bF{4b=b
+7>*kX~fw?VS1ZS"I$P	FFQ}m,2$t 
+569r{U5rkY)תTAcbN)DrХb̬$R\z++JZTCPgٜקu#oӡ!b0fM7/w5v<KZZj:gqI6K@i>RsRlޑ3rkWy'60J
+L	J&<Q'3@ ц(,3&3R6b0R8AL(Sjbt
+(sS@u
+M(3Jd$'4J(*$J VH]7"t%D!px:$@ŶѹBVO_cu֝RܜSpsΜ$AOg0"aWF":a~,	k[#"g&s@ F4gI5#2f{ȉ oa^CnrԵȌC)*}sxGA
+@@Ô],O$YE ՟kUie `D6H7VSPyP+Jx^ 1!._]n^ٌ5ל_n~Ky\9(g>Y뵬_˹՗QI}ĀG:L ֞Ǡ(V4BX7I;GXJCygWnrDJp<߿cU9
+h: 1xp"ŏI;HsE#Xٵ>ܣNƇ0WLi[\4t/=QCQg!xZ "`)@n 0
+F(yx L
+&6qԩ d\
+C0	ta%ȭ>9QTM-ݳ?ڶquUXd;U#]״%
+vekw)ooMN;%C7y0չL/ Y0Q_wQd)^Ť13+ѨQ@,ǐ(%'Jt T 7@x\G" #qarMYlvHK0֣;efTCԴbE)z(KŘR!9F3?$wj޿ie%H1WEiP
+ &Dc@@iWWȀ:@a\|1@olh!
+,SB9';t ܩ4j'H2fלCs&xܠ'Lj2eW#	jcfPOQӚifVeCiL8tQY-e(zXGV@T1A1'   ,P0EpJTC$Pa@FPL2X"Ch7]eNMJ^VCO%Bx TCt/)Uc'Q&B
+LxiUnw>d&M1y`RA*nw}/[k
+%.A8k>Z YN0'X a[ÁNK(uzI!]f%DDI׽:Zo&\~w[ml& 
+RoɓФ)oG	qy
+D 8L(**9M9M&A҂t8F\ ߲ :PPJQL(Ԃ[]} i3ٝ4MJLd%ˇ-dZE(M5]))51gP Ą$ʄ qSB>2"01Q0)TL-s @
+(XM:t	-X ȦsegF	infn}-m|?|R_G+#piUƣD:HDuZt Э*Ĥ%d g
+ Pbs'vы	`+h!l<X=:g
+m%s3mRb]6*g ab4d
+
+
+S1*v |5bj]RW#a:prWDXpTaBOFo
+]K]*Ŀ$)D]X RwYWH$PqHә;f|USu°&3AD ?l R*ɀ$ZbFvPE~݇Ӊ: q S`4sX|&/.S=SIm7;@Q0UgV*]KLA_Sg5Ht:h 2i"fe厲9?XWm%Yc`V'urk
+"CΕ9}3aG:[g ֊GiNVSSVk]-aNI&i#l8v$MMMT66syJ-DջÒ<ǯs[[Pږ˜lr&X m|9$_qShPTs=N;bAP[8fj%.TΛ71zg0ɤ.(r>BVTJk"cAe3ژط]l8bk25jJAMgF`M0p(a3dUF.Kq2\̙VtXlč%P ֜i*%R.U5zd;0<`Fq T 0P0F`0d-Q&҄	_K<-粅{gZW:l!-ZٷmJJdR%Dws%uUNUa=×.pa Rj7.MW6lLrĩ&D Fa%f1c(tvh͠/@Rg&61&
+q@zf8QnMo)cLóv]
+I¤~	}cKx;?q7.Ihejߵv"ZƬڅ,r
+dq{<)%7%Ͽw4H2H ^ω7RƸ<U*#\eoQ*VBx	# @'ۜrog:<vIDHŕe~5wy17I>!+Fr`8i$WIԐ],t\Ǻmw!-@V,E{gUFs}JV+TpXcݕ<;j{sAP0D:h ܺ2Á,h-L,̔rݡjku
+]1"Ԩ%etܓyyk+C~wo?|sqv[|w
+Uw|SϚbmnNL֎[8HbɡBf(;!b@#HK+]d@@4yJvk\ץB&d ۶i֩Vq,Q}inG
+9(Cz^~tvD4yJ}Cc4{m^E44^!c
+40: \DTh(!8y$F N<}r_()leH%3ѹUkeӚSo7Y'nx N~kg0`|@1O>~:.4 XMels*qEG+O qjv8NH}2J<U4z04.cgovʂ}R^Σ~fZ7f+ճCC~r&m؊YwZK2ǋ172~ao&^ NX8G5顃xbh"zj77
+r`8
+SB`-7Yb*bP .A_:y}qb>bL;\!
+ʸw)C5-M![;Na*"1߫}cM69CSQv 2"ć'z ؘB0Ā R4rjB5F){O%Q
+rq,8JrN~8e,p&#rSBRvjW7ߖׯ<,m~Eaٚ*^;c̣J`5EY!&oO`C61O{^-=P;Ĝ&" X0"9,{d?:0&JV"{	0D)98j<15sb$`d2 Ֆ#йfHpz'(A0!3"D=LKl{5:n*d19cLN[/Al A097#tVCj1Ĵ(v YRy)d~%pnP0)iM٩E/R!g*hPٛ\jaAܵ1>5X#5ǋ=a`3Hou}tJZf:#gQBw.U&y75[SsGxB#?uVlzT"7 
+
+ &+ư   f"$*efAbQPRMƥ),t,+BHIRD]#DidLYHIPDDLbbeH*)2q55r}=%yqZ^V1Z!0"T
+0=?}?w̛Q4)i?cXX(1& 	{c29A!#NjH4>9:Ad47UHݳ>1J@
+edЫmxHp2߳)$#@0~~0A݅2-{ay]K˴q6D_4m/| *޽*\@J^#@.@BD@
+-"
+#I nS;Ⱥ.$4в1F`02aiRB*%^U;0еP+ǺJi#B<yV77t2}yMj9Q2֓jy;s0D 
+gGggp`dWEMZH;?'Dp~&Syڧ=@MfRkr
+G
+dE˸;4(F~`D)
+o'aZoYu)TÙ\CP*7_SP-'LVcETv56)ؠ/wČ7 7K|i%'(f;ּZۃl8۞ԯ/:s%FŽ-xvޭ|wDoS@MqӍ򓷻y~*92Bbj#	ClV9=Rҵ AN$[	CmJYqA*V.zӟds_$: zkz1jRjޝkݮ{ZaͮZm] D{E`\]ϣ,=һ5FSF6FqKˀJbsЈQ%N_&RU/eDʘCW/C'P2,<VKB
+{&Hq 4$6Zx*u"op4ā$ ҘTɬYVkYͽUzc) YC
+
+dInQ/@w,kXĝ;s2ťS7]scshz߬2JaN5"ca8(.("0<&ݤvuEъ{Ed߶RO J@qO]ġ'b ʽSs)Pp4`B IQak1M
+bLڶMm/Ǆo<1k|PָշZo־DB!,rk9uosO4ᲩjCH'*]3vM^wԠ
+/jT bĵ'2| h6&^Z<Qz:y'
+eUА{H[ɵ~سkg?! Twګ3IAscC<Y'w]dtI Xp0+}r
+w7fÕS7lNP${p m-_oȪ]gu/j\ZYsuGLE/'F8=m)%)\*;)c,Ed8<<Qp۠HY@8L3co	e/n_E}lN
+WiUō.J+l R[dNֵ[ދ/~~rtc9oXF#)F%oؕۘRSw%rYvQ
+9
+]7#LNDr;B/H5XDYÑ,=u/f\4f
+A%_ .R7}8?*Gr1Mn kDP	]]	!LK:p 0w*& 9i@Uah_5] Euwv],.Ee+#ľdVe\g>jd @ D̜WHH#f_]½~,glCnv8c۠_kV	ZmtqC: xw}Tw*dN`pVS
+ ٚqLu}Q)QB`5$Bnj [EiHXV
+:+2v/t:B1aWcN7wيLI#D5P7ln{ɡmBjo j3f/%: Rܫ<>EfgsᲖ9RO#EA&JX)=GB,$GPDB1P4+mTV,oTͤJ|2*T|bLR`,9 %3 Ph@#UT=UdkGd	zX433_թV&0T$Vj֢n{ֿjW~V0' BffkXX>;fUEEEChR#(,7YBaɼAY"A}а6eaRREM7(ZaE
+
+FB,p:ZSJ7$TUnDJk28vMZ-;ke$Ct@ɣj9oluGqw{D'L O^CjlL_}v[aIT;Kr		É-#3TI%nD׏*_oZ[7"V\<zT50.D2OL*lcCK}*i2&g8ym*.TeB3d##.>ڡA+sl{W'KDX0?rn'!	vZ{qMgv[C|vsٞ)vي&y1뽦rх>Y=MUӽjq1eXFH$:G& B	CK#aq,U ea'
+KۉޕxK䒪TlA:| YL󤽺|տ?+\iRZL:LÙSϸa0`lezͨkԿ^Da*aI׫AX%խ\qڛ{eܵoyv}=vs{ij])lo^P؅D%R q11'x Q.o)0Bβ5O)D	tـ>@'8\̯jG	Ѿ֫|wϧ#3Ϭn-ot-OWa]Q|m2! rB7<Mu-Dk`*7a]
+擰|*# ޒP
+zJ3׶_*]W.*CesrsLySp"J'_
+fgb$,8a?&Md.$9p
+ 1
+|)h1gFPfB$NQ0%n/ziu3N/U#7rM#	| 搘Vjpc`RV@|V. L4ۈ?6eF5?ԒDE+Z갿6TՏF`a v d዁,2Z]Ǿ3#oi`$y-6HfZAKZg_?zʚyEk\Ŭs?
+x)~5/s&h YmfKEjj܂S&kjt0
+<q (CpД0yhn.:o,1W\X{ŕY9esJ1ӷYÛoZx,_O8[ק勣oK!W6Uͫ"(Ђċ&d ܓ,b",b \"<5i8X&7 0r -<&.5)eCK7e*jb?a#]|_]kHc>uZ_1t1[]hDCFٔ:)d8uJ!e;% $H*Ģ&\ 2* q1 "`S)&" zpP#27&{
+S]Ǿ)q7c2up̷|4!1vp-f.q$EdN-<sdt'%3qB46&^uQEm*~U<C0% V̠c$YGi\ĺ'KH kc<\[*I¢D1Ht1HiXd(2KCqѝ)\E/##] qϐ122uGBA"`BuY `2F|DA:bⵉ?#
+ 5 U{@:	 ǅQa"6k9Z6rd92h {ݶtךm-ɋIˣ tՈ)+`즎~5T}9*
+WխQ.5(',51qbxNm̍BttRL*g2WoaB[iLjw
+1&EpnR$Q|b_%8[$v_ta)f|ݻv]U~ĝ/| qm_їmψqjqQxbYa1
+,X(ղYv<0-8^-;WƵ
+ѝ0d9BAZs*$㨗z_ڵpx(`+.|/rs61% E55>2,(6X0k|cLđ#1t ޔ#Dap(0`7{qomKt<">Wo(9<GaT.^&lnu@z8z+(0qI	';5d͖YkDǥ"^Aմם\(`\	MlB`H ףzAڳД;
+ķ(jt μoji
+2Ռͽoꎢ-+V "Ā	J+ic.=%v?Ƣ̩(@a{L.\@4838hX4bϰ`PCE`u`uy#*-ǒ.sV+snkHUoa͟H# ԸLFtuc^v844խ͑qQ"gWb*wA؀1*뉋aVr
+Us}_",9k
+diqF}	gTQFܓL@5y~,
+oU\@eׁߗ_RFР,x T #0r3+ޫoAwIxCZ~$Q`&cof[K'0rYzm޳u^00 > Krݧ!ЩY8?O0	H@XGca)~],"g.`r^ԤӮ-;l ϔ,"
+$)8zEFV.؇.TYK$wh4!CER'ndqn?ֱrT/USīK09䀏KYP:ͣ639HSQ D 4A0	l*gM6$#[;ӋϞ4pwД+rl м%P%*\J
+^їR.VL@HAelZNW{'^*Ē#Z}rՙik?9kKG˗Zٙ.xӤ{D]"PUggۭ L3u̀; 
+v1 *0H ¡`Tr%I-TryrTiyY ȜE+rX dXGf ''(F.Q8Dݣ&.C+n~53KjZAAhLjSYPZ풊Qe:5)~퍛(oK=ٙbJmI?ȼGk+j':* ϊL 0fۭ51vMVT;sZ9$\Ix"/
+0 S_K 
+6ܗ5jNdIdʏmJ^M`aΪcR6Ӻu3s]O-z>b[oo_g!{d)%o;-O1ӻN3($%j
+E38
+6
+P3:u@$)g `uk
+ڡEBW0RT91)4Z0K%\gƚcDʆB]^N:I"1iB"X>܌Y֢@( d#BفA *"4zx،@s/piM"ڱ`4``9pCe+=޹判o:idv7R],b E(0!O4:` OE5-?3I0O/w|v?LFtj"m>0B\eba+'zd-B3h53j^Q3shkͭU
+$z<9HfZf(Z$axWAPj rPtJvAi$T96	5al&@ YoiI5ÑUSTjm5+֡,
+K(
+[1j9إS[D"(S]:WʢA23Od^
+.^Hov/P8Cbi1ǊؿgkXJq/aU+-^ZhcJcGB@Sǋ%sB$hGfeă( Uj~۵C	}:8,**6'A**TC ܚ .rcPDmZ*IB_.^fvi),sS^3b&tFQsW5w[85D`Dy\xlPnj+YPQ9XZ/7nĕ*~x g4 lkFEBxѿƫ<%I@ki@#*&'*PzuVfgbF:6u.7-)[Qzgfr.,(
+B8Lwm֑Ә>u]cNزJ*pOPHJ}qg^5! 	b )4Z>|YĜ't UDH[LXCh0u:q( 	̴f>o]c8Lst2Ե(#]_:\n=
+V}kvW>Q1RƄÃq5R}B]
+կO?,SDP.ZУ&YN&ck
+A^ƟĲ&3vp 
+?䃀x8RVڞ6OXٮĩuhl
+6i5_[JVe1VDa!sĀ7_{MBG]VQn<YL.)`!`@a0iI~ 0 q iSYR̳'3zd 
+*5.eҘ%Rk\&
++APSDC 3JsaSaQ=A	]Rro_CJܟOP)*0(,0 $2?a2D1,[2L10x(1xa0P&L CR} DJd9B+a<keI=xJs%H Ѡݪ؏q˯JŉI"M^Y
+A|rz~ƪS@)ϥ
+3>|6뿏ϻOǏ> J~.$`@_0 cy	Pi!,4LAcZ]$
+FSIBα{EިO샟d/J, ̽,fq)|DOI20ҮΓ*	t\1)$ʋ^emt.G+.T}iinYa!r2:a{,3c͎~}Ϩ@p@[H1kat ôژ$CO 5rݣr~8k	D12Xe~-0 ݿ7ۡw0 w&/J~T3$fQx`.ŉIM+M+¤] 
+!
+fb[$8K(]~7jw\F#a~<aĳ}FjįOsR]˔ܢ,߻nW*W,
+74FL:T 04KF?>~OnRŌ3¾y瞫-0MI1psxL,W(`U9]wZƵ¾p3ab53Ǧ$!rjkP,튂uChQ.~8eX I%.ĂpXpgj%B
+ĊFT:` {MfުX&S}͉jsTaD'!)MS@T{;8aKTrOXj-Z5n[~yl3z]/ݜ+WRbiy[{wjEda+t3窦IO*VhJSCVecL#%n` {YF U\|~'՞ILa&|2&9Zs^lh$	AKֳg4{2LnWv׮ܺէ嚮=?YqГt{"PfZ%hۑ{۳-j|JLf$λҌ5!GD$4^fFh0anvnTeC}XNW,-PKY>$< Ҙ'b " TzhUrlgY15e)F+5:CPhkN:RK.u@ft#Q{vVJuOEU=BI|rzi{OmdJ5@<ٗ/?!rVYSW/d\cj]f`ҹ[j
+UPI:
+ 
+ԭa]'z$ HImKt4'K#JH!wIfJd	-?ciaZ2E5cqM$FKEZ1BAU2E	,V.Ii/lfvMز.tAT^fcDlF6]bEVg8:f[x
+S
+s&t  	22
+ZG3rGG=Wdp%3~AhЏi``w%:}5o:Eذ-Jy5b$1xOJ[Q'
+CK#3r(gfܥrW0֬R!9nĈ8ź8jQC1f͘ȃ4kh1Č% F f-Xye+ڣjg.cr컕4;^b	 9Tt RJJ"Hk}1\L	H*ȣK\g8΢3%vE
+H14vALOM+6WT#ps13#
+q+{m 0LbPP`e 8+xĨ',	 ɆֻF U!DZMҋ5rܫcQ@,??6W5U@l/\3ϷmܵeL5m9֗jF/[ZwegfoWN鼝zyZGXIIZS}[*	<4Eu2)浇uj]gsucf`Gbԕ"	ľ'1 ь݆?.:&%дmk$γm9-OҀKa\bX9--Gfm/e	[mLmwDبyjEF䦻hnbc7݋،<U368LAME
+A@_/-$SlH,Aljkb}'9Vn(W'! ٌ݊CI
+n7ے8eJF  lA]%Er\8 Q^HJ4Uh]R)3`}fNufHܞ ~+jJih&)t=O-s2ϾR&Uy7iE:vO5fI.˩LHE1ѬN%; ȅFAcBR{pYڶ
+|%r<P)Rnh\582K`{w*Y)ZG۴%SjT׵m䉋,h-)d7=B{VU'e|nNa&7~1Է1ȱCyzz˃tCH]&uHc9@1L9 RDZX~^UL17DoJHRЌO#S:JE2ӉQ;>'0`t= GȦ[tЙT386Cϔcs.9Gt%ə{t?wQJ)ezkI[ ;e,|DI4K*0MF(bfXgTe \K}U+9 ٌ5$P#E-`ԨTrtա{瞰y'6Y#GL2D(#TobU=D(J \NЛdBx5JyΘYh)f;+@u'1kO6zjKCNm*-h]m$$PB3>i-1 L1r+7<&<}S4H)pq5"-=lSۃ>*Q&R2n3/ds8yIK@{$|n^flJ=x+lnRxt#)
+7ّ-lZ.E#OHIk陎-Kz<Y,YL0+xSMZBBf"is2-49 L-(U&!j1dleXD;e'8骃\棈R3"bsD@234 I\zIev_.D&b=osMMmSS癜mMG.%(QJMa.5v9{?
+)᙭*k<iHf`y}ziy]â8(K3q`1|) R:6
+8fG"4FUL0晊30NH	
+3bJ I>)@b)4)WofZHɮƊ*&ى#o3ɢEa(NѣvnQ4p|SrF`c"	 BN2uQC)5<9 Rܠ*ZTJb~[	s%b$ID(!BvSTddHU.vrHxEl3),,(>dQ5BE$+,pJHiEއ^f-MF
+z)*IdVktJiL\s-"񅱱5aDSU%&&ۑije!fؙvĴ49 R;LUI\pDMn2$(!=&S2,ݤ)/;o¿e,چ.(KC]*	L+F	$*f[A+#`Wّb1H:ȑyVAK	\$A=AH0DX%@X8qC!OچD6SI,b-SOK2Ė,t! P`FU#XjK{pIR<
+A!D	q/p<^kRH'IHbI3=4-Җ rɐg3r1mH7^ΦRWi\<JERZc/_BIl[MgW<웵3I6gYu}0ė)- ٌ0"sG߻#QfDP֖ؓCBE!X*R)%i$[(T(`
+(qdH&D(	U(QƪJP0MX([U(*46/H((hPQACc?tPРLAME3.ģ'B F100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU:8@6q18Ñ07+2!Ap46c@2TCew0mWLAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU|8  UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU                                                                                                                                                                                             &  \atbq%6;ZY_#.u! A1y2k =&el>IDG - St' DD=@
+^ QgݒsO{
+w]s(?B78o px";
+规[(#O&&( цݲh],1c5rk튉K(Dts*ҔF\d!!L+|& ݗ2-eu["8
+`G:j;HY7?%wgd4e7v (a55GSv#%0`YVV)$<.'D0 цܒi;v	&&46jHħB: A
+ U
+(AFիe${JȮO^"]d*ޯ.nSs)RU`[6/+*1-6ж^Mb:,%ަa+pHNK"D hxLea\87²=D62<X`K^^O*p$R5tG \+ֿK1JR-gR3Lrq7uP4ﰲoVȟrOHrLs{_C]O}b&j9ݾnof?J]{b9b&UI3xdgшKS/dH5#Y/Vt 
+Ұi,5_95qCAə9V
+Zg~Y0Kewm%kBzg6
+tmKs*$Q}gp>XR󧉦dFAIzYby}oq>0,U^v$g8@,J| N`!
+>CCR$ 3?T< "S
+3Rَ0aSֿo?ɺk(v:a,
+W_vm&ifیZurcs{bg{b
+ NIabLIp#~]O\ oj
+-XBS4N** (tE&q99ŌZy
+ !^hHEaVБ0of}wJ(a(nFDXJ		'#ϊр0&&F0$Fxz@-J=,>)S8{T#>Nsz+Ulg RZ-1S
+F0-| Xy@ $2&!2hsP eae|,\Fr5D05+{9w6,-׈,*b1K`2t9jm#uq%o7-Lq4-]zř@sJ;ɭ@J{KcњAk*0+2| Ԩ*0 lt@@ :jjrqN(
+I'DB5HKܶT}r+{PwT3S8
+Q=M8εHrUnj_AȤg5"i001VĳlXɘPn4ٚ6z#]p8XLq!?hGl8Yf* ؘ2(w~G4pȀ|!X e ^8(Ty}4t aqjHE;c*8-rxx/(}ۤ=Ko@bO%=dS1_dë	u1SBrX|0IM`V}:ի 5	,e1@JRN}2b'r<4,݆Cv''sN JHcmk$,@*MHV_֬,}Zֳ{d`aW6D4xx1FQna=dIc:XߧɮU]Sœ-akz 4AS˶7f$d.k3-XJQ`MoCel,#B<'{p [Wkb7[zkF'p֕MoVV1
+@C
+2F/-յd梖VOնUeLPD-S4ƶ|`\eXfS&nJYK[z6$CZ/ `ESe	P/3';C	9v
+H0Q$D @X@B(DL(bТ*2%
+ԅ	
+?mLdf/mJDdU~CW',A`$!d(h, w4OBx]sGw`9MuIߧ×^&tq9g1bj@ھJLO6|9%p%j| HظQ4~ 
+g	B&6BcY/",E245aX%N5wvvi}h8odu7ftgN	A_4ܷzN+UJhhv片Zo*g8HI@B+bTOhlSL	 q,S"MbPr	 č?T g?@)ڕ`~ekj/>O犥b$4MV=rFCHnb3āq?VJW3Lƕ׾5zLFHڶ,z;>-|gshUX4QDh$'H;mt^F	Eh T`쒃"qB(
+ ظC>s_X`[nNN,	+Pp|≕O!)sE˭wWk3\i1k+aZ=*bQI Dt}_*y#TD9A
+T"BUQYwQVH0
+ LMDaX]ˢkj.s5)&)	"T# 
+AV7A$[8lMTxiUDXsk]j'Vu|J\ aq []Ϥ&MH)=We3)"*%@8 78L^(A(.$0-6a֞)dp'3A-_L[}w(V 잸iad:< ssP|pК)]jIvQ}1#8s  .@ a]JkzF֣Z(D
+ZP-Gbsbϲ>xY'i.P.2*E_9nfll8VidG	ĉ'| ޠs @?muU^Pd038N70i0\!1(5  hDlI	bx.Į'<Hp7EJG	ҭrH&pY\}ϣeO*תװj6f?8WO^/m^EJ
+,WʸĜ'\ ޘ
+8"[JcFIC  
+ȏ.;Myҵ@EOQ$[V{)ةE[fKΝ3WB5W_jePZEoCmLܢ,I9()fӝt3tՐ_Wy-01'1&zį&4 ݐS0(Fګ[b71F[NG|ZA	wӂjD䠨uDFz(N#
+\
+}顣z*{fDcd3Bįqf`zvB+pVLA
+(qY!ermvݷ~b{rP PeMv&0 F'#q/$.eTpYeLQ.*dJRxwxxDM:c?2t 
+u ?4.0 pX0GcN08s "0:v3`<4 [ɇX2psTʥ$DZ@Ye51bN6H4R;`p`I(nS-rB+8Uve,f])-'b/
+踮U1^}!`XjAI?򙊖K6#0QJu̼GynWS󤱪cv)~9ܹ?ݏ{syP4:P pǽ7nc;Xww,T<y7;?9|g)'^"8jՙ%𔴣"fH`APͰ/֘
+>`
+8%I 8譟Z\3\j_饰YEJ*^KMMSFq&| !ZyE|^݌<+)u[
+CC.i#8HbsJ`R짘 UF@ [8LFB#̦w3 )jf"@U8 K+MZ˵c}Kgeʌ	@8Ld'HϺLĢ< di=5Ѣ%jĉ'z| SͯiP(L=bh$גK
+@?bA:e xa ka,aShԜ2F_e4OfrVƞ4k.mB,+Y+^7sa;HVmF9=Z̤px蒷CBĞ% S$# K
+Tr0`,oNR2[95"6*B]9J )g'wkv4u>nOgGa"Eh1Q tz$bOd|IRvwij8WՃVlA#JQĻ(bx ڼ|%7
+T;E&zyZJ aV@JJ38x*^B "]`Ov!D/3V}٦&1OujVW1̪CgֹCf\=1@O2COZ#x65U3 L1DŲqG@D 
+1P$)1l 
+LHɅ*2ΒtPT3
++H`ؕ
+v[Mv$lѩnruę0P$Y>T}ZQXbE7~Y
+#^JU1F
+`"	(jLࠔI"2f4eMX
+;V.\۠Yms_'H 挘)K#~p)Git`j:2ϥl.1MZ3#ffoossts?KKTm
+5oOU;?O;En*)JdXHq2l0t"Bb8THR|x+, !16moтA1*3>0!) x,=ptC1~ћ6tɧdcٲF|cZ?opvq7^=K8X%"*3A4THRaАRh(I`(T#2@%1,kjL hC5+3Z9E
+wmiW`XA7N^vR0&-j?$[o
+xzf̢iyDH.Ԇf;ɁIgmvoP07՝կAr,>fg`s~X(m?vfsn᱂Ŏ>Q?:ٙ\g>\ Xz{/Ҕ%{lxw&ę\Z0P Ը;[7&B4	cN&*wu	3N*Zŝv.vGc,{%A{Y4j
+yeT"Шxp`C$hqpGdSTӈIB
+IbmDsG͓3$!>ħ-3x Ti 	ɡk]\-b5ՀȭCjZW"+W8SWc
+kU|´5;W+X_=XU繤F<0XTFYLҪ{eEaasRv8P3qJ	;,ăĥ'z IBZu14,SQr+vW)+&mkű$<"]Wy{Y/k$U QT8y1oLkEeD*Te<t)Mja oݒ:d'<
+6Ձ0oĺ(4 
+2>TjXuy3x0z[Vzi\8>N=#ˑ
+	vڳ[eMn8.H3Kf_uEc":e)YJ7cVGG
+w_.*qz*BC@a/%
+1h jlOµ[4嘴nHo/'x %3  B"2#ÓX1ń5	m#fx} v9Nj]jsJ@ޫ,&xv9SLK2Y2#Mcq-Q1Ca!
++B3= w]!M',-Gh'CK񤄮^&')d ޔ%)GsVW9u*ٞwot(moD0|(`X 8@\LI$;fdnq_\zJ2#5JLMsqIg2
+dxnF
+(0(aEh,8)l@F Ja
+&3Yhɜ(Y5:4$
+\ ݿ8}gSpG52f'%¸nXZ6hl<Ⱦ4q^yq1tʱ~+C:as ŕ2OIr)sY]1~FaBۀa-G(1o6`aমE@`وM	V)Ȳ1%I*
+p S86$F3m,'i/u_ӋY\{bw6T
+SA$F
+*~yC1TRwd6Wwc)"`P]t"R`ӂH*P>Ӵ؍+`E7U!1| <QjZАo̪爬Wa)6NNRLe$[ba(nm,dJ g*T| ɋvfc59ΞQ[++syCV>{膝cKʖ<#Z5~Iɤ2OBg W,)*D ڔv6ry>F>q'K|jś"ĂqaUnFqlXl}SFANCIŔBR$Jngeeүnnaё,?dzNBZꝑ>E='dHЌ""MB&@u)	#{esSM<-l~eLl% ܬ]-M`55k(;/lS~yYRNpBQhTHgq,ZƣV LHxE6wtG?~oS7Gt9c4rrGH\mWDu6RûLaib
+/0ګU-T$@}AVq^&+u-[t \CWodZ}uc'Ǧ[PbŶ@ω[>D|ȗl'j/e|ݏlwl
+-:̆h 33xϹisuLdw)^Qlvǳm,	Q]*V4EAE6׻@ujiah9(@-l ܧsYEV2zm'lEc$]Fn4IQqчvsaygBúeJ,W!Loچ>Ԡ7gB?h[fM zA4pz%/saNI b,;xC |,\.54*x Ly+ߊ6啍8b{Az2:ZLPjۊKxwF/JR
+Y&3wieg|j~Um>DMqejVǸ&-4h-EB%ÒoxZ)p5j 9";vX9>Y-42 #ڟC575H{`hu=qiY+4j	6XaHa#jZa,:qe	s
+@Te]tL:,tFcZӲÁ S*L%-ь0px߫UƕTM+xCP4RbҠ7y , !:%Z'RuCTz1R0iYHd.\5?&C9r°$³N&cJ3?Xm#MHn<HDz]HQʲR$@wxc #.]ONi0h x!cQ90=ԟG_kRg	>571ǳ-t 
+Z\L%U! .ap9Dt5#Աkd VU2}ibq|G0# 1,V*Ld%O9qZ:LSqݔ58
+rBJ2'.i@KP(Ǚfp%YM|5ٹM>MYR=aY˿:s>a-x }ڡg-YzB sha2X6e"n CJVP(R=߀ac۫vasZb?"]5oSe2oZտҭ$AJct,<LRe$@>_ `08V(R)(OnH־j:/;p Z*>MX~ r٪TA"Ȩ%aק^k]ۉScIRXNwק?g
+~۞n\RSR$"xX*EjcYg=  0jK\	qУf!]X& /'M1Zlf$%t dK
+0"Fä]05Sar,hWӱ(>wdkֽ-h3KZ
+}}_
+ًXjd%,X4{>>u,	0ky^ Dd@X%tmr˼26>|$y+C2ҙӗ$_-r:\ E#^(afՉY:Woh޺iX
+'t
+)NtIS ڢijnE\n{o?O
+IuRڋS^^36>ڶol2ޯ[UJכP{x٭z+nq @Ǔ,9~Eɘhn304 qlgT9^nomd`Y{(񝡝}m{}۽{vA[$AӲ <,0̲$ &׳
+>$Y3( ni~(%3L!	]$tߗ l
+KĈ/o#OQ
+)$:H ܊*pHXuQ#H}yc TZ㠐g+]h:v>)t0(٦KYFXL&X9x,BI~c"10+I`3qxrqYDHB,tJ\\vzȧb$$$1NYCӊ2P y`*iO:X 
+=4^j s,!pKzq2T8eI!!u;yO 
+WHNċ0Ц1!#%-^8!>/@eհg1JWz\6IqdДQ\:
+>àzݘw^ƞnCm5ɾ?6}j@D2t fEV#5y@ف2GVXd.bx4!F@ޑ5o@&4aReYUr,`udt
+a$%8eTH4Įn~Ť-Yt&UX,`CHHEEъhb
+tm3H,\(C
+
+ٕ Ƴ0
+ x,3
+4h1]k. Fݿ^CM!
+wŅ2<tppD)A2p㲙^kس=*ױjYԪv2VW]-UlVDITFq˜1ZχuԈ+뵼#ȈS	Wm	u]s%HJlYIn6!Sc),x 
+,@F0IfL*
+"2<Rtlk-$
+XD%
+T&^%*CC@nҢ(,&LsQ3j][o#"bL<REY*YL39̪ (Qq@i-EEr2s*CRAf@&00p+x 愼XP`AURQQ@Q+`stL
+1>g.jհ).~reʣTrۻJOE|衙l5*bT  #gro1/OEDphK/Ef~Rbf2u0R`'Ţ2%H䤪4#`T{>)yx ޔsatO0#8;%nJRa`6!Zx` 
+Kſ&O
+oyo17-l;Pm$q<-Zw9UgzAGx lxgEIo6Tg6,YΙCֽM:X n %^-(0 Y9C8Uc$(9t 1ЍLEB`AECC.Y0iU]ei_f^5u-Y[#|G;uOK{;6Y擸H^D#̴̄ή(O}48/p
+)%*:*k9a8fq" Bbqm rBd6'l ޘFba;-
+Ε_ޘNyJ:abNitڳUon	S5^ϯ3+SOwK	>5&D~QA I9i00 #MJULLBmR!E I p,эP
+SI&X ИWB8ʧislNh*ár$j k H|ͬs$4j*0C Q0fj1w1z* fc6!ah0l/;H:65HabRR.JT^݌0$cS('`'< PԦ,Qk"HiR:е.noWKg4EJ(}퉵5Rt1Qb*`kޏWr%08 J$c~0q$9A`p4}ռ&j%$kLn܉q$b&tW=\P4tW^h xy@.}Qq\[|v'H 88*.^$??`>(7輅1ґ  ^ #s^G@Q0l80|J>TX[kph4%rPiw#r$6ϱ7
+LcR)V.ؕ:`/H-mí}ۊyrDsQĉ5D\ j$LZ"SEi^wEO
+/RٖnSji PB]kM%8fY[KZ@$
+@Ayp ` *
+ݎ QɚtJe^Oxgë61{:Mxw5{WGd59˾~VcJ@g0l r48M\U
+K(A `)T0R9*+ҽKC&J{EI#x%n+"P\eX|1k#b&Ղ\ 0Ҡ&	 +`(
+쎜6HЋ^46;vILD0[y|fǅ=֩%N\<V, Q==i4
+)bf(E84G1)#^Gxkud:$IobvLl6 p
+
+D㕤=vbHKl<"WCT"5 5D*xtͺ;~e_]|zk+tT3P`g_5,X'㲈 BjQ,XbԎpUVʊ5*Y6)1 	Xb,,*T)L%n6 @X 
+0t;0M-T@1S&dA5DB1dޫ &uk6)F%N1Ά9r=ga뵩!ye~yMܰk.Tt 
+ZIJ8d*Q Q(jTkQćQ,,PU2:S-DTrV$@1t*r,`.*nJh|jc4  aHp(>v鱙-WvW+O=}׫od.d Jyg60Ùr}r˙jwIݑ]a!aͲ:"?e+ΆܡARCLR9aFPLUE?,* ZnL@08@2fKW` {^SxUT$H) J<LV<n[V1Lɺucz\'#h eսziDS.5
+^e܍FЖm]S:1Bb  5JAAB!(ƴQiQZxZcCЌ B䦀z,ڳ[XMg`D1x8>.c,(׹9L+e_ϳ9{(F9܍﷩Ϲ5;}r$Cp <(xp(`b	Ϛie*  RN\0!t>9I\"Ty]iE$`%(6nMbjY9eH*9{|5Hl,78"vI>4U{"tNǬg/.c 09rn.fYu`ĔDl:x ^4'xGŌ#(d乹</*!І2qsCG\5?38LҜzw9\:"jtB3x2Cd7&-TDvEu182cIáa
++vm.NEUM^zE!,vO8x39.53d: (=E|xR	`L2hZH݁*qtܰp:Έ4Zc[;]u2MpB(|WHGDR( HI]9;J,VAޅ*dUv%Wkd1mXՌ٘|h}W%7/ddrA`Ow	& RӶWqTf\<K	B4
+`l$J0F$YY&y
+GH$" )Qf%P	aZ"PH
+V$2JuZhWMm"1
+BMh6Ҧb%_T)U2_JyۻZuJ!]4=V=-2(* X)Iջ<Z74C"8^)cgS
+*-yT-)`OSH3qI!%CSʯ,t.M(K8]\rFfyeػ.m%zzr|Yy~ͦ@|3ӯv`^^ar󧌪:;G2D`D&: XܷSGt#RuQصT0ji\T|S<)t>hљIRC֣=v}YeCWT׏.~
+࿿92C3iA_Y'£UŘWl	A:h'WRƹ%|ӓ1vq&)洅Vk-ϥDR[%" HRϹ%T,j(|+"j,ƈYY<$[Sie7&JcW&y*lZrV6b	չ[Xh$6ӳIYt`7_\!ơȡlD3-A'WA%$Z4O6Y|HܸW;04TBbTu.C9JQw&ʐ r9}3+Lun}ʓT
+@6g؞"WRйI9"DX@"}%%`e6Xa2 `0B`	Y@966U$ г}InHf8v(!nDFp}jM؏0Pfʡ9cď'	| ؘ`<UOH@֭l]sL2b`!#jh r^(t,B]BLS8 󵤳[կ{l.iL33fL7)qn?k*Z@Һf:Z)u_16ZrQ`qSOdT)ĥ(CBt ڼ7i$"<aa66Q$ɓD00X[MUt>&4=(ޭꏼ5߆^yKXv\X Tl:4`9-[O_>$1ThpI$h}䪾88&Di9 |*fGؘh&֙yķ%Ft Լ#`'!lB7@Th1ťm3Ӝe9i")"fZԹÀ&
+'	*ȄKw1[_joǏH> a1TZ F0JviZ0h OT@ TUc,BLRF `  \%+Bt T:)%2Wzx&);
+tnY"Jy.dMYx̴(]02hw?ݝUoFlJ̠Hge&։bUdk`#ȊDM`"m1l,6>B&Z׋tVu+{$I-,bl ڼ-H՟ܣͿc7ږuM{#RZH"|ǩ+
+:zxCO$
+$,	KD#HdGBahx$pw{.7@ L$ڰp oi j]"O3j<#Q2
+",{Rp Լ2B0nS}+Sawos&c劽T =D(_9ql"4M |;c=&,D+
+K	 E:ѕ<54O&<	IGXBp14,\d@U:̾:Lo[CZFQ
+ʡLDuH.l Լ&,8<[5i^\k[Zη555IZqg8;Z}.<Â9aBcLkWC k|mW]gv{60]T15:Ďx+L66g2$d P
+Lu60TCdRX?bEOc̫U^UW{:{zJJANPj e2ī#dH!95]|E>w@v"w^Qv]F+ԕ_]aMJNdƃ[htɄRzTfR[EB7+Zh R0ɡ_B%~[MQd{Ӗ0TS)D8+Pm鷐T.ՐN&ˤ%k⍳KF^QB&] 2@6s٨*4( \$A5E	i 3j*O"RHzU
+MaH=ˣA:"d 2lbD<]7S  d9>+3RU+ZV3`6ݍLjIRq	HDc2P2!A-i:~sŕbm*J~ԥhg8V7.?wYg'HѬy7>7){ߕخӰġ**| LLڍ@-43"62k#\N~RM
+ewũ31*t|Mk"A**
+CAg`>fURAH-EXXYj5[i/hacYj&jZ־k$UgnQfٛT%ab[ykמVU0KZ0ĩ'"h[@S0J
+80p
+00I` @@Q֗ߐӟA*y$qgv3*&V+@jbnJijmQƖ[u)+BLSeİձە絋*k_0NHeXשit1*'O7vĽI|2,MHnjFٽrY{v3Mjټsm¤寜?f*
+󒺲g*;v+Ns&rLjXWg	t^Y5"x 0. b46
+%Vu=nhQ&>Ag9DCQ
+
+xXOJ:Tx67Oǈ]oN0>'&m"yYWٝh)*SMTU8BDNe
+<%mn~RmAo_ҟnmc֮ԳtfXL+ԏO_wH[V}fsm<ZڹI.fQp
+=[Ӵ,|ۀD锡,b?9ea<f:D|O	C+R8b^J`AJQ#elWxɳ2I[2	%1#(&T~F.CX)LJuzI6U?ZuvR]IwEu/ӷ0 F~ր4Nv$*# r閮ŷ&=Kܒ[d2P&# 74ϝV]6`2]ѿQ}a1U8+8 8:,a 42oZWۑ̈I6sG3J8(% Q(tz $N} NSaYinBnY,/2 kk֠%uɇ yjTĮ$+EIImpwh{iacR(l^"8܁A5 tOQx6
+BȞ%GrmQ_!Ó0ؐ\Ոe(%Uƪ2k!36+,
+ Ș	wx覥Ys9]Ro}gfo9i̅Mb؈M(?_T%.8.V#<pD@.7$DŐgTK:F"QU|vKoGK|sA58h$P*k'\: hR\/Y͞ڼJ9ؾv8֏EeUg2u ڤbUڷE -O:aJpFir^ODtU<L"\]
+@'UTII@R#@g[Szu1jRqU]VjsxSNW"W''$* hR|PNTuTit8tb@lR:UPQ;&EiT
+Ft+(&eb\c=cB<qud&t]
+nVBYn+'H؊EsvRX)j>&yݑ5r87D'>@n	o
+̨=% ̽3osi><ݛLXvTĒ6$cl4nGo^XJseiJ/łWcVBro-L~8!/[H=$J7j{)x=>MQ*]^FJz9M%X'[ ܎(cСחdE(ak׿_UuVVd9L9yDs0|Rg&q(YZ_޾	45
+RCKK6X[tZt"ia5;kzy}ps_su_}f3iB$:FnT8ñs"vѵ=:
+ym&{ ݽT \F:$fi"EG@L<0I8F
+Sl DDPOIgmOUϟ<swT?Yp!ଡLb6dMAJNp6HI,i[p3FO8AP mH r1\Rse1iK! Ah	IĆ$2 hRݷ=/""_?&S_wo/nӧg/S%RNѺ>|Qa!買alHA+e
+	FԞ//$,RJjIS,Kf9z[{rRP??ĥ&$* Xw?/7LN|wz+~3/XrvSGH%3zDeWPLH*"7$>y7,!|K慳E	EH]iE>16Yl8Ad(#=mgn5|_nhYxOkvצۺUqTĿ$ XDeۗS!NCCDpAB}P?[#W|KH][谷tt'SVa*c/Ε蝥'q{Q3ʈ\&Bщ(j{{װ[pu
+gsi+˲|$sj9g% X)̻.%_,3ȖcD,-
+r%`I̪-jEY9I((j*y씒JQkCWL2emh9ةkzUn[Y^ڳWU$CD.~Zísl:%$tN:I/T2 ^+Px歍+S;iǁ$nRH'
+RZ:m8N%.IqkvGְw.A4ELGK
+I<kDt@Id4fHܽrIͧNHĵȬlujIU ic7A=MBiOK=kYonLwKꕩ|śW۷H-2dMX$vzSw7̡[Lνpl΃I24@ RlNa^#abDk\y0p[,.9Fw0gєO<vQ**{v`ɋ?>;%Jlk8;Oz!nܱ~#~I|Z{^WLDif+LiKT:< [<5Õ_+9O_+W,ws4W{R{T|nN;n;,\SO?_:(6ui\k*_~į,wsrwA4?_R\N`wsO(H^9obvU^{\SuvtFd,5pC6UGtEE2@"tC_Lɚo), F[:e`=)>NK%{i؁%654X\80Ģn
+oPߠ~*GbS|Ia0~?_ﾘCtRkW~[9LԔե.N(C_4QFM#8)Vx  C7>c*I篯'KX[zm=IĂ㧚dsX?F9-d׃h1/}Ris5=	$gгlϟR'ѣV1{Bvͣ[a" R;G{]9dݲzF*;Pf4^e*2/4dGw!.~ 1m$決MkOϒJK$ٕʛ3/^GEaO_jlf\Ji lT\J.A48ݬ8j5jq7wGK_<5%_Lp<عqT_r#CUUQ&B_	AFɌ\G76@*B ޞuNݙ4tCx+ "$%E
+ˡ)<e{˨손a^9U5NG}jnE(؈XZ-lŃWu9h#I11EAwIgLAA92J]!C#&bl Vw*+JuQoWk,4Fʶֽ
+[Ģ4xԂ`* & >.[mn"6DP !tķmM^jjtpJLa":rD~0*	p@
++<1	I`d9p:)TxZz r<%0 5oak٫R Xy)dqܫY7Jz3+V}*m d<, PHq2jlG;PRǑqԊ_Z1$7+A&a
+-T}ΰ
+2KYmyKe*N]QB8e-=#yD ;1noAW$( Febb&Q54+MgEKʢ* HXԢr@@|x=+] 	`OD<e.
+&vfB\rF8` D8*IAA>sq},qǕ^vr C8"Ld$
+$ݶkdxO{nv'v\ {̸h9e``s@tچ .~ vAA9UX3Eδ;c8V"Q(BD::>1%`Nt'`2Fr=sHĠɳTQDH͗$DoÒњNP׊Z	jc.@ABbQI'!Ċ$X ګ@5VJS1NAI 	ߝ9$Q` @&h1a9U.r
+&^?`D;
+B~6ʖFjn1
+3&pۭ5@	g;#%CQ	}0(:!Yf; BHYįhY'JR[{JuWP7ĩ'< цPpsUAVv
+Xr	dI[V2VmzC3Cc#M# P<1$e
+'M[$S4^.4>b?xz*~{wz3{DHDN緌&|1dbub5@Y1  IdbNĽ(#d {м(8rND2']ByX8YJ>T%g#P>SCɺv,JV4gQi9OYٗӇN_n}	W;0KU!2E'We"y]s.;g`)jx 2\)BBE*j| bX">4jJ(ƽ$T&DĠ
+A `ȘTBn#2P>[) C:$UQV9uKR! 첃A#ɬ7*H7=-.!R48
+ճqAI}0$ťh v|n-_.0HkAxq1û^iM&| Rk>g2xp!3A
+S"naW4-2PPΏelTގ"SMm~*^ʤO{#X\$;TȌA9ĈAH`_L&
+N	
+ (L$ A郢;I@@@+յАP+h ܰR&CKkkYk9nnza	e]"X4z[-Sg]ԵPݴ|0Y>瘥[??JiWo/168IPd3ȏ' $NaykZgT@i=Exf}fJM
+*;` ݀q$[a$D @a`,0"i`ұC!(qe]u۲CZK ۆ<%5{N8\?-j6]h3a_ːO;K2F9wR5y^;O%ťTr2I*HۋRķ:lh J9ɌPUfe ,J+BGTӖ2R6LWDZ`a&bd`pkH,1U78lt!DQ`MpTB&K\Wtmt[!sW%L_*8]^qNWNKubqWkMˮT;CĀ0l V)/*e닎q
+NE*k!ORPҜUoʹR֗XFF`th"8 CP`pAJ#1cNL9$5 B*ذ2DiH(Ce5YE4ȕK7FG37d`AZS!̱0p(p 
+s/$:Ne pb*a	X֞FFU @O,]ܠD6cTX:rѕG\"rSKԂ
+/'QgZvN$ۥ]ۖ9\w,˵YÙ#AQ7&UvQ1qB1ֿڷUCā'#| 
+(c]tj3rTy(ۇ_!lEyiکj$avM	DJRkco{~'gQ'div1V@!<9<~& &wwݲM.1̼1>e޷s=aė' ь'ݸY
+`Y=owW*M)Α|﬚r9sD;O@
+'6U/dB#2R(gp:|V	yFH
+vsqP̋zWޣh4AwefavĬ.~ί\LU2$J`7kHcBAī9: RLJ"P9ʬ484)P0\jGr[rQ0(_؆5Ϥ1"1Z
+_9S_<Ωl]o_<G+e4ctE2>fJꀇ
+d]
+H1jcUaV
+s*ɎfKևC)
+ҮZThv/: ^ܬ*+lgQ:zܔ%@r2p{	XíɐO$᷹!ҹBrDgaOd
+VWig)%ovrÓ\R<H"
+4aFa$$8TQ8
+I5.%lRH)X>m(`*4h	j'* R%T*Q$2K*Xi J*ER&3nEH."
+١3m`% 1A{pn˕8awA*CTs՘">fb;>vmo4rDFL!djɥdSJj?YykW5\lĀ% Llj6u=SʦKN+ZU¥
+T8A0  JzFxg/	-ڻQ8[+h}ش}ST1{>1|{S0,)!d5L6A(9aaO&޿4<c7Fb,U<8JlBPě& ÙY
+a#!4u@c5gB/A1- Fa|n%ъ&ۜeD1D1e<D=MS)s'D$uec<HrJW@Ҝci43$X\iM]vqPd_J;Z&:3҄s	r ĳ&ʀ J#c `k'@\6VW|Sjہ쩶s͡&9f:
+'~٪\^&Mjsj<T`|X.5b@*a"J)u*HD1ÖJs5| xp4oÀ1vi}`2M'd| &xP#Uظ;p?Lѫu"=AmH֥a՞Ad{P("^VwOZjG"_nR_c!
+
+0x 	3<MpC0 >0 \dF*5`P!0
+Z80tR9`yB'tv}%t .^BVO]Wk1Z˚}kL4d&5jJUZo)5݊w?C{j8[V73S_+Zwן3m{5[Rh6RJ1kkV8P1-5޹38Xu5WE+
+	rf+LTй5/D ݒLW,;"zP%3#垔ĘlU""[γ22ɟdǷRl2gQ7V6c0G%wGۅl}YLFڨ{^At1Qp#M٫qHp'*811-F$BJBF(qBv5f-=#,4Y0(1tnk4aA"EAX.xsIAFSS8e.ob(,omÂbͥ942;
++:-=I^CzPCPx~\8`<ˉMŘL,F$xyd1ܣlX̣Qy|֬ROaIEKP=Nt:H coFeg=?+ݥլO99mֿ\ `0.\E`Pb@ҽUּ42^&NˁQtݵ[on|vb*fäj=䭑
+Ac7M:h5oP.!"%"<	 bԭ  T@hA\2xDeq0E0RS.K#G\V(xȅNqncT= Ԩb5<G89ũhWf46&XZ|֔3k:*
+KEƋlYXU4q2v*EWvZzA5I=w{FA
+]wG
+9)+K ̗LOp;fk:E3|9³KkإTQ1յzo57S[."Bd8*#;+_?|y|RS-yj}e[)3~x('4UpHL,Z5Ł+p 
+
+=hKHt$fMg6ӆ⎍LVg{=o,;
+kܛ}.]{zk\YTAa*ʈ1P"**71H$,"G $8 ;#L"Vg$=JK
+a,r Xڠ &0
+*(ǂ*kd `H	1"QC/{Y["R@0`C
+b
+Kv*pjVBKR?[.2ǚQ^m:!,lU\2k$8eaNc2Ŕ)gB a8i033Ie'*c` Dܥf
+l@%4Bni,j*e+WfRuWfP,,?Sp&*D_Ǹe[kY׭n Z);h_jUZ13mw5 G!].
+լ֊(u H @:0Hx%T獅 Xn#ݤ0'[h Dܻ4
+x\wKm&aܝeO?R޻~N{|?
+YC|%ʠJ\ڽi3\urlE(p9 RC*,aH #5r(4<Xp8>^*4a50<RsrRP-%65|Kn^4E&x ފg.Yӵqo]#(a;Q8;oV#Q# uumҝ7;~&M	RS4
+SEx@()j5dNk2:c1p(H(rʠ( `r<j7˕a_|g_;f3+\%1| ޘN/-硰>.{c[g9qVlj4N,p\I@`FC
+W,a­
+I0TN&;5\ 
+4 BF6P)`fp< "6Ib@lZ-[ޫjY+[Xd6W*eSy3C!_P1z&y| gV
+f$
+1JA"'	 <ajjF0Wb8:] NĂRSb`7K@(5z,>7aw{ku4M	{3\)K5FCjiga
+Oe~Hē% ܶu(Đ8Y`t;-@Sh$[B#ӡT%o$˪$L`TՌJ킉vfT[R2|820@ɥߞgfR'~0 8NSs(_0ҮuSSmU&j=
+hį' ؘEUI4B2VbJ6lʭRéSoD˺mV՛ۯ̷J'2Vx]jmWG!m.WZqe,^㉺dp`"Q{*7b\|AMԪ *Ir5$RCh-Jj']%o:"ki'J NlnȯUex3I鯎R"˿([8_
+ff["N~#C88#b׫X_Tv!3^f%$cQlLP``0Pn+S9
+.q1hIb0yUU?ߌ(YF+MY35c43RY3: hJK?)D}4ƻI>iZu	Aj *j4U'2oRIbmo4cMhd%78U!Y:y$,4O $Y><\?C I/GBì0$Rr3)mGAڹĽ>$: )BE%C'Gsz."q:lRO^\3XƇ
+iKeA_ g^'=+J>;2ՎF0`P~рx\a\s+8f׉JGS@u+׭>sDƧc`|JҳJ*Fvw&L XݶKf7%aB=k2eAuK__bV+fb괪3sZ]K|c!>sO5492VIBE2$	LBa(jnLNsZ'=f,)}"$)#-%+qqd%vYǙ)#CUZĐ&  ut%Dܘ4sNU֪7"p֢5噛zG<Vp#XpL*8hTÑG348Pt0>lj+d@md 9ubMPM+|O&5&ץYﮙ.u,Vx!FĨ%G@0RuR q=_]o!EVp7Igƥ'
+1
+qrH]ķ'$	(%kչͭGNR1*Rk
+JA]qE5S-}e7x#uT. \FAr.~ϖ*HL:` .cjLXNRz'
+ ]7b@<yp۪'Yr[7;tosZc^LN=SLE!kX*7Z	 ޅn̲wxڵck2{QHե5io
+*C
+UK\r&1a"ZAUV=x]T-Jό1ADv45yB_:VGR(ިT"?Tu*\EL8%P2T˵dJ!CY^BQ0?ͯ%`:f~tU6I
+;484Fa$^W\Zz˨P괌f
+
+3rSGD(PS>	
+a% Ҙa.Hhy%^iiq#0ȭ"W͈U@̜&Ef+^y$iuMM~F?.zN||䯳M
+P6*:,tE**Y!. 
+kV(F.=NyUuӮjy@Tʖ Ps/%"Z-vk-fr@˺13%| ޔ$`uF:NRiJěr+9H-bwmꈊ&+O^Vҵc$nI|zs/J>Du}G1`T}}UJͻ1p7x
+	A5S">z<h0뿓ڹ(.rnM)/KJļ\c"۲p!.O(	x \
+gصyr F_nxkF6	,~礊mkO1S		U[(a6<QPY'$Xaŉ45uy%@i-AS)}<>W+LBlL:4<ӴdÃDPb2es~rA#UYh*֨Ea'ӂ| ļW"*d)4Bt'Y)b1"ZCÁpD>ꀃC*t&#V*{w0l9`dp|r
+*y+Ikv@Z#6G3(jQ	ks*qtw
+5qu\ :dk,@/Y7t' 
+C+]D3ԓpP$:݄E\Q&$t*I~G, Vf\11R0X&jfֲ:`F^
+t9ȼv5[/{+i8N%OV[XfПv.JXuJtTAĈ' ܥTA*a⢧e#ԝ07N 2@WXГPPM߫dOmxG4XϚACA1Q-E9aSK5i}VgXDˋbe}k9Nn7OZQ[j<8asGa£TRĜ';| %eM#`oځ 0P. #2ۚBlm$FP=U)ZG̊7Į丸S?vrav[խ|!F!̷G!$,GpdR;QC
+ %dKDT
+b9#Ĳ&p  *5$uC%aGPZ9]20tɂ0QSLܲ5)
+c2)3&$QuoRU7WMLG	!Uw[}o'h8o*S e!y
+( 08A8lLD   r`X `F `` tÈJ aG$4$[l JJxVCY%՞/e$5=SMןz/V!a:;JgͿiLNDNC=ŁDFt4&X&. F0JJ෦uVz$>	zfI"^2*Ԩh|Cʙ4J-sd ܧg
+خw灨AIkc3Ƭ/fWv1LR22zKmK,ҷEKuwqӇ 6l%0p8|ylA	.hFIkNP(<1@&e L#f"gKu# ɦ0о)d ܢ3oYŤy]N[><k**KjTTLv鶪Ԛ^od|]E(U:*Q@&*e(<bD*SM!14ċþr2ʅ+٣@
+X>zga͒TaAp
+aLH-X !{EAFʬqeJ[D8m:'jLقGoD3dعXj2(}UJLDaPWi[Z+:9W]I7Ǳ%>,5bfTLs&wٕ䦔:rqjEcMtxkWǬhg".%P:X ^zFDCGyg"o/OJ1
+%+i>t+Cc98?y;|(.t9orއǏX! ؓJL?L t8%1? (?C&DC,3uirwȓrXhF
+V:ĜzY[X	J`?:p ^!P}֣}좸T
+j|)ZrɄEʚ4г--ƭ\Sޭo_{87]i[oZZQfXlZ[w4Ѿ&5	WNWnP-ü	%]SY).^2'Fsq71%A_+| 
+,f/ Pv隡1
++wG:	3J\'cK0Wŭ-__9깡ŔA
+(8[YC,ʿnmEkJ(_3549Zj^.Y0#1f
+Fk	,kd ݆@FSD߄oeRᴐ,k
+I = P*?i<Շc5;#q8|:wr] 
+dB5PIhDrվ9+SPy85!8rU<\M4(l&Z1x\j!S$#8 ц$bPz,>6N~Q=Svlifپlkm,
+T9)ImpC[)ٟ'rd4dy21y#r| .AT8͖.kq%+^`%:n?=p7 @IF7\Ю>~*:&D ݺqd|_iŲ"_
+J"&JK[Lrn!Nϩ+32if?+fdb3Nu<eF&8:(jv Г,BA zxV4䌆e
+2Eb ]u|T#]e/ڕPH]"; L$(
+z)AC[	XʧL;S;Dd ݗ R"8^_Xݼ>b!2nJHC\] Al;=B?}D\2C9)ɅضѽFo+ŻQqF|P$]䋛#&H	ԑ~:nA ҍ%
+>vq?U0\YQGܽ-3 {u,)p ge:A	\ԑ/g[%dbrAgEcMGMyw~4ǊVQ6=RDaiĶD?>_O7eD[	k[߱wwbhxƊZ$} pF*.xvY% {ҙGTYB46?B@]+u&)]3)U,&rhDi!a>MA6O5eP՗K7ZP݌EWy5G:T'/bU~I}e[Y{wguu
+^e2I7@hН{P#:\R1Q`P!#`9ROsJi_2$ۊ ļX^ :%*ٛg:ӂ&h/H3[~~KSXkY,j_ކ/ܥG?̴&D.3Y(f+(*4}j:ntV*>x뀣V5`6L 303#	1Fkq5i˩4X,PXt"bT5.zEQ'[b }ۚA˓:Ɠ5;'ҹsCeC(A@ ח>.Ou,=(iy6D 6f2%xPT5BH 1MWHp
+OS82a4BEAj[/~g8sW;Rk#W
+uXkf& ޔX
+GGk]^۬͠kTPTl +Y0UKT_aOV.L(KKp \0x5h^ǌMH`0BP%*o @Y>M.,?1>W0F3UHst׼xueP+J85of>b~%Ѿ ޔmj*4> `*	I
+`%;+HKݒ|ţ@k<
+&)yi!@Zn_SHa@%pLn$d|-*~I3Ԧvia%SS]!Apa\!tf	<"#+;_s:\zę'"| ԼbR핂Ө6QWtTѠ$A6&!  C"'ewRR`Zz4M6?1UbbOr39j>9%q[R T\o]2WҤ)cYY)j_j]+n8jIU@/hjo#ĭ'Қx ieEц\H44sXM)["
+k&z+.I5m~UH
+(MΠbiZojqxp.wevb׬5OBB xQ C?"!KL
+i$ZA 	!K2(W&t ޘ(%;IKZ(	<߾Ԋ!R
+L_AuH%K	/JgѥhpeϿo}ޥZ\੷!%?$dЙ˦pG<10	!yZxO<q1:HI3蚼Oa`7+@Y~2M/N=%l^#qx ޘ쭐6oҮb{GYXo[NnP öʂE   m6RB~T} 5LJwUhYퟐ훏a21/InʝrtNqp!|QR;QĩڼVzW,1|):1Lq'0GJ:ϽX2D"x ݔIǊL.[iX1)ʯJYZp}l C+^-#kOƛJ1I٦qJ0E8ŻiLbem'mOͿ_|Ze@/FxUR-~&u[sͩݫ夜stS֙i.* cݗ[V)>+Xre@ [fA{Ru65i=F4ޮTm4g)-ټMnAݟg5Ї1_1n'IS6}0wU5㢏aCZctZG
+ꙭϝ"jPib $jLe#P)@VB2TRHa{`'42 BL݈TiUuAcW)H5%rMyrBfՋ(),աf$.ՑLRڅ[Pŕ"ƥQ#"$HOc%PEMؒ""dDɂ.&)EH&$(&UV^WRR-0Ħ|2ͼ*V$󏳱%
+ƙU/2x ZR#*pR`|!,<Tec諥c#4&%bJqYBR5ޮeTZkYYM>0S":>&`*lJ]TĨ9(4VtX-i1L Lx EhM, xoNn 4ČXԔP*DZ@$,0ˏ1L!a kKއ#mi5c"B`gV[\~!r<#ic "~c8r)ʽ]ٜPC@ْoQlΓ!
+aƀSg~U~~Ro(a$@*X	9Ow;kIU{OCFp!`(P:@ 
+ C@z-5,?~zG nԟRv1
+gA,;:/C	5#jA'lM125#Z]
+˸K2Cr:Jq`Y4,Aa5Lj<Xpwt:e/3H춢P
+08%d?2x .WD<Nf{
+rюgX}E
+꟯_1=&GvLLa1PW,ͫvY.R<4^Y͕l(8t8Cx0e%ͭҽk
+uj6mZ}jk!CHʂs: svPL 䀴,rj| psA
+#.@`V]qj<OAowI,C}]]8YǹwbfQn[VUf3cS1qdܼ&XH8!+>.53B^l={bu5>O,:Trc>ˈI6tթpղXҩ@s`; a&~/4p @L.ve`Jer&I g8S|RD~\p{jVIC0{}No84ͺ)]Led0@$I
+(<=٬kS
+?_iŉnSًY
+)CN4zp0hfq	&Snt 攼Z!̢SI`PrB`*akH`8teY<݉ݟv=*ݱ~]O֤|c{C둊p9rdgS	JyȽkǼhH"[(#JI4,`6,B	1hebͫp
+8+' S#T>单1ީ715ۯZ|Mxv6{X"ZȊϡGxD-*绻z!~?wsI	sN[ϯ:$nP쐀#:N(OesX̿Ny<v):))5^2#F)d (@>)* yݪv=,ҡoDBl!SQqXS9740^+k-ni
+_r靭8p^kwW]_:Iw6a}vEX$ķMekU5k5N:#ypTlTZ>I'2 2ݸıUf=\%p
+Sf>6*7VH|$nFLSgJS0n֛nӒL3fr`lŲ;S25◩*|@c{0g$ތ×uΓSQ`K\:3inbv1^eϺLw|<zMU=9e]% AVԬKb:C+f^SrZ.6LIqg+J v0ʎ_nm;qqpeܰU[2KS3ؑĒsr+MɓQnj4,,U0ֺkqG&r]/1WV)rjlmVprx'| Yݕ4֢cTn<9 ZEXYbMP:ET:P!I2IYex_PJAHh>*<p-R^e5MpP*ԡRν/:K%ZN3 E58,hf_Zq-WChDu?iݙpjtfr͍vs	pJ9nlXRċ'LD ݆T+,b90TU5pܽڗf'+)y o
+nlYGL.Wv-F'c٤X1:26ȩjȯC6C\K&XE,hʅ A|$ޘ#Bma=szɼ>=(*Ġ'8 ц52RNH
+01BA/8+
+cD)KU{F{<5R5by~jLĤ;_;A' g!@ps:jFAz^S<FFI#/ڄS)ݲy+PzHhDbNF<*YA>'iĳ&*` ݙx PAR`0W'$ dtcbfb<eFQ8	-k[(ލ% R}&fc8@T`$D*-m/R+(!bcUkB2ίi6(S;"1T%2ԢVz2AabI#-t"l ܊݉L&0Ʉi@,"{X&U	9V26Muve>ɐe3e--#ӭBBt(m1EV2ۦN4~λVYkvTNt0\i9LF	 fud !!(!Mq*f&:l W8,O!kFS@R
+(<kkpwf~n7Iژ!W<k+v'M>r48XH\ `d9d,%ihnB;'yc:=$r!He[$"yҜT)&)`@aL(
+f\ 	`.L-<:d VR<&&Ret0,	\?g^<xe0۷nv=]z5."Nn)"#q$\P\j?CC?~߫VGײ̾wȱ1IQw1T7=n>_U:6j|]qP8	03:\ N,1F940<$2130qsؙsL!LrC ϤpjD `S
+ĀmzA+),>p6]C	Zɚݭf[gus+)7SfV6<:b>|nn4*2,w:X u0oI|;b#{'ia"$D5*i.b)jl ~#@i1)ذīZLDER
+ƾk _=CDFc4$gl~:v-r*9|g,\>]?~;c)kQ_ĉ/d Nv9iQBaB4ӅK9YrL
+	DZӏER($  ar`4DR
+fTF!&(B c20b1
+J{]~bRE0BFb_aO3nhϡB
+{ױiϭP1![k<uuzF;?jyX|}#IX ^pJV
+Pkb*{LJ
+V,&P
+ED }:)10;LD@beʇ7YL9_uf,o[ƶxPv>kV䅛}4`oֺAz(*LPP,0j!HPbMm?J]o*
+	Ģ'	8]x -yA$``0b	1;Yd 5Lu
+kNGƺp*k/㔰Y ᴄ
+O~!}
+O8g$!zbTsSҜcNݾvQ9UPO+DVq35!ʶ{t\}
+[ĸH:h ?3v%Ts.ݾawx
+JO8:u~:RKIMs\ػNZ{i,Ի~ilSǹ̷㻹NUl^&52i
+	qyMjPvDve
+S>֕2֦Ep"8KJn8J(|` 薒Jl=/Szk׺EP|ru+Lق 0'a?	*9݋VKrR <ĵ$Wp>V3=&Nl`u
+#@4aMfGDߖm7˯u:A p[dn[P9:uY4](Ât Խ>#	a(3&vvI{(NybƓ7ۮoE|)crAqg=O.XdJ7Aj XA*8
+uJpM4)b+Ɨ,2m6my
+ںĕ03x_T9z$)nU4c8-MQ[*֝TZb)<W(um&l ܿl}}vrj,gRcr18H0bG0vZ =!8hfxg<00`01@VB֗ƽ#"b,k
+7%vYk6%SX<"2hG
+ꆵ6?_x3; ^܄#o]:yG})a=ą'*` ݢE*:2UDzRk	`rS$>V`у{~fau?R3׽.q4Lz3b4jr{;[Nnا5Sm^޾v暖D"2
+;)1"8f0l<	L$jQ&Ę(CX ܃ a(ФxȠDQ0ZxD(	 Й{6b6LvGǙuo{~Kok2_LO{<ֱWñfS#l&>}QeA-K\  $0"	T);8oZZ5LaNt"aPLĪ&sX L`	p)$wX@#Xa@J+R@$]j,TTq׾iS~{Mt+Mwju&$N3ԫ5rPf#	
+dqLMBOHlÐ#wL`5/ADXdT:`0eI4%T 
+
+]Eނd3I-Fʯj`AMz||j6>-ކNe_mTN{RV
+W׬i[ %X̤B	2c
+u@qp9h7UQ 46*aR*$E̉'D±R zU|&P @UbiҍSvUi͗yTBnb푠AqZŮIK:ucqG8i̮{=rYu}̶vBs̈ԩq;[KbƱ0S1?2fW5h0I0;i0A00,0$n%\xbvC$\.TP-D ܇15,z1YVgf#a,^?7F/>/=w8=
+YߕtJmujQi}Il$gDʔ0sꇲ9&C [0X&?y#`1сñ|0Dț1*)kE@]7,C@ nzn`3,%}kIe{
+/9&̦*k[7mr9}Q1VQZ!{<//?faS0 q]f00P5=7(& &I f@aK:
+
+Jjl$.FA,L%},S%+S4 ƽںO2V.\իa,
+oֲVɨqK.MxrdkZ#I˛RrtձxG7<#GihxT"N_N2-@B7nSڛG@B)b£F|a
+C1T  #
+Ak;^B&BeǮy]ýX":[1059D a RWt,ITxBq.AFQL+84G)ULa?`v: JZA|Jۣ5(O A sq%Cܪ2M(!$Mh)  ѭrp@۪Xϭ!x#Orʧ0i:)u
+Yer#dĩ4A$QNy6FmɱbFoy1jJQ@afxl4q>4l9 B6TB28%SbQO[Q&wcqh,0&SQqI"M-G  </: Lͯ(bCv	"$uTP-l
+N[gTȱ-&8
+_ӘtU;9WBԎǱ+ĵkN5e(wLkn(qf[joD۰9P+;C&
+YEF	$)iեy4'FKDr+< "eU9ly%&ݶ]*fbI{7sj|gI#H
+F-#3LJXAUUng($Jukl-[VAĄik~Qޗ=KQ#/]j4a_gkV)kPi8(fߵ6Qyf
+KNzŬ6ve?Ds$*t"  ɌNQB3ZŔvO}%7jL4bC~XL
+RZaR!!TK|"&"J+&itb4GKwK:=B,ːEVWQ%+û_W~zulUM"6ɺ`75Okf2qRFw:G`0<9 RqBxؾR8tg&"Z1GϬe@Fz=c1$B'IѼr˓934I|Jپ4z:?VnR3v{+zjsnel%/s9'MT9DͦJCHg+9 L}6jСƕB),"~IzUdp4t}nsF|+9DܣH裁@_J<}QË"F+k61^Qpy#ݟ)ۜ]Lss<a	]Lu2Jڮ	זB82a$eF~cZ1LRq
++l9 L&KKB1_ <A?Ęq1o 1Y?AזBL,i"6,;vg=0}AOi}Ia;=EbPc\5;`)>b#@K*۫'JRQOMyHp=TK&*ԉ8 zTT΍M(pZ#-9 L}$NJ xV *aYvX~WL5A,|D#SWDMIҢ2eBGeW?|yYc@^1/!t㋖MsA[<YD~=¬g&䢂,XUL2u5;+&!)2V'&!S,	j^T@d9 duUF8t*)0{^Wvpgݸ9$.܂IMy>szI-yrkg	'Pc%JB1nk
+ܚW&|0ᐁD2 	v*FTS*(0|"TXђ
+	s?J5ז|,ĝ&9 نܙԉnq˭C<{|v<[I/Se#d^ޘ3Φ,t,ף=pC/Vb`H 	^Q>N2t.whlٰnbUU_**n%K[' ;n	Ii$MRFjN3lkvE2YN$NA54 ĵ(! q$e§Kyi{[g9L.)P|{Al`E
+98llØEгaLv,xafn[JP1h#$gW0CbUwwЕ1lh&	<Ú0+α1)62>gE3#F_NBx&) pFXXD2RO-!&]xS.`<~ΊQ}xψ֊$}!׷&
+dve1Cn:V.Œ]Mg)L#YVڿYDQhVRC;	H77 CJJK1&fQ(b+γ)Zj6L19 R%t㮮Q͗&˿$Sn#l0.bIH/lͲICٛg H)-6,D[LMKrziBX]26䣕u)ጂ-w\1ɔ$]-S5oE*'d˳۷7&w)8	"
+ъ)5 ٌBGRq¬&^eI3iEAVdK0*	hmd3
+\;شh6`QB#Tόewӑ9:L.F^\XFqɻb<)::S5e!RNMډ[~]g*R(xYޑSbr|*)§5jsR1L9 R։cE^3#ID$*7jL.v
+i+ͳd~lr޲iE+M<堒*=4D¦p'rojc7^rNSD{M#CPb%:+&3NЛ95	C	rVU3KmU ښ*Z.6ZS,l9 LS5,hpi|30jU0ZDnD)H0|e
+53"j
+01Jr6&n#
+#; T3S'MBB:P\f8b 7i3z L8KU,`bUH,"\#	#S5-Tm6>9"sI<1@oM%9 4gVl׌IHUx@39w3ETR) ՘9wgխ7vd>(~뽾$؂vٍ;NyfŖ#DfwQmMLr;)wn)_f-I[._Hڝt$عTz([(?*p=6&93^'! HEqH:I	)T[tB@qI`rd-Ԥ5'Y4KA|s=NdKZ(g$(NٍTnKk{M,\C%])svQ5)eµYePعOVuS6d+6S#$0HV,TR4O)-9 L!T
+Jt+.VDeF5:Ud#֏[RJMSDV
+G^	Ayf~TM397-Qt	$WVޣlbфJh#
+0PFJMkAx.gH``O	zwK0n;IA(nO0A&bZz>Sso@̞09 RЊM#ts(asZ!3r&a`E`c3
+ќ
+1RR-Rғ?%vCs0A]cn	P;Rײ+)ʥZnYؽ=˩Dtxp""
+GJlUUdDqAC@ʪJxPp6%<1 ɍ-T<ZsuJYˮK[]i*pZMx'mT%U9wSOw%):U:n	tIt(̰$I&KSv{/_yf^_m)jSb'MNv0IN1QLR<*3!H1JK".LHPR/9 Rܔ#`QvdRz,qPM)VB&&]X8nRĊa$fT,Fh\JR&H0P=4OlnXhuVFD2H͚JH*yx	#!8֪Lۯ9uYNqs{K
+X's)D
+y{_FLs;Ҫ219 RܖyY0=<I-BzcUP tP6U*[T
+H}{_^c	i^q6S2ٚ!8,Tc	F!(Kj
+id;(;	YfLI$SP3qMΐ)F"<NgD酌]>DS>lJ$%4! ݕLa _A4ldIB(	DFZךzy 8	'9D^iF2d9Rc8tɚ6
+C8^ɤqKk!QI]K+LjbT{J2*'7bhgA=00hiT%T'2,iu|˘DQJTlvF`ud?Oh.L- L݊NV4eaؙQ)3) M xkV&f&JӁ6nWO#с?&lc$zU'QE;W.Utp?/	+	(w{LKЦ+2"(fI6#T@d
+bA
+ܿWd`8D}%$$\jG09 RܹhI}mva,8Lex82!
+#lh$T	
+	GPn
+ ģiUf<tq]È<m5@\Bθfh8jUJ06Q2دPW1R`
+}4'AFJ bQiT&]В*y	-'1 $
+6)t)L"45ir8JZg+S9H-4#UUyybD$P[̸)"Zl#,LNVKffqI<2-^e]UvSF	}h)jsj(   alB)Tx
+D*!39 LQ4bIusQʬ tt&V
+ :2YQYC zFdɕYA9`hr D jX*$0Tv*تoꦚwiLAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU& zFUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU                                                                                                                                                                                             $$ y<B><!RNi߅2!4&LqDCIy;0Aɓ&Ld!!N"""#=92i   8< yp`?DC<>I k@! 
+äT0IT!)`R(h`y",{@ P݂n3G/^>>	
+	D6Pmd `aF(QC=Bp˂	 Mr}V:&{H%{Hڞ*4Q|{'7	_<^0m/9.{i#:@i)
+&& 	(8az2la@[@ÀQ#-` ?VCΑnd#m_
+!n71lƚjD~_cEg-z7;M_/|I@Rω8Ys2L`E7A}hRYyfSU_gNZk^{-AnoAin.2toy1lj[$ Є#L]L V|X.h 6Rl,H& <R-ێW{[="YW50\|(.n"70˪3' F*x(Ji=F;!eVSu]Qc7L{'R(5wAt$xԶI4̘Ȣ.n4i.zlF  <i'$:ҁ-:p ܀+--0Xag!<+ِQ8Yy?tqԻͩKNǝI1ţWў	o:I:+=*Yg:o4ʇBK+f3;1nTֻrT]"+ICA_7˭zfMKcB
+f-`( ސ*%9cr`y#PA,Xgib`UiIclH`ֳ/a|]~j p\q
+
+5<D&m	HR}jf⨙?Y_6K 1Sh\M O6$ $1 ސ"'b*EF_(p?`:{_T?JܖHo9c__t|$C+,Z9LwYق*.TI GAgUB0CO?9~6~7!vo^lm4P Q3
+WzV@[gF̤*& WJ l1 (`db4Z!QBIZ0$FeC",iV55 4ָyVxyCl
+`ipntSdUVryw.x駳Z>7wxas)4)shխ3
+14ŋ?`FHa:in[G1,b ޘcs50P@@y
+ʁX<
+@&H8`A@ᙀt[DY/~UgtIaJ*P&X`EKƉXv!ɄHs5WE')P,lo-,?m|&Q!Nb'¡{	ڿK,+b ޘ8mrX J @D\G$c5@P;;.~zU;G*dIRySdx"8ǉ{ìyCqW209"E4Mo>-q/[@-xbˡ
+0HU汍3lLsZ
+B
+EQ!' ֘+FĜRNu+ 抠)׭>~W2[ G=~v牲S߽mؤeh5~6skYUÉ7$׋sK!J! .
+q"ɪ2PaF%V9r
+<)p4&t ݦ|d"dpg`W]괿.sAekid,9\@PDRaj;<皟3StcZNb;~q1ET)IR$]@΋)Y^}ϛ`@Hije)w=M& U&}ǬY5]U*p0vAF2&gwwR5'Z{_i6_"I	n
+y(FC<L@ g|00|H~0Jx=K]{ͤ{Yop(DyUE9Z&ݫhfmv9ei( C4e'l| 	GBu%"ɭ~袚R~_i6^lNeFNb*h%NL~>c4S0usir
+=SS_
+gfvwYkK:r(ON'OB)! Et1.ܲ|A}jcTG"IxP9{kjծz^Zz'ZRXY` кӸ Ώ<%0-:
+,-ּhw0p#fg!&R(4,FP%
+Кl#xΪ}qj?X%kt	}gS/n*_UI=!eZiMʥ3LR2S(`|Dz˘;.jU5 ďIL:(x V"ܮ丞˘TrdM56qP8e\ାI+Utk+{}{kn#W2(MUbm}zAƭQ <dbntG$s̫glmG%锊8жv&d`cz`p2o|̄))
+-뀲Z~aIuiL1I\M,T"h$vZg<CA<MA!Q.DABHGA
+PǘVQ|/ Hn^h\̇($aߡd	\a<_6Y1*fHZf+B@$>x#a&i:&u&T&j\OGsViʡzެ\87(r|H RIgD`*%,6HcK"*
+1XL%4*՛Jr" RS-dȑI4HqȚ-T1Yz)I1:tLb#a%p5t4  pTYiA&ر
+ S>@2RDT[sZ2>.+zN@ ظ?/t+" ^ȤV^t+
+ʪ+b3؎@;6¥IB7RS@vMYoOn޵-3?g`zmƨLʌ$u\Y	A,ȝNw|5[)  
+
+ 6ln(L
+,\@K
+83(< RofmhjYҷ_Oy7oSNn1ڵrbAFUAb\GА##,ZYr"aZoXΛw^a""B'އdDS)KIkcѮ*XE
+i [qĐT8F./c@x).xod92P@G[b:$[ܢ=C)` f,X9_aoFˉF;A}p6XdϝL
+\nS˟]g%hYw,qRSQȌ|bafD"_%u42@x0LiVf XiB[^@x XL'"lN:lt uL\q?bO+} oTy7(sI5W?CO'HXRM4qZ1B̔rLpd!gmeg{:Mi-R7MٕvU_nh@'Ի>htݵ@콂Tat`04ŕ5)l)+r 格>2d$=ɥ|iW %CE~,~-S}TR_mC6&[28l:O\tɲa:BTqBA։S͌FaesDUԳZF V_\TC*olҾ֒&Yʒ<^1y	2%j" ޘȊ3Lû14 "KpsXxa<ay5xI)TDؽWk+XQ#.pϩi|NC+	ТDmUhL>UEڍa@p t9+11Z*҅
+i@D٣sr7%v μ/;׿->
+ƭfQ+M8GZ$XAsơ\4@܈ةQ0xoȭkϔ!_*ݬ
+|0Pb~}07S+9V;2I4%n\u/[
+9~ܦsy3+HflQ̳S%& ؘQz2q@:UYsM2]0CGF]u-qVGPC]Q]BjCPH.y= o LyYԞ)XE.NK}j&o:	o-,8r}:YWb*"+?0s*y`⧱n("&| 昘zݽK<bѩkS X4FU$4RƖ4&z|-ԙy]5T/640#N>/1hA*y{%>SzW}ݫgs1+H(vqS>U9w;gy-Z݆ɯy=.a_̬mĀ$"x XC*l/6	޵nsފv8M-1$+JA Pt$Ӻb8RX]/ WwlqNJɪK[lʚn3*E!RU%,J)-z
+߽qVRXgԥbc"@ASW-?zW{GUH)iĢ&*l R2 #nՈ.%j.QR*`'cofSwpbS6(&YMӌzX-}\34Rתg߿;{*0ހD8_P'TL6)($JTJ"S $21 E¡x)bļ%*jT L^,Sgp{;88%;Iw(K%ifL@[5Q"r࠹W08hD2oZ,b$B0~l8`9!MLՋ_^e쯀Ʉ1j3Yr(5<vIa^|+G:d ܱ瑳X$hu	O$LjB	Ǐ)}?wܯmY,fI!խ@ĲC,mIj}U* Gl <&;F
+4>gaEQ/NXC@ІWQZ:N#-wVӠ8,KJ!MRBIWB <,PCJ1?Dԛ[ӣedp@:h Vt% hˎjχA8d2Ix^ .ĄWDk#º&#9c¹b=Vݦ8<瓫lN=Nd1Jʣ[m?eRzEJ]]ݕ2meD#f+ڴG"mܼ6B%$8fhۭ0os>{㔙&J m
+!(=FpN;  :Ҡ3:&Ev/5y-lڲ-_BeT}YЯeqX`fӌ8,/b|υ`?{/ӔTe8_iw?3/kgNfiX͂  07j7%j cs$y.5}
+Wn0-&b^֭%##*ޛ`d)ּl__-.(׽ӷ08aN4]l]J&t$'%Kծfw&kY~}i1=?6Z:}zb8 UǓ3P$c/U-==zR&:: bً6wHQVsp7_QV}=l@u$1m	X
+oUwG<%,Б	0:*f"PvLAfg'ˢsT(Ws8VcfP "gH[SZ^֍1MX`= zX*50W}͘l% Nr?:[0ުyyl4 D<	K/uL65poP $dF%)Xy36?ϯ^ϸذ&FSTJ΋O4k;IQk@ز@
+s@!R*4`1C
+:[me{֩JĈ'[ڈ 4xig
+)!3U1m1Yv*&
+6YwTm_` c.\`_z;ְ츑X<JxE̘:nof>se5ʹ``*s)q r1;Ge=9TWSDf#8zbIE؉/4A|<i
+ĝ' Խ>hT01D tD_ ~U~3t'r1fVNwimqYRw76"bPIN8B̲e=NsI#A^ﭳ]S:KaBه>,0J6yC`x	vv
+bc ı&s Խ&X@ffXb)2PptU5#S]3P4!Q[-ZM^Ee%D**3Ww1Xr1qAL_SoӜ<0FTh՝yHc~Υ*汉tF,*eg?%0a};v=X/gIø돎d*A&[ RxpH4=i_'?mo_䑚C-ݓ$bKOyKGS_rbCb2+j[*0sڐ3*
+J"(TP
+`k2wvMĲpqhe~
+[YD|!j%t(Cވ ίZ
+&OobAԂӄ7:H$فиid_suǠTQkΞϽ>ňVlۖbr2bu
+vU,有-WKr(l䡏*UH)%yU&C̫r_wj-
+ ܹeͷΧKl5+~.DeFriHC<R* `660@HtvqL((bF+$ ز5 b_ڄoܱv<"oNd~Ĕ|Į[r5vChw>@' ^Þ基-gz)DH^b,D ݇"1dQ*D-FXѸ^J'#&b0*Cb`FpgX*q7F8`.,XA(QT'QZ!\"K
+b~1}l]cA
+[:EjB)r(3z1!\-Ӓ^~(
+8=K\JC: y/HYjRGŕY0.W
+*9gm̑z3PR7Zb2qXx  X28H8εh6'(9!dŏlEH92il=򓣒m"MGt
+s0'bm%:Q[J{MҼՍĘ%L R]*YsnfR0'!u붋:2K=dT٦|Jq1zR/N
++Pbdu
+f ZzU4}rBqؖ%jsfVSecX6JI.$܅V&NV]rc[fTխ:ɻkn(2	=a:*U0&YkZK=|̚Sĵ' =QkSE	%aX˭$ M\g>df)>حz-˥enJiYht]LN|:>_VJ?&WS=ZX%#9vif][Enk]l%wF
+X$
+&&R[/nkM|GUp},]^7QIވ.{'t hðAA kAn.Zp(I<( uurc((8PPsˋZ.c_=]rC-d17C#DH>wCՋgXDQf@4x
+HfF 
+ra[ZS/X$bf2%NvD%TP@ dҕ8*[;I2
+B4-ZdmI| <;iZ@~$pxs`qc!'߽~>cVwVAbͅDQr S-$-qYk-UF9`" $2  %P,: SG.;05܇RANK(gr$|3Cxݥ[rիb(	:jҕ즙Mox['=vYuKu1SR"7RSCΘlumkbvPPwܩ$v!DNllD֤]5!;{r:M\k%2X ;Hvӿ.s$lli0T*XeAPTQ꤇j~Z$Hl$R-F`BŊb˳:AgyoHpo]$q3~! Nڵŵ h,Qb.[q5cꭽÜocTE-4*Xt$G]"sĉ)x ݊I	"Ĝuj*;If;gӡ"̦{;Sc
+V6z7IoD]dդ)˗$PR #eKkVݘ\
+;=3Zk-ZߖӓٯYX'C9RVP/[)hcĔ$h C@@!|ÌQ(ra@XVfT bmǝSYnjlgu8c=;\*1]RLlvo=e3Qi\a_!刾7$Μ_u/kƗݓεv/*2ӂ80  A 9PN5={sĴ$4 ҋx!B_#q$br sjǰLH)$e:bءD0<VM\cJP5tdUhb+ޢRGy1K^?Щٙb)J1T`4=yK*+\Jb@hTDci<8ׄFM Q&#,[IT-pspQ1fY|f5^חCT,K0`\w8j#8؋`
+0a6TgGRrn̞S5v0;+b^b(nעWݭǮH~5KH_>_6Kii{\zzr]KRp/Uw2Ql:$ p3Lnoo媲rԢܹ%9i돼ƥ~fݷ!2J%pC|D]0N!k5ZCpK m䯘x\H&(r rӌE&`5u"bhldô}Q3V٪(5-$QhsԶd-hX\`hXeD1)}K/׷̾6~?v[[7ܲcxFuj$p	Hk0ZʠY@08xdL
+8*;3gZS&7ZmnəYdٺ!w]e 5F
+	VU`%st m̦]G #͑d=_W#|FSblS(W\p0 JfBbq(uy}z+r l;gߤY{w?{<8;
+UdtC9S+ѯJeS@}& EÇd3H*0MBP@:6QZtNlj2?a/Xmm]\C\eI]uiǣ*(ytEfk؅jÉ떒mdQ,ݸ/Yumys&*SSBF7΍LgKNunTrRL*9%+ĕ'벀 
+tO؞Kk5u=l%fa<.w3bK'42MA0&[lP6P\0$#Q)A~~ud!u?ۨAC&UkF߰mG{QPa@H'Y˃$rW8++	2?ͱĨ% ҸK޿äh
+jBWbp2v3wj{&G	j@x(q; 1xF
+"\v'R˓ʉY$2F^s0ؒmxP+bxH@e_Ʀc~~sgd]e^W׎gr[*?UPe
+=, +xyX-㨄e4U"CAavr}uLJؼvmpꄸ;ۋ,4CGl=]nyvge=N޹0sRC㖗
+Gw&
+]"Q F>qAu`p%f 
+H`sɐB@TjO}kGnqac%`KHM!	+m.G37Dͧv:I!(l՘} a~9V5]kv]exa}5W.i[NlBb#W@2RBe¼.ϕ&wEW& 	ؽR,M#)t%{
+JmȚ[U*z4
+*`7@na]fzlsbG(0zMkbֱZoŋZs)R^l,PE豳?R՟E.( id	D?s<ٛ^Gs@7S0YDnĒB{V&!3ObM** 
+޽
+ R/ex7&(OeVaL֌­e}+,X*kذSVŤ'`33WVX1p/b/bZ
+5=k:Ž~qh8\?\w+&2v:ۘIgD ƣ
+,
+ͪ@VWZǏȷ(2k& ޽GWY_FWZePDP@(
+"55ˣ2ߖP(gw:r䆁*0:@<łB4q;r#i_ՖǲO_dXM|΋P.  d(Y*%`(g=Ecbm1F-ր 9\>rR_	KOv;ET7eU3]7(XT!^:HG!Y{Fsjivy
+O.]Ј\)uFW2U E'`%C8PT281)\m(" L21aeg˳Ujli2޿*|ij  >֖xK;Ҵ6;i/*Ӫ%kH%9K&n\0A)5:@*iՌ`,)<L .Yٙ( 
+( 
+r3։=aT"d/l ܽ1rVjrjwso]ٷx?FK12S^޿JeIꎿC1ګsNAF)	A@:Hq5v_dH0`Z&@)~9Rʊo}׃+Z=G]e+h pwSn_Z78k~rw
+a1Fj:j-ѕ.Kfght
+ƃ>J1Aj$ltX#J#D C-@$}[ DV`. vy-Svi+5y7n.d (ŔfËiӘ8YC,[Lsm
+Yv9ws+f"NbǕ>Zz{Ng5m]!r1*)YʓJ<|xtBO0t10n"M#G<2oX
+` `b|i6o# A3@C@%r 0` Rۙ9i :m<Q	~.*
+4ibg%km\Q_:#^qzK4_^iwi>#RԔ*~v{e7o(tDraDTtU
+$QXiEVjBQ(	A cw@L@  a ] FL%2*\ 8x%	H[<pr?If8͚[Z悉A``BL0U*#bTaL.tB#jE\`8;eymG14!
+7$ϖ*."K
+	b#3F
+#
+b-#Z
+ ǳ?!C WX_ɳ; CC!@0
+%H lYߛ9A(
+P.cAc,-qpЂs@
+w b];kqKʙ(יpra|MDZۿZJ㊑tuz?ǠIX
+U_g#DT:cBG vޫVEcQ?VHȟvǅ6:ȋR2< >X+φ~XL ǤM@JĴLE|w)XW;rjP+䦳zǤx<*}CKA^28@qf,X2ai'aHf"fU4c q'9<J$0q C` ѐ A(T`p8҂,Hc?zl `B:"z+P:o,NzHf '
+|+'b3ZÚ3 SqK<Z6}~!JO*JY
+ou{boy fH޾o{zU|Rwƣ_<1w5b&z/P) ޘ	g`S
+5apcajLfzNńʀ߱2 [%5l.ԫEc|n*iՄ,P禝=lmq/۫ibKzS3FS;P7Y?=
+"a+J\R֧]0@}"$CfQ[ZK&7bg%eKN$.+&| R#"Pg_)b)XTdܙqKW5E[[vfƻb}{0xS>5e]¡0Lh	V#<
+r0s
+/#0K8΄Nr)V"~Ģ+%R~9GXa=3k`H9KPm{/t ܁@Hm? f#u00$0P c0kZPVC_&˳qo͊[ͫF94[şgU0 yOevCDErxJ)06i7jc$Ʋ־6;yQJX1էU	 tVTH+Z++t ص@F7$ccl2 hƉ#24XNr) O-]{)iim_OsG"%-chc}9OB?L^9<iV4rw?HB3Niv,kH
+	w*c#rם2HE'x ބ澂3*"
+jCg0VVOR7S 9bzZ/ZRQsr-sQ[ ~1֫sܻt+ҷOc!ĢƪrqhZ3c:`(N"G
+<k@7 lHcjKn|_ 	o*'2t DtB3B%)0
+S@x[|vbM6Su,a=-WV4E
+7<-քwa(U  
+fʎ$	@c|N$1HbhO&-K"sS[rHlL)]=!l Z'$U9X7T"dG4Vm㸞_#sl9WԒe{	GPk
+
+6HITG	b X(X ;oLڜ3iNX95CXOYPi|	i.{OO':{g{&w i%` 1?*fUtJ"6Ov=Ja<r4+wE.$]F82@	ahY%HKBZ0NMdLdpgZ	9
+'YJf&)E'u=j[-hԺhEytN+vޟaĄ$rX]h iB `	\Uߥ*љ +
+.eFT&l4`1C2X{5beRN%FN8(N6OVj5Հ-PH:yƇS}"äbr,-FsYv -8*l4x{L8rC	~1F(P.3q}ĤC2xx_ԇjIKk0SqmF52LXOP`~C"e(ekb[n?N-L/gzk/
+g1Rsx + 	:f\qZMgIh:;+9H6Da-nn+Lā/=G'Aրx 6d(PfX~L(nWgV+t|[`nO`h
+$U (jHP馴5¢3v`:	:W\%x^Q2 )Z4MY#	ng_:[Cp
+=ZEjSl!o 5@`S"dsjYgkbw]$ix &7}b
+,qYeTQyTCa!%&лIIwVE_ƈnK*,2:e&̹70p#pȆ9t-,f:S*7TU9{(
+aPLk49iQǊ%
+9LSMS<sZcX~$t θ9>4d
+OR
+2\D7"UsajR`8FSܶFRrqڭb|mDHTcspc!/jS8=VgcU<
+^YjVJV\ίgޱ&q{1JzM5w{z6<Yv8<tmĞ(p ޔZ@58
+lA ~7U3wBU$]cm[]
+Q@1¶F
+z*ӸnΦHg:!QT+J,:9s3[]R}/Z֕۴vXngwP@i6ݍ2Q1À}CLtF)k;İ%˚p ļ9ٛ]JŮmD`=Oa?E2$va:Nt0jĝ
+Gޘ-ym0"PZ*wOeيFk[TdcsX,^fojr6[<a.SX#X+i`[huՏfa5%p XMMq&9И9=>*)gZNyiYƵݣ{˚N(S|m}}O(<C	C;Y.Q	PLi!J3&9XjF(
+*! g&nߑ_.%Y}Z>+d ܭY
+֒S)34/>j, `c]l¡ň'BK??,Lv[ˢQd_߯3+Q-ir,ѡE*A#ccD@0|ȃtR
+2L[s_־󯆺b7i|j,d _N&x@ALܕ2jУCuY~hxWuwd
+);,_l("&ee|<<25US֜tX@ACZS^ߴ#"罢a)J@=Ur-A H!7,?nvK_o˯u4{,d ܯvapz3'	뛦V͍FݩY,}<]]|{==?9IpV'֓'[rU}r\{Q=M-#0;Wdݏy[\~X	p"k p` 
+3!^ɴQ@ D%vկRl-{d _aHjLv6X\Wu3u5VQ3Fx&~Rjv`ICB.S8p`Dn Bf0bnsVY)bN֑r2FF՗^8RX>cjgiX?>okN!3)Eԙ&-,.h Xϱtv߿{܄6;z;soq!0@mzQsD|F ܭx ܿFl  ޑ$56mH6U^*2b}W!9Pݜ'y*mCiE
+A2O?z-QeKoiKgFf_#vrhKvޓ,6t ْrQپ&kט)BJ͔ǩE	I ĵШ,F81R6@Ȝ"t8Z&*$(ag?S0o%+FS׿'	oK_j{8]sj D18g#H$NJD##mj-6 ܁!Ǵo=!}2Jo_c|Sye!H#D!H2FT*5ƳYCˡJ!	0D5$AaR<g-fJUn'$(U4=u|fEWKņⲒ.x}>\VAA_/=%4: P^FmoHel?	N3K1ƜluNZ[ICb  ` 
+ 9$`@]5QPD}0K7'Meyҁ3r|i{Z}0@u9_r"fzmN&|* Rݘ:yfYzz3m}I蘫0B2(dA;&mQT:NmZ0$KCfy"ѲSKΖV䒡4+XhQzì(n>b(::ER.2\M6&&)_:IİF7v&xsFbo'2 XC!Ͱ0UQyXkzMTsUL:
+Dk1qmc|=W?Y^._م5m	W,OelSZg*ǫ|׊gypbԚz]bLZS	&$FQ^e)]vcc&C7&fk-<: ^N-*]Pzǯecmz7#a{!uhvUTez!yy<rhVf֚eڢiGcکL؎Tɣ+.:Tπغ9elw^uU[jYdiy(pt-v[T=  +(%-4qTJ3r+: X(wz40MY9e4.#J-*1/IpF)"ԅM.B 3L8DSQWj/!+ٕrT>C,*-qeR(񕱼PzkպhRq(9C']rjgꄑ3_k*>茔@J\j&rMS><-l"| J`ZeoU>kY[jD2V2Wm!9!D֓ق졂 m	*"1IƵius|UjigJHTB޲sjWˍG1o-֪eêQg=
+UjQIU"m
+sGZPi[\dڞ$k#	QPT.\ c<cӫ;I^/MeΕ%U ;q0e]Vt{sa9JmQ-r2zl̛~A1$V(ޓ&e&"ww,؜-jٽpEm[f%V?\=m6yi	4 ? 7E^V6ec$l*C:0 'VtbŚ:eh<HƎH}KÚ<iH8P#]aAB$@;#c:hc+ۜ1tv?CF#Yb-
+\0&bhY8,,'2+w$($i(rZ@`XJ.50\*jSnrI."  Pmh΄PXc4ӒjڙuoMmM\a;\-[7b]ԲxZv l#gޥv-nU%Yy&Hy^IȄ5Ϧ1AnU͜$Ȃ"sM)H/MfvT0
+D#6* Id @]ȰJ/EJ6B[Y&IIMYGZ$v'w#$V!SaLKfM>&~u4QB7L.1Si5]-
+|t/anXԯ4ҧ_1.A2BDYj#ʑIE%Vb5.: Rjrt+'CMMUREs,ojfQHDKvJ%SUCe
+U.4+$LfȺgsIlNI8GѤQ?afDyNy9+rex%
+iӉ54P)-<dEJ&[f<UZ呶Y"Vhr_JtR),ݴI++. L^T$rbi
++dZ]-UsU5L;7&ȘY-ԥ\h˪)rӃ!Flqgm+Tb;ٳsGm%b-'-fL
+C?g:U'13[ץUcd.Bt3*yTF7Bdl>mMH2TUl0t)j*9 L:v
+L˳[LIcK&"Рbm
+jZK!ɪv^V{4lVm@yFgí1*nSZ~*T[$ґRJK4i
+fʨYgNkX
+L+/M(}33X˳P#rS&`MŁᒁŬ01 Rیem<LU#OfjM*2
+0#@V;FmAbNWav'ΔJbjm|V<k9rΫݏ_f
+7E3/\F)ݠF'i)G;	Ey-,R\FY>o
+"mhtNB4e(T\P0x"AJ') 6^O2Ͷ8JȍX2\P@S*%LGY\?QQ頓0R6>]A
+j	"DTu3I
+ԁͷ?!AXkl-V찒XH+<m)u>bR8⁋nj
+AYWeMMi~0䑅	E}YG㸷^
+`3d1 RA0 Z@ ]qqZ8[=;{xͺ!̖2CL۞YkY emsu֞յ?loGM2\%U)n$f)fv+ q&&V\Eq [z\ws
+H(~]av	%9 ܎=SBL`HJG$Rܛ5qJ5i.XT%MeSn)_#ZxE>=PR)`\3Xጮ8UE]I3bu̅kiTXlj7KSq&r+ORǌVCv_esnH9 ܍p'NO[Y8[=WlHyo?XgpX*>R9
+ܻ:'M]h(Ƴ6,SZW}!䙆DtDÐDCq wP3
+d61t}-a*	"lL`좱rR栐̑_ghј)aRƬ(uĉ&t9 	Н\MD)2YM)(F(<Q>N':]#M)vm2IIeZc4yӷ>ꥑGȖ)dWѱܽ$ik;ÕV-ĝ$ͼm%4W*Q?6sd9*$qZݯo0lsҭ$(5dT۴J9@TĢ'9 G X9Ö/&1ϳ'O	A;&OOOSN4ƌ˨mq"w8 :O9*.	x0Ә Pgd*霯Bq<}BM
+<wI"0p0e1b7AdgMygyY@@@@Ķ&	 ن@C0`!!@D
+l7Ԙj%B
+` R
+)3*ZcU~z%^1ffUUUUV`AW\"|Ft:LAME3.100&{A ƼLAME3.100L  H                                                                                                                                                                                                 &$ R{
+<E,.@oܬV+@!?kHGTbѣnlAbzLWFPPHhѣF4d1 bx    3O㇈F o f~nC?7q aꀁACL=E	L 0و+cD T1$T <L
+~`@lb0@aP>K주{C}Af,~\/1& l|X3j@H1OݐSя=Sy+EG5cs\i1lG<K|
+_eЊ,Cx <(u^,h ݳb'_JJglsVʩ>ODM{A4LJsb1?0gL@|@
+XÓ	4dvJnY\wAtCk̝n^4M֛ZnAښi7Sf_7Nݧ*}a	aBDaD9%oY$R.2t )`Ąj';˼z#
+'r.<"QZAD8_1#{>6MFlfCLx!.TYQ <}RJ|G?e|1]2&٥tS&UN6>aφ1tnGw5˟!*<"V>A ]g,*| ue"ƯZwsS3$yqcgY,J1jm+5T\<X5wqAH|PʰMGeQj|GVxQbܶ\ײ-T0'3Wۇ<S~v5#j3BLQ0!<(dY*ˊ мx^&	T"pWlʐof<i ΘJ|{@<8e
+a󕐉ǉ Z  9a(ՎK,\eD1۫<ɿe[=gĽB5Ɣi_I0fI=dƈEv2nC^0$,[ 5!DS+jvs=!K-@bwKsWZ,.LZEU¾\>ZU'Ѩb$Xr+]>)I||+u*>)y":-b噵9T/muF'!"3y-	?/$ NݷuA$֦"c[֟iH_ǡhp9Ya/P{77O21SkrYۻsSQ}89`X& y.&8Z>5cYĆ料Ϻ:k.DXǆʣa$0T93[LԬg+ Ɩ: *˞ @PFr  БۃSwaJ"#ϋm`Q4<6lS-9CIu1-;-+JT{rsC`سr4,UX+.չ8cN0$>yD5$	P2:Ztd!EBC^C?u# ޒL_!aQH$MB(2 `ˢ--hr9ngx۶aeI;܌CYY6*.Zp[a;$4Hb}d:< D^Y_T8;~&72]mjgztPG:_=*ʌ Jo75E<Օi5Hޚd8WSGI\CatfHa*DGqW!Ys
+0B
+:(8+\^OT>\p$!Fz %{i-  GVHL8RՈLA9X*[[
+!n
+d6ٮ/IrrH& %r,/mR;q(~so<tʏo5Uyzh0K;UU-IDʊ%EQe)FcXm*V"@ٰUqa j a\lI4qL p쥣=yXeȎ86\_vTi]wg7]cϸb'cx Mġ!ćۣV"u\Ì#W8DD撴my*=*<J 〜aF9P`<(%C)|Y\ x1xxԤUjTop=熝R
+sR3|}|ړoY0	D#:ݗw'p R?H@9 @ aÐjM=	v@U@ɉĩk@ }tW-tTm=p*³5vJv/A+S~^zr;;[pkCeS{4aufQzw]Ċ(x QOUrR Nob*~cɀ1%(9l@]V
+f=-uX2ZqFmd8.k1;8E҄d#Bv%Ҕ^[LխjqzmY]r5*TĜ*|. 'M',ȧRI35 ɤPH#@aSHpwmJi_#t?sx32h_؇"mjHB0'x/'b(VU`E:X!$~NG
+&0<geV8S̳ɟ>ٞ2T
+,1{xY*(ĥ'K j ,tT"B2XdP=.EUv|n^#@wF9Q<sI6o}FI:Fth6G71%K5wZJIukmj׫Z:LᢸV<-i.M@qSpuS( Laĺ&k ڽ,ph
+H(*QZtw5|,o~4\'I,Эx6<?k8HΥ75gsѧV;TfUe^?X5ǏJ1#c:ρ3Z~KqdIL@(o0ǀ@t
++p ?"q( 	 lLv KfDD-xP74I68b2fE5&RdIZl g"Saz|Mh]MZķM}k6BXQmpg?whֱҥ#l=
+P;4kA		'q0Y0#/{h ( 	 \+X8TDTvʐnxR"G1|k0owI-_|X֫m]Xt#_Ed]Qz)4ctB:;O[5k3p@EB+SG혊d@fbQ4Xu_BP 4 F@(`8bXLr Vy)l Ulxp0)X2BfF7`joM,;K&shQaM}a[O|8W8tdRVЮemUEcgVSTgGFC+PȎtPA)7=}
+  `	cS)W&	0 #KmYU9Z~se_$.qK&Kl ]F>>ҺԿA.wzn3߽poxW8@[ViO:^kD,\mv̿6˗o;c0
+UYDЪ1|}tU*>/PC3ւb)"2
+eKtwGĒZ;\95T45H؁T`t-+P ݜp~-i4^H<@!ClKSA|$yld8zߵ~Q
+b\)/5
+osQod2{o
+{^{fowsV6.WuUH[B8`XZJ0HM.<>Qj,dck0W-<ZXq`	xa3ʂ^f܍?zT"fwJ$ɝs̼DNzȣT_CCŵb.	v.
+NOܕ}gbvΖ\T	h	i<dcee^xl/po=nkpn	1(+*E[U,;,K:(x V83&*w91'PIQe|+*h#lȥR<8ǶLo
+:2JkNU%$A1!9O6gL	~D| -$0PWn%arߣ
+c
+ \^N&2e~eSֹOV_FT\i|ď=R_Ú1mB:| jV
+ar_VvL۩
+,nUiOs<sxa覷s</$9?kPW|b_rެMJ¥~Y[alSe1ku$#*ptCv%K1XM ٝz-anjpU
+8g+8J*bnf)zۀ "hecE@hSFWL%h߹(j|wAQ@
+ϑ1͢R8OYK5'n}eQ,&W/gv1/bnMy.2i$β*Yi.uILFZպ3@AQx_e:kӅ(?FƮӀ /2 Խ&%ן
+xt<IH@AŪELk~*RRerU~JU/(d|T\p(LpPDI))ct)IɅ¨dHpgT~+ݴCSl_f?vI*y /*n ν5JXѱA-5;$i*p[^~Sw,1u+o]q[]S>$a,lP$zHl6
+D)Mt{[z==H꧙gBro*EZ8Y\+ZAFC:(F)3`ӕ&ƈ 1G@87Jި8XZwk܂;A=Lkyw[UuV3>xmʤUnvyhջ?t0"Qr4Y5ҕbn$(x@J@}5YYh
+uN8`2`7c& $bKjru1`6!/7&Kt !^E\CBZ1k0彪$Wu\:XS>Guͱkn1`؊qYǺӵ?g޹k)!Ę,:(P5k)D!V9P ERR!RА,n.ד+Z]{i-F$:|w2jc=C&|WqV\IP'l ݭgc?9~m°  4:f?ދs8$(+S	I
+)r sWbWk,N~]eX`a,Z}a<@ *
+  5+P|n#!k-{%Df&
+Rg'ڀJړql˒Ý_8/k]Z\uԡ0c&Ch ݄RȞo̦*Ҋqc\DOU:`E KѾZ
+]l(*waApkڱM}݈p* (*_
+Ǥ#bg!%#CŁAM4jJqbNl՘P|qGCna	u_vd?}$\[PULqD>9mjBĲ6RZTMHCY#XUYj3MbQV$?YHFqI?縰+'D0E~vG*f}}=KԤ:a'Y80k ij. X(xʨ{^♄TrĜH: wSFh#,!#֯9@B_MZOu//AHκ¿GԿ;rs
+9+܈ŎTo`PRo;_o07;4C0\<Nܩ[w|mw@MjG+$
+X t;RPuX}cI!kZO%Ѹ}	mոSTTujurjIH{)u歵hh:XᪧAPTx*vh
+c* ("	B@bhrT+KY֖߶:G PٍbqO(79'eXX]M$9 ^"G`#>:hf2ky (ojCVheϡEI@\8"3fP,`c@hp47"XyfapjR0'㿋e4/l\R,lQT(2848ŏC/X֔x
+eqho& ޘ<ٺ-oخB夠o+nWU%
+FLS!@|pp` !,,k$a,F3@KՖԛm,ԑⲮdf|MuO3^Ukmc1>ZZxO/`(
+*%,?J}]Ĉ&t lg).u
+iF9eJ*Eu	(Z1 4`
+£Nvxf_k&{=d<l}ZV8ؾ}ovߧq+]eN\ 6LIbO3s_o7s(bQRTa$2GEC> ~Yğ'p 88 017:4dAYN1
+f+Gղ=A)ǆ{'N}7[kl#ᒚkh4$	>lxޟY~s#uz92W=4*zNK8p`absȜ:L'Gu9}["NLĵ*[p ܄RF1S5Q;k`֚Du>5/\CfZ$5UDX5]Q86Gs?V0<gbBqCտ3r7Cg-SՈ'<͕)Yƭ)&閏#X@xjPyHX2\sľ'*| }~ O@8/F4'Gc޲NI
+6)Xo[㹼iJٞN9U\E@Hr0#F>c	#YJ
+:i8XK<0QSIQ515}eQabBw<3>j6u% QHJR	̙z[0{=EQUY,4Vo2?r"r
+A$3*2L#b@8a[EPZU.YG}nX(
+ m'Ye;Һ@mЋ|I%tzr*d*x ]ndkN!P2h}5jSV;z-TYهLovg籥V@ÜRqX >'D"NDćGr
+I{ t)!BFCUrT`zap!rL&/;YHR:|Ċ˯#-Bd cu>ʷT 1[
+]e.2l \}j3^٦q8VoXhj_/庪אM<*)FVo_n$Ϻ}+	0ŅyU(0q2{4YJU*pp{jJL*[lSP:ŅwҠ)	}.ml.D2h 
+ܸPV|?d1HƇe25{|mȅ傑܏!LΎb0xSOg|E+X`	Dn&ȬKP4h"?՝a*i X0rŀ!B($+ԓaxlCpQu-G6d峎PB+2l 
+vt>]vq56܀߻<t\]b,*9d1D@A./碝P2]@. <PhHP\,)P§R]dWQ* 8P̊tЖ]|k"
+m"4G1V|w*EQ
+6ZQd/-T:p 
+ܕ,'?b$lb$X3Z+LHÝ˪k5qohM(	8Avq.A`,_IO{Y,CXT!8;acAD7@]@fe0d(tkLÀ[ZUc$)ZI?]@X, <W!-+x ==VPo;9!%rsOWՔ;H&j6Rsbm!_T#Fge.'bmzw6G6Q(BLd*b9oP]{ڙ'TW&7
+{ݥ
+ym"&53Zض_9%l2#| #+o~~S2EGĊݛ 1IxT.&g$=c
+l
+jl~9ҹ2-cmVa=Io$pA7$7-`.y?%dAޏvrgй]`܀_(1+cT$䡶ޗ{"|K"5KF>B
+t[dF: Ud6t*B	8V괒8ъOln
+=+δdjJJ+,V\nMD?K
+$H  g*y -11I6(ã´ln8a#h$J[28W3rήelT(hbǨqQ.[7!G9l@: B?a3A0ݓy	x-#o `#dZ"^ Cc8D(M"X?EPʔq & OᦒK1ТfXHQVslITWlS,J&CPɿ>pYkGG>;[&&L (Xݟg=f.qa#<2qfnm*l
+,1A8КWP*\sχ	F*V	qՆzXF
+Uq->a\U#_~zfKGy^Չ#})({ӳ\}lϵMkؼ<٢:4$: XGecJk-y K*0\~++>S6c<XiuԾ_4^:\[_e۹z,Ԃ?ՌFVVr?r1)i||שOON;^Q4_
+VWa. J&5x&*S'D: XLs]VWZ}/mYT^}KM?rY:5Q8)g#Z?hbT
+2Ԧ'uImwS}̯K
+;0J.n(DAP,"e`\<cgm{6vEޥ^~Cwˤ_-z9#,PRȳ
+4i&3 J݂ʫ%\(JGV%[RHk֣D&V
+:}Б.yvÇ}%+z--czmWRr~9bNq(wGpzN@4 9P&8$-&(٪dw5ŵB֝
+}گK|rܭCu]2Bă$| и (XCض4t)1oآo4 	 )`|r#goR[*PW$\0D$<:
+C
+ Bh9芥ENۧuTEGK~{.PԖ-}[VG >yuZsj&8ģ$bt N!PxC(2qOc	f,t[gQMθ
+  U*NwC\QܮCj +S .Ĺ1+;+#g4`:DGЂ
+ױC[f6V9(yq
+p=7*HTn>oy&x 
+ܿ_NbI"IO"Jh
+#{t;V3zV{AVre+}J̌Yn DaA*Ν_Sjs.*<:ާ!S$jӑLABF<"@IZkWf^#nXoxl`.U&| NP%VwsW7F:SR_Z8:E @VZ7Ahz;s^aVa>9Mk`]K]h4	Cp P~qGF1!0! ـe񑈀q;YgWfbξ1.Cp ܽR!
+6꽅^}a9vJBe?oO0	ZzVޑQJX#)E?qoعi8x>_,|JQrmK
+ʃIdK"cMν2 'Ըhl];.d ܟKKaO 0.`e2OYJX"Lr3BGAf*wzb5mi<}u)o-nÔ$V=RZ2Ru7#CB88ǎ* 0i G!m|=X2e,zkm*.d e2|p@&}yYkqOyE)G}G_<DFP3Sl0z.@^
+D!QyBJOkEWO0#!pz&>7EJAp4iCƣ=jYqVVla":90H1NF
+9KQs_1$*X 0ԾU?ޯ\_\v6<WjP#LG124<RчX5AXДSq_Ovsw&bhk9]F5rr$gK\,®sBCI1$ςwD  Tnቪ-0,RLZiJ]Hu,;T нubHz&^&'ȂӂpYׯz[=ɷ3;jGcx!cd2H
+-{à+
+K
+K) D2NMu D90 Nڪ[O3"%řwB{3(Oa@oxujL
+ѽZ>SP#P ex?Xѣg6.$3ZŔRYT$2P`!cFgA<c[M1|[UУcYC⭧Nk>F=-i
+bܑEf	T*0I*$@2]K/f3C(P/ '3L]tH=2( ,H*iF:5n͍:FQUߩ;):QxagJ+ɩF[vԈsħjP{T4E"hm=/ƼeIF.*!o<=ܽ*0)Kǎ.KUqxjJoM9& AR	YcY$dԋTD0+4:$ ьA!~)߄I;ޡr]+3t)+Mݨ
+$xK2(;e\<(la-%=5%gB:XN$Y
+Q1q|/01)>#zJ!*%LڤUgMmuޢn^Qoz{,d: J+kB\D(B$-Շ!aoJ(YPMeVSw4.ƄEGtQys5&t1ʹRȵ[ JN<%9rQRq.`nԉlҍ6m8 
+̪;$3(_gUL}jIZPDE=aQ-}TD$qOVLJ+ L݆pTQ3-9Ǵ$p
+#hYk.nrxڝ|YmzڶI$ڏ2J'>Q8fMQDѴ^<Y"zVpǳq0<3!@qYiHI"5Y)#9wTګsV=K]#؈C$~59D+`.^:UMdgj.4: Lv{2*q1NkAkj]THyVҞX3*pЦbǋZD)EŒ+Cؕ{4=RR0uh,4tCK%W(n6j%+f9߭s-ܻZ5zi0E͕E:jD\]V
+ZDZw0-W,9 PfPL^WLn).,tkc<=;͠\I+xSȑEƣmǗ(K=ωItuwno]1
+-ў(\X$xؗb(s)-RXCq{?v*MCyJ0M$TTTD24BJPv?3#m*49 ٌP|@#2̥d0#9Ȱ{/D(RG|#CFCaYv̞VzL[(̆Rȹ+G,e)lju5K["태':d/qD"K
+L*laS/9 LܓI`5rHQK)!f
+աfjD*ĒbZi8%Q`jHʯ92ĉW39D#%dBiּ窯vיHSN5lT_gעEAU(1
+H!Ph`}V5$C' vWJ^+K2,! LFZCBCJl_z2faGIƚq0rrjN4,(ʖvvo4iEqo,N5%Pe4iߠUAUWNPM4!}7JLAME3.100+                                                                                                                                                                                              %s y ViCLÏE9֬PA a3DAd.'pPy;<G3 Bb0Y"8E4DDBwwsG"eaN [w<;*L;>f ?=F̖*13OS
+|$3=N'S, *Mpw 	>4Jy*r&*2d8W'šV<2>DR"^Bd, GCFGNBG](B;	B"F72I@~t FFЕ}}K %,8f*Xzh+c[23@ rsiVqRB-{KOTڅ)m|1 ~)oΤ{y7O슿p ,}gءF1$\qBAyB hxp`/K^(Luiw|W1߬ETGu6Qw%u6euoJ)Q_& pC4 ,t ^,u G<o7S 'Mf'j4Ohlj/-z,8\ܱlIٍ!w#8┐Hx:#Gl	ˊ*Tj贇JQ)zxͱ#͐aEXBvgsnF
+Y#ֈAPt0-R ޘŉaeDn2s} U
+ƍ#  5	mR"h-ӿMڊ[9]܀v;euH<i"+BYoltrHaDkav1`k;}>Ǽo˿걶(^KYs&檵	E~B
+8ս$0w:N,+ ޞd58]dFA
+3X
+,)Q1jGzY[Φf&w?#(dW9'72fJfnXb3Lw5,x.q<q%~ORXLB]6`F*UBs_5YH-ܳ+KtۗF- P		TPX 3P~+u"g,+J+#\\ou~jz93'0cbK˥e:QH.J]^ɤ^-XuBŜ>ԑ34C]??2LZQ5U\|u#	\|b9޽>vj8<$ykR0*C G hpKD5\LK8N˝!Qf["&zZm}m#ipQ;)\_-i+x$_N	 *xsCښ&gSQz?nގTGvlҨwdǘF? 44. BS)YF @mL*	pLA!.| 9M[Mb^Ӳ_K]V|W9GPufskaTpʘ<YSZܦ*c14+0.FbUmՑrJ+S9Vm
+Dr#rCas%,QdLyAX|qUhpf)q&O
+tNEPI2G+h `_1m+6
+JCThAS3LU6Q1hlUzfmujioWa@b)`f
+EVvellԫ	#mjII:jRGM#ҵAG^ }64<"4(phv*XX`!(;d SḰbؑwDN$,.}b .Eɣ_wyR7޲SH[3 DPlߚijvowi=[5U0qy#%Mbp\aH>@,7& %1dD	9m'T
+j1 XZJH)3'+`]P !!FSR"$eDHԀ#,s[vCOr))0RjPɖ:>MMM|!x$|4zw]_fpT2b+	!F{̈selUYM>q&pp;dn{sVxSI7x*TF?~d<d.y 	y"d!8vtLƪVod,@!Mhq%REj?g>5qpx;6H\j="~;oۢDr&{V[Я4)z|b?[lj[J0O{"=LYPH欓ծJ%
+x` ]ʖ-t[7&[K\!Fl:+s4uvuծi=YtUZg;M1cȨm65AQǮ
+Zubq= R02ړ! 0S2AIUUlQDpl4=bX1T; 9$ h@L
+tʈB؀'ێ;{{*﷯p(k*<xc
+:Lu9w>'_}ނtK}|:}t*J8P97@[+/;pB;_\?|]ʊnܱvq媽cP(6t<f_F-Y'&  $ѸX1ڞ<
+!u&A
+{Rb-=m1c5^=v=iKMwb1Ai;SL
+`hga_`Qle1r
+[laTb7,
+a9VomJ=A+:-$xRgՆue	-'p;Zl&2 ҸH\DhB``4<4=U, -4Haa
+Phioa	SU?WXmp-bM}tmv6V?X%IK(+H(
+,/-=l%
+יj39-U[ă&d XȖ<FycE[[Ӱib'U2ESU/ak2wvs/,w+/L Oank(?Lpa.0Fjzy2ɳD̌Ri[ ќ0b{wZC3ʹ}g~{ƽ}{tݧ; 2T#ě'LY0cgãӃՎYYXܮ_-H ĲľWGʔ%&P}gݧZ{%D;<
+d.]řd `Ba͡NKah$HU#l'Ikc0q"LXl@n9Z~0~YE-D@EeYF 	0DıFd2xeB}gYĂTr[ #@p;^Q҆x;e]?n᫹׿֯s'@&
+ҫ񯿿xݷX)G
+hHD-<q>nW1!HZ&s4AQ73:(Z}^+J/[x 빑--QYEx]rU5lsU1kTRvFT3R-npQnyJxw="k,VDӶW Þ?7ԓ88cY 4fp _kC#.L0(@L<Aaaㅢmu(|->+1̰VdZr݄7\Q?%: 	XEu'O/hyՔzuVNb:cK*mz*O`:rAԋ-LMkzWZM
+)>>*Y> :>U/ET>H!1YVxwv<	鐖`"Dh]i/!*HT[DFELіБjR6K]#"Ҹ 
+Lu{ja"}D8Lq#^jUfq]_՞#!f[<
+KYw_+Y&$H~V:.nNBĒ$O&0B'*iִG4h%E&sRVmkp=yի\aK[ZzlZչZv^ă& ޡ'ktNKeꠠΤn6ߞV2f1wIW_^{|kmjPhq@C
+2hʟtC<P*O&*ndjjMNê.c6NyoǺZ=S/u^5C'<2#	>d\q+5W8}^ě$ ָ evAFFǬ\\ubp}Ӷw+ž.&B1r;Q^F٭$@G<ŬBg^){>zjYŞ&_mb6؉4(݄0hشW~
+ai,ScDĻ'҈ wɕCGY8Ni b`r
+ T)Lhe&`P=^QQVyu -i21scL:uV^rLc$HpJ3 j+AФ08jL	aϼxޚ>iy%wTu&k΄ :[s-@#t!جʕJtbBJi1b^`0|5*ppjEDMڷK
+аY,ݍ^j-lZ`agqՕ;08RsŦ3W@!3 ؞H1wa˵O,x \h˕Jz;Ja
+o# BrkcYo8UbFK#mMq>AEKpu*EVRL?w3DtlY饽NUv 
+0Y7XeA˽L0d*gwС!vĐ>1"<F]Hl$Z[)Rx й{6Q4åW軤FA#Pg` c"x>Q{#˺}Ù:m5za髶3zjspOb4~?_ڢK|g\{*wo>;IX(k-2$A 3c1x>-rxo
+>3jaE0D
+h <	"F!Z3eՇHе;0s9V<h(rA hi8D)Tb1qEx8%:C㉩j[Ә^F.ȌR6dRT GmtA 
+a7I$KyV/.֟r,k~x мv!$?\ɑ\VȒ\H|4Ħ?J#<&X XHb9LdaO<F
+EH|W~߿>i;;Wt4->&zȧj (sG.t 0P6zfT us/_vfλWZj*N| 0_va=n>.Ʋ<R~ 3Y%74th8Ǟژ{(t8WCi43q)SbcM|n}PQI*R0@ tA؝"	h @16J@t4b0$/S{~
+:q5cE+| ݷ7V1oicdiKS
+L;+ZՅb%+o q3/O]6i翋JV	sR<Mu;8&OC4j<
+ɴ@0 1nk#P $!TbXh?0<p 7ֽA*Rv5'쿙_M{"YF?g?力ݭks
+# {B=ƥ|_$W<u_ܷos:RsLXQ0b16
+V%D[mwfu75벰B HR=20<LE`@cx8V2d2h u֬zb#XQhW
+
+TtlHfbľL)-u\ou!(A҇R7v-oeqFF9_dAEmAHQq |"&,*0ZDD,q;̍{
+ϴOW}@A`8fc-[l p$'̪&H%tLڎwo@8)-PSg<F6Zp{JW(
+YsM>б|R\Gl}Pg,sٖ}MNS6+eFwB_^"ţXhD$GJ:55|I4yՇj] @_-l ݠc+/sWpq᰼9E9pOqv\-^o.s+65e\B`I8zr
+qC%ۺ:&JRjb!gU}If4zfI*Bj2TR¡ު]l`aqxk<L"#A1X+h ܄eޕ
+'xNi	8jhf蟄O#̽=)uCֱVg"*7ajū]ͫ5el޽/kj+5*+
+q,8G	ɨ&]('|c0#Bs0  ? X[=`I"E{$S%?bGÓt\$l ļ+}YϤMOfRg-J~#Zps_[<;?=:Vu=_kqIZ#'JB/?kJBÒ.!茎.hFqqj.}(C90QwBa`!E0	E  n00{\ M`
+
+Af&)HK9$HȚ"M'J"2A+&:b*Y4oYsc9Hu{5]fw0AHhîaC
+q !6i@L:0KKaM^)b^ BG=1xU1& `*d N('<KqW@[ݭ{r|7~~e[<5Zn!CI#B_,u;Qm)+Xti{N85(
+%	L+f Kc0E8X"nN'0`#S̴^M %
+2` ܖE&\ )Ta@_GhEmvj[T'u=wOHzkݽgj5ztBYr*oջvJQԷMDvOwBXR"8d)FԎ#j2rTpzrlTx'Ui:Lr3 -p \+p ]d̖/Зp
+V#:pGLX7Z*qk[2Ȫ}>mkW>՚dr)BQVɋJ4߶;nƇ!FJ;\Pؤ+ ת@;a6::$jM#AnYvYx@
+k'^IC	m1Q%s} g';t ݊"7k=DWRf;V7{CM/Z>g
+IrfNCE墙-K;!ʻٵ(R;gUF̄;3Nz)qH0Hšk֛0P	a@rGçSƜJ X#؉1`	`:\sXl[`+$:p 
+[5m,B+%6SwqW;UNM_<wW|ZOg(ăh"yK<ү?^sQ(;
+)J
+! p!J&8"A",daY-AtZ58(,2baBMRp 'H"X 0J.t2h 
+&({X;tۙwe(Ԕ]N뺱kuwqc=jv|Ȩ
+̬t+1L`J*8YTGeAS 	
+2af0@)W@d13@(!CcXP00 2)5^. +*h J +-bnuuH]VשZhb!wVmk[Z'XkXwv:޿Zͭca84XȪI9sY"QdIʼgy@cJ0	2
+߄$VkT¦x*HUH8,-*` 8LG%Pʦen$.E{e5vV[՜sÿV_;?.uwdV_ntaQ"qs0t*uK#:f+ \Aq8㠁`-FMp6ש@
+D b@
+2%+*` ݤ6
+fa1Su-p蠟u3RZUpx<eohk.#ucHP̈b&U2A$,*`賔P8f+Y)U, ,90T53K Le
+A(-2X 'x5D	TJk}>K %rrb*Z4*K",ĶO\-C<??qeDr	ZJH+0!Dq$T3}2e0M"Ϙ$N&K HH¤#b@˃ nM+,2T !m:	LG9p &k=2bj\)M5D=1Cq)?|.yE?$;Bю*1ᇄ1@P$Z#NܣƗR ƖV@fx f[3@rX06*P ܐQ`C߇#jf_8[kj)i<mη?w?~KioN7$Bgy?ѷGj*uu Cw#9=aJGלAW>̀3>81	:K _X
+n"vB؃Ax\Y=zC*u+H 
+leo.fCDYxĹ#r`Jfٜܗ?aa)
+*+n_<T᛿|d5;wU{+knN7ûGj術桲P"24(ߘ"b#ZmA)My ࡡQHP6nQr%~KY!$
+C<qIX(D/b8 ̽sxPY߰bV*]
+1X{	\oH9Z2K,Z!Q}o+oq?owxSj_1j﻿cc5sگ1N=AA܆e.~Sj6 D-etEc8%؃ӆt-r0 ̽.;e}2m5o[5mY}&\*,dF|!'vUҚ3XMNЈrb%w\ʰ}#*x!&~<T1q<\<0̀F3qc_Y4^!i|qXվ uGwcs;h=b4`C&Z, -D1HnҌ,	<NÐtSQ?,dI"Dl
+,7~kjDXQELe>a1LΌIHڙ+tYS	e8ڧX\:eskU2۷C2ow\QNI0
+2lbSx0
+	u	f/: W
+)R|kW9MxudV鄙q}RSTDVaP)*Rk1FM
+5?ݒ9,:=z(E)
+D3RG+1+Ym*-5k{^[]wSs+JVEȪKP.)t.+UTTX>+2 iYt㓨=5	#0o3KmI֭"hfK[igU^՞;:
+}'&	UUOj̖ͦelkQ)*
+"
+l.NQjGs5cJ+M)qqy;̪|͚ƥnKTJN.2ۚ,at
+VQJK;!Q7,.u$-& LݦVU7I4WdJͭnsHSEa%v[udW97cbfGmfQQ"G.v^i,"qkqDN1	CVӼÜ)e&^ֲVeJm󵈖!}/eb{IDګ4eUN2^,.JQJӹD-<9 LTLF)fIV&>GW^2IFb0מn8T.f%(QrY5H׍pޡ<"&7y>	 @㨉3#}	c1
+2D=͵$KJDEɉACG&j)den{
+e߭a*K4[ͤG&@qvVx21QI.D9 LʹN09&`I5dawĻY72
+A)i#
+Ƿ*.Bf<$`q $r9rybf!6TN>Icʉ*ck7a92I=tVVTJ2R)0,VΫ_a|0D5GQ;Fkt&J(a
+~-T5 LIrvBTޖO&(1wS>Y<\?ǜ'^ϚI|{8az}NѸPٱh]Q&Oe?ґ^YvnST3Y+Υlm兪{pSeЖ2PL&!oe2pil4ldcVJa71($1 ٌgr-"њ'Te8>rwvK-*i+#1g=-릂RBdez[qQ6!כqgo1!j1[:Qc4Nk$c2^lʲ(zە-h=QJ`Sͥ3Eˀ~
+~ܨpN4:	e`@!%zI
+IQr-.T9 RԺ%6av2\Q&0LOlvLT)36P%H Pn8ZԊ<ŠEyyHܑa8׃GBjfJ76tK
+vҖ^lJgQ.9h[MSm%5zf^O40UjVSUVnYtH"$c1)2|1 L3$Kl%܉U nD!MȁڠHdMMY՜H`N%5Ԛ2D$aKE(4ƔSU&+RRjԖe%1DEUI*Q]-IULAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU'Qٸ FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU                                                                                                                                                                                             %+ y
+A,p<oPJϺQ,X"mQ_}1f[!!gO=}ϖx7ww.|DGuË-"w    wŞ,</^þOsJ FG~0"zAlYiɇX
+8ly4\;c)c&H yܰtߴ]V"A'|#)&.!؀.ə ?8s hhHd!	ۃC>Zz|B/o.Oi?'uT0|'/9
+u,`?:
+v/HÓ17"Oe3UyNؖn8N61*d c[gK
+*A]eʣXp#zUGrrrH&Hrr35cYMLo(0Qۤ
+	2eaWv6Ap-B
+N{M^..Bhۘ 1Yq1@CX2\T_拤ͨ.5处*AEH[!.T:t :RLdٓ23hV$2AC;Xu?"$+^>} jFm]D)["~/9HGTB}dȠQYJEp1PnJ,)Uv۵ΌxA&(+_Al$vF2͗'UP'I-Y,
+;yFM=.|:x BR=66E
+C={7w.^֡Zī*gj\mlq8]B%ך4rDiBiZNua$igU\\y4ث4muFUv4I#EsJHZG9XHy'Γ؋k55IrrM0@$y(!0n##ہ,T2 Lukm;iө&%VS˟VV(E>nriQ,ŬO(%Z$U"p=襝GFKYX-#hɢ|DJ9h(;ÐRft'zzAD&sQろ,(*` \*
+࠮K-	e!4,d: bLG,P
+m7UI`ӻf휴м#4	5Pu
+NAZ5Y3L:RīԚ4Խ(VnXەhÞb=ݎ~v=1-j7ꤣs->=H̺S'Q+;>VB[:k:w)Cau+@@PB*l
+ Dݣ`2j`#Yˤ]Wq\PĬŻ1u(yZ?+eVqg=ǜJ{jqcڍtl	 $+PmO+JWt[KsRmԻc9яXmD
+lk! Qic7wEC0`.
+ H(eיƋ2SJxB1v	4`
+zyiRJ7ܦT(y/TqL=ln
+1HLL# ɫD	5^<nޮ`HH2?Vb
+qEźAP l
+ ?Rn"5.bkX`SR
+*B ޘhs;J`b!
+NObR[Gl~Y80 	fIiuKwef
++cZV1\hB%qsDHr~;*-O?$z89Sp
++`?l%#<aNEa"!)oR<}0x𰀫 L:[;Y ) H[8Tj2*vZ-iMw@%,%%YWN7wDbcR6YR{1m1)+"ĸkiW),j//L)_mpUɥ
+~qrHڪSbop@]hfC]clbHV,ӌ:fh,% ؘ
+`	ewɱq8c@|Gc-ec}1ܬiw\ջv4.wޯODB;/wDlR4dSj}Yhh8rj{ɑ4^u*U7&G& ֞j9@sZ{1'&JS(j339߇]}>whMu\L0Ewr}\}glB8JgP9&KI=77KM)*PԋdD%L3{maKb4XsE}!նlrxXb&& ֞-}¬HMtob3[~.-mvr	%ǿU?&l$z
+0M͘7ØJ환ծI
+yRi!oܟx̅?Hi5dAb "4mgܤ)82VlP	eO:z% R,Q@T,j\8OaKV<'CzL[K;ERkZlAK]G,yZzquV?^38L~d
+qO@$naw	
+zj&8MD(gYTX*kg滮sYja
+VBA#ĕ(B ֞F6`T1?8,C{⌕,="92@&#R=+uekĽ\\FU،\$̸3FBZ}Z*zJ򻿅[oI16`xP&8s<ӏ0җuwKQ"̈|cZ[CYV!.vE&Nħ'. ܰxAA&,!u%wԱKZ
+g~F3ÑZV%Zulh(`4JN"=,嚱χ.6F/OX7ĸl93{'~wg-5di7.|فv2@#)E3mA("D3+kĻ'. ޘ]ŧsWD,ާ.1pt^8&2vݝl`O0Dl!Ii4y_k?W5ʎt.Sn^	ڹ9~R^ b\)x2	w#%;fPv#-b #l@R40lvcTζ̬UQZ Y;P# X-QAVTųD?Q	ޡ~j`FL8=T,y P$XyTj[{ܑsNjgt_S]5Kd?mM>/Q
+wt:m?եXtQ,+_VvX!:ρ!u"ʌ#`7/ m䇲A.c̿\CSVkjFTnPjM @`DtڻoGeo͵cov"ft}Rj5F~5B}6j['fyч#
+5fi0v0ZpKa3%iqp+Sr [XY*精k˛vX\7hקDӆ:(	akmnSɼnk#7C
+vV0ڛVea&&C~ḗzUAa@:`  u7Ϙ:?>+TLYyق2dtQh'2^5*t 5>|V8>HB[hP"5
+$	6A`4
+AlƻOgCfhqQ]ٙ1j1)b3yBG!{@/0XP(x@e1 0rehlHP7o]ȨQ(-l zMkƯr4qy
+Lnhj$FmA-!ب/ @pNRWbRةL~i˿M
+Ij{R9XVAִ>-Zx&ڠ5(00/fL.D)m 
+ fI*aH@'v.t R~Y-*9>8!f^8v\Dk<cen˥!RWKGŦ?d.9xpb[ZC3HĀjmUYRMZ-_o_:׶3˨7Ok;i5+3v1HCL.p RnV;%ۆXx 2Chll7c~xvB}L`:/
+ŠC0&i& nPmkZM{vWզZ^K`H( >
+?3,&i]i$kdjyw>S(XM|b$)$즉c~x>wѱlď9* ^>c93h`Z3_k>
+f,?tε[n֭<+|IڬLKkw?V@q+,}Cu(RpUg@T?@;hCTLLjfaN~|Fj>^P e	Ĕ3O61)\fbi+r`[3$6 E׫Ḭ~Yo<d]
+ `Z1DDJQ*%A
+ct2zrBjl?}:"Lѩ4
+5L|+Է3NdARsU !^$>t.j?^cBbF%$R$g9SE8j2JA+z мوr93fvXKɭgj;S1[2<J1Z I{۽(YUԕ&̫=13KIG|j14xV
+n#-*P̪Rx^g
+}I{Y#ك"s5b}/i,2R.(k,[pS
+(E&v й@M&!Z~8~(j0FbTqk3]XiV9RS
+~~6;VKc.3N?M>9U
+KD)tR#+Gߩu36{7ςA9V:ZjO'sQj_sZu5~d#r>tgS]&|T ݍZj,̕V3>|JiY{ovz_߲/y޻gvڍ|j\ow:#Yx8 {/uc3N3 dO2	,e b<:p%g판5LWƕh8ېF!NRmPhggzuv<:` y܊y\$yӋpXڠ;qh8)
+1co:7sarIwOG9(󬝥ŒVqX_&<Ly8 up#Y-F:[Uy#8p
+c~sWtf>nU;#meяT/{~;ޚƘ+x53* (2OF
+d^P9un'D	[ƥe"A [
+Q}<Bxp>%\ME;!ݞ)Ȼ`#BI[}{uiMXOǬCVJܽ@fs'g^4؆21>uٕ
+
+Q
+N]'ylΕ~ ^o)Gχ-T: ^ܹsW{w?OJq3շ=z##_K#9#V
+N.gt%j"8|Ĩl'*T;,1*rV!MlP[P}:O%U犓)jZrB=8P_Ӧ{7m8U/ڗy<
+1r3K': X2wzk/?yc5-oqԍnwN1"8kX#jT<-:$GaK}DFQq ]`lZZ|ȍ/dZDLZ)c]p뭎[*@&ImR+ @95hb`"&5ٿO)': 8K/V4]XF4W"fRߤ,"
+HE!a6o!XMWPe&1YDvT$"K2H"iaSRL*BSH
+"k.,ȧQJRR Ds3~?x;tPNdN?HG]Q{}_]?}s=$k\XX_<BQmR5ҧv).ȱ$ιun=ӯNZĝڣ%:jjq
+w;hh= juaj.7yG3$b066gXv1:]oE,WΕ)n,9
+ʤ<ǎ:0߽y:yd^?:8x 7äx4B3]F(s
+<V^1jQXBgG38Lt.f!M6ᵵ#j[v׺}sXpUO
+vd	
+x\3AfwF1b$'JάjmAttbH.MΥ{m$:V T,hrp#Ad%(r_%Y&|ymeC`66Lмpff,<]2&Ao30MeO{VnA2B		
+u0#3f3*@(͎3Akk9e:,k3Aih)JEʅ 4FF}10RUm!mQ%~( &nP 9
+\FK 	~A!ģb# /@ r18z	2bR"qp~f+3asZycrDȩS!sԩ맻ڗ#s0S(s_w O.hIH@L&lz%.?,'j jż1!kϵ]
+5Z1E.\0g%sR͊H~rj|ζ'\*Ld.\Pۚf:q8TXl<y,ϺШᒆ
+,l?[Gիipɏf I`*3	v Fi=4z"I1a؁ex?'钄 昔c\yYx &4(L?k;oط'N]Zɬ`*
+ptLmK
+KQzxP$,"~(	
+	jઽ(
+9Հ C6QIy̄LD*0P<bT:Q6{V48nAfO9JJgu7uUyeR$#x oZu-[0UI}+o5mg')LslVAJFQptH
+q[~c !ݏޯ0[H|+Bg&gI4B(o@_KO ՌK==]c}jA
+0iڟDaJt':l _iR5SNBvaXn='Rq
+Fj* H4bpXԲw@eSe`v 5z`:,L0Z$dlWEVjJY`'8MFGڲ&mkx}/JpEaO ۳Ѷc&PƙKD|sѕwCć&x YSQcI7(E}Ԛ
+5tʼMƼxK
+/re(|Cj6HeS`/	^3ccFa>0Xͩcc$Uu~¯&"j<)-\GcF@'9{Wj"<D]eNW8ѿsjhyVTRʊIJ	d!BĞ' '9l#>z@U`x/ @Z J.+O;rY _R[&*jzq:HB T(a)#0N@<@Zy_sOs((~O蓜*=^ $̓(Ug
+ 
+0&Y]:g*;fTL!Ȥsı% ֔EKdB3Yy^oǫ4I
+1k2MMYCVy<irɆbB*GI6f{~;If=8#Y`OĆp(BkZPXzGsFE1XT0zZ03&'/8Rd `Od+ݯKE% ֘vPrA*bPϛUqL:b\OIt"ZХK~]i`6D%XI}ۿPbfX}}75Nkv]	%h<IP &(RZ%0K3$  |fq.PiaB%g:KCJͪ+ ޞLRB6i$^Bjc&9NЮ)oqkfW$P	Ы\(WjLdH+}?)s}ׯ־|_޺=cUu)xPƂÌ M:".v0|6E-kD==mj0-| iׯdRx&ʀoE=nУvcǮkXq@x\Zjƛ$k4ZU},e̾;k\ߧ{̎UTm-TD\u$* (1SNE1͐o?Eoi5EL(k4菰4T ,KX ݄ˤa'O6\KGFMdA\)J ̓L.l$JQE`
+(DlWАI+fnfQE
+2PBD|r (teU-U$>RܢіV"q)V FP|9kg-P)M~/ 9ż.k,\*< ц9oZ`GadC58[;-"8
+G7O,`Fί#x7CCwr0s{R oF]MacwQCϺsR]份e .>lF͙h27sO!"ω֟_^$g
+M[ZJbs(IW3P ?&MU_9݃$ sb0'dDOìFdhj8њVġkNY[sVm-+eӭQö[q5wΗ>$
+FJ["\tU'#Gl:^#I6&!(LiJˏK钦Oꁐg\ F:P &7Y4[0Ί?,>X9ϯbC#p8SDۺfnZJczPަ2Rvj]e[.<eVQuOZic$ZICu%n[ƠrG}[NLH%E/%+lө4<:%V35jg
+Gd'TX0/bIVc$Q$ۗ|ulK5DX
+$J豇+Ou>^Tp&P)Lױ'=0`AƠnccRS3CoXիeM2Doln|ԟjvìӍVBbUGg:ӓ\NJFΆqy2zA:8x ԦND54#E+̫ CL+C):'jy#ETGp[KY%WQwHvZ20RȀe7jj<:/_Y;d/[zGzuϭS-qO4jKɮv;YCWi:˾>5qeĵW%/x]F_Qۢ2[^Op#8nƏKVu{ B:D1d"v<:j5Xlz$*<HJVŦ2Hq?M{zǽ?-W$\OyMk(N6ᵺG!(kݤ,` !ً3Kg m}!h2
+Z3#!Xw92~{N8BvZخGㄫXn? ɫS.hB'XsUVW4eVǮ튝#(;l)A;&Co,=d?86Y -& zѐ $;:}
+[2>2H|͘s1EuqdDĉpJ⩦f'1p$S	wb1fl;#F뮊ZWo!zwt["Rj*RkJ̚j0<sQH1ÔLK3- S*m!LQ2p-!/$,SNה.[yN
+(armH\^ny2UV_x}(p^/ƃ	y
+Kbb10qDQls܉osucͺ.4Ƌ <sjeC!8f`%̺0&x 2\P7z	0D6Mo86/8QaY앺ҝ>!+NYFTOe0pĨjZ긄澕-|H@\ДSoOcR5Y%sG+TGgP W9x XT_
+ u Erq*(4:l "<09)U`>[ zN;Iv.bz
+Hpغob&R CER溷dk7zbDygCKŏ$8}IYoC]mF 3* "1<c 18$R-1ߚYSy{g#UOZ<'x G5Z+65	Vt`Ȭs,j{M^$v/qk?i5o}Zw~j}q4jCKN/U0x t,,\
+d
+F!,bAk5T^#i?Zf=s}0oYX:V
+o#dtXq#P'D: ܾ+P4¡ @/Gcѝy-}3=~bوc+#g0V&+L5ёV
+&k&k%Nl?V/Yf[yc9;o/\";*	nf5`*T2ä>33f'* ~m̆z
+t=sRI{s̭J5LESR¹f 	j["D! 	-P
+Ǯ +EFAy-LƗ07 #M>8YNaDRR7dlPBh]M4s:}79̲sy& N5͚iz:4]fVEKitOjk+D D#h&C'0@ ΐQPlhD;^H#Ԫp+fHDhi\slHy=h|(\^.g"꽑*W,j8@8G;nđ%2p NġaP@A%e`$ИĐiD I`/Te8-q]sWay
+K<6<ZysVyNoNOJ4Uoiu]ѻsfa`ӑ`	((@@Ƥ=JhnBO#U;X37?pZĭ&l 
+-Y2kzd#B{mo^)7Miיb(po0,rivP@,kf8CvF'!?Rek'VT&{ql2bB"X'}B@8eؖ1;Ka
+#O/^ޚ.: Șܮ9ɺA3KqJc,>V	7ZmGvA	2K1QH AbI~%k4y^8]ZKǤ	HxKZ4}ZKM^
+N<쮶!AG2[xz
+Ȑ+RO1#hd,=_06ԑ-)AKO40МsM[ĿI: y4Ӡ֓Ldɓ{^Ҡ
+
+e!R<$qvSAFI%/ܬi$
+*bPta%rQuN$wZZ2R8
+T.m(Wթ,29<fs*N<F;_XpQ@HsK%dntHiJK8: líjxD˲yP\D W)*"pа!e!a%FXs8-E!)=
+E# PC  ;q*[cLMQ6:<;
+ŵ2t<R9^~WyBPWՉ<\טOfazȦ]BP)pjNmlg.: =Tj!W߶dlE0i켺$+A*.B;W֏F0BI<B$̒GֈX&b~'fY$hA$2ȅ{K'81q$ sT
+`jku\0z<*µM[H@BsQ,4" HbʎZVeeM/33_+ 8m",EE6*Zq]$'	$[A`Ȥ*JKL
+UJ[Dl'"EPBZRU|)eVcǤMC"&LR\*eT.DX""&"!DM"!R"!R$OCh"eW՜WMkuik&<T Ɍk*5Mؒ$S5>7H-m475af||H#>X5Kwhvp}SSS_VGJMA'7gNUv9n贪Zizzʩ(\VBa}!nV}}i
+C]#2@Z'\܊1/(;*0 ٌGq4ì(*m2PF-lYeIטEvHU)
+hԻ9RWTvֶ휄rE=Tnց}jxs {!Vr.noEkR	d)BNMI y`08A\kubf¦HP4b4ɦ#1A&^\ nZY)9L)'_rV5v'		ېzde c&g>]nQKRaSZ6thcӦN<$a0鍄fk1&ҁ4c4e@ؐ`*GY;[rp ڼ
+J|Q<=CrYO/WH3uUCP&F%
+ ô`P<Hd/:IeF$F1%x80,3ZH~vvUznnu4Q$|%n?Sx`0f| lbFErd9QT*+/^ rsաBaY`& |!3!X
+j,}t#j?
+3;S]-S7/ƽŏB1py8xlj6 YWr)M!'BC22!-E'N?lvZvt)1u1\ *AM8h
+R&r ؘhtZA}5Ŧ`'HH
+R	M#F ʗxs9VG@3Su?~WÔ/TpCNKͱt
+Lڽ>fW[{٣dA=gr0׼/lE()0Ţb؋ #	2dg%4aj,M+'sB μ]vM
+;e2"FuWR)E|~n>6P=K̊&قw%H0ج;q.V}$N<Q1îo3,ϻxϏOj"U3RFN"	U  bvNQ)RVaAyH\O@(
+ ޘ58SwZC!RR>[q\ޢm/ .f4TxF0t;~)qCdu&j(
+R*8܍>r^23l&P@YtI0NJsɶy/KV^Z]PDatMI
+'JTqvU*y/CT2O'cR ֎Fzv"GmẲscG8tAf%馺PSOT<tMZR*W~V̹`TȜ*0qeلJ2cɧhp+ZnnfDs1@4Jzex$:d'S^ N4<dF#Bӌ2̽)ct=Xoֳ6sIPqa`fM>DNNR;1'-a&Q9
+=~P#KL[Ja\A1Kh7zcf"MHt] gLe	{j^(ޏMBfWL^!D4}y$ ޖk#_,I2"X]ZqV(BM<X
+F!}R4'>o
+zO2?*-.yS9=#Rw<<z8m3aIǣ矅{;>g_6{̃C_^T0Fp:$Q<3&ę&: xe_t YrYiu0>dڳ:ɚݵ=U;	U^|D
+jU$P@a4VL#34\@yKCIPS7%Kz(-'$"&-*Ե)ΚWF͐Qφeuf,f`V'd)ĳ'x 5*v`&ƮeVñ3\Z\z7V?N+9K'Gr8`(:Y`>۶/p4RT5jhF9GYD:kOzwmZ溡ӵ5Xl੘4eE@_#i^tkq޳>R{vUJ'` '+6
+4Mȁ7RY瘣hdTb- 6nbߵjǼݽWw<-$]w:LxбH{:9$F-:4N\8M}q  10'%oΟD7y}C-%;L н9 Fe*Z2ˁL|&h$1ϯ?	]:彷vG⚿Ͻzoko<y֒-ີu84l۫CԊw9WǬK]P/Zx^F]Sz}iUN(WҳÓ]*M`B ;P ݫD	ez?4Ƥf
+qPn{~-}ZRsX~>o-}}-c=e'asdmfd
+	t8HޡRŸv4Y|8jM936uC>)5`43Ƴjk`_jAXbwzk[洭_mֹcĽ6Sh ݢP_YM2I&DV* w	愢zh ?{%[y^k3fT,W$
+cy)oҎsƠ2P2)HbԷd38qu.[ZQj[ܙJT|CcdS"eĖ-[x ݫ7>ǜ5L+
+jyծRi?u+Q\{;bUGB3C}02fz֑νi1!wo*GyaoBڛV$E~.tf0D4G	v%s=RpT\x<޽<dʨo;p.fzMk8w0+,|[ccTlē/x ݨhg
+˻|gLu${8b'أCaFaeΡMF`@g`:	@bYuD^77c֯xLrš(7^bá?e OeqGEH((U9bVwVvJQU1fVB!Wvu.7qĆ5p }KGYzwÃ29Ņ^ߴ9)[^;ŚꗒIzFZ&[
+}_T(БOY+R
+(Ȅt;([[G_QË?Ϧ}HUl8RZxǥ+SZE PhTTe/x i<!B}5R6i7+mҭgȚfdi
+rεISj^y^>nNy%Txʛь7'xmh]v[q8a0! V04xKּA8C6)Pt4ݵ|3G.-,>eEYKhc[QhG
+:TY%h Ef`H
+k^cW
+i7>U)gZU~{oT߾mhꡢr+5{@|Rkÿix{ymbW}WX~5Â4B
+6)dNf
+\cnA%C <z*	PDt53l {W+<w6bclPJ+$`wH)=I=5|Ceͱ,j<,_>&>G<@)!0}<Ù}氠OԮvW
+H%rZ|kۭ"^la4[b<}JHNR:2 ̇̈́7.d,<7DڑvN[`>SŃM&~Uá_Uj\t=FH<asOs&FC]Wy_	#7ʇ㿁^l5l+<x{5Oz%SO*REקĔ#n_M,Ұ mH^eܳHd${8f-?N`R-*|̋(֞0+4Ċ,2Ooկ4Ʈ(xۏڝl3כMsޘV7'sv3mH skĖͩL氫'Ҭ JظMLКN	
+LJY֕-=$`;%=]4dǎDģ^?Oa1{mWg*YZl[3kwv˫{Zշ{GJwǩ$RPaB@GP(aBM؞[V,Ĭ5F+g'u1$ ؘUB'\ۛ0$%DDശh^:T`9a>J5-=^5MPw"Y)عԉN䲳#[r?s%kp8wԯpWф
+4@ij&̦0<$o!|c*r"Zc"r<3$潞Yw^M.*
+XP" Xzkh-	)kșfKLt^1׽U>xee:SMQuD2;g]ؚc(CIDP 5x
+	I#lbY$09e<@RgW5R؊#A"UMTL4JZo}U!Ex$ Ҙi) 7?R><I3*ju2bQ7c ֩#T$B-chZV%;i
+;+ZsJԆ [ywg8ʄ.m9\QI-M",KV܇JUL+
+$g`ۅB҂;v.p1ė# ޒ
+Z{L lz3pQ'-:cd,P CԎRa_϶~HqaFW%__[.3![JA;e5/cdDCNT`uD01օU[=q`!q! @Y-/QfNE	Qļ$V ļQFh	p	x`'DHEJI$KԤՕEObCcf131RR1(Q(V1f2P)J$薣ҮN>"bmhxPA a#uF&P6L}%۱3N(
+2H]w&F'%l D.+mѣnQFFs3Ƈ6A=NX
+
+! GD2EOexhp
+a勖.dS'..o˻舄& ~ak	!0x `L@2P	fC F^b8Y`(*T0d PRoۃQ
+	:FY`+fY jv~8BiD}@÷ồyDAMOjjin#c
+<,6Iء@ge\57CtE3*>+sXUY¡mزS/﨔w2[w[o}DD:l Y%T
+*^Nͅxs	izY-n*$ʬ`AL.nMd ĺ{yPI5-vvsY|*W+=n`̮M,y-MkRވya,lFdp*J{qqqQ^Hb]Ĉ-㲄 ̭0ɭr-hb^](#M<җRA튲!R4PDd.5c>FaA21+Nm9AGQx^>&	$H&y*mv&{ҨX8+<w9f'0A|.Υ5s qB&,(&"$G(vg %(p<[că( Jz9U#P9˚Զls">Z̛L70.uYVuXM.Qe3r3*'i*9^Η\a߷$0ν|k9r{o-gd\P)P}纖?LnȊTFaD|{!s
+%:ĕ&+ 
+ˣ(N1^9ay
+̄ $P6T5ǆ՘XҖTﻣďF%k_r==K	J"fKrH[L-c[Ye-Ҫ^p@ Q+1CPNiVg`*Ǜ ("45 Tį'| \egzD%rL&SNh	AJ6OZOM=!eD4mInQup[q_(_{rH׳]ٵ3=Mahq.pUP Hg A1ѴvNgF^7lΛ)P bIJbڎskzSсO]z]0
+.p F`b"Rwa%K\rqshDm''@Ik9
+JENTL=KC*PèAcW+YH$jWZ,J5s#s=Ri?\USֻHV]vL!r=,R
+rUjĹ'zh 
+g:z'T%̉	:^EiI;^D%!E
+xh5
+B2UJyb3HNq{JF#H҂GusNUwmuF`;\#tk8avF, 6f(NZffnۯ?gN1	w-пEReN'<
+@ ن݋gVȌE.z"^þYsiymy%FS-9NiJS|NW[zOxfl)o<Mw}.ӣP9JU˼2scS0 ,BVUn14w粷L9bca.=c6%@X0%j^ V7?Y`aDt@9wy Гx"Ý^q `b}VV1b@^LbS0#1
+`HYPoԡ57mi60T.0``0B u.f5f1c(a""E1EGb7dELyEPl:p xP5ʡc?a9K.R]8	䄁"ҍ+l/Z
+<igL[a{WPB( >%r8Q
+B
+yuuƥrhA&B YN$(B
+!L"i)G1Tp%BH X*
+*hM
+=GJi@S)@jUȎ%hxa)A
+(GcS-"P'/kpq>zip­Wٴ6\Dy	V4az$.Dڭ-.}C&DBsȚ&&={Octui<2Ď$| νmcA@Laf2T8yG5WBncvo!cF1ػU0#"Udt(@T1Cugb4kEֵo_Deef@xXDCLC%C1E-o|3| V3@kĭ&t 
+{zn{ 2*iqD꾫E,H~	3mL[hzݚTIC?&oTf!r;C!1܌_]O׫r#kiŁ[E)	M􊠉31JƤh4 EnR tjp͉T't R$/;P#NK1#KRNo亩sj{m`@:#\vZĊDO!3z9ЌJ+m{TgPZ߿G޸G8hQ Xr}H4TGǋer:rbO[Zy0~!tXˌHՄ_
+*'zx ĽGty}eJx:;rn^Tg{xnܵ=.R5=,tpn鷙ƹY|%2.}[hQqTN@DҔU}Z`ѱDkt4N U` 
+LaSJ[4r/{2NޠeP<P%f3w+Sx QiriS:TtWRfgݫ"yg{8ԱÌX)4rk"a]AC:DT,lmVHרKN *!'@!Ƙ,Ơz;Y>~WgȌv_YƬk-L2t ܚZDJyT1[H@aԋQ?ݱܵu<_2`Ⱥ)08@m.9:Q\ly~?ĚJ)<kS
+qT-U:)8!kldFDNY AEutn
+Ur;XZmY!-p &P4!a`XfʦcAG	vu@AR']J:3E<۩
+*QfhhHPaۧO:
+ÎyCÌT=
+*4BH0 W
+.Kg?'rS??^kXZ+t ܋ZR<p<;P0hJ>jԟt~U
+ìZ0,tK%
+aYf<j5W6e۳;u^)WAh*k6Y<
+Vuu$>P.%&~ <8#e}v[߾u[.[p ܭ{kyVL4Qp<
+
+3'Md{ǋZ_kQ~xn:Br@X"Tq3?@GwU68`0)/i͈[nvU@ Íc$&j<hjz+efy$	F-0J+t ܸ\4L}K5h|ܭZ¢괮5jc@x@"D_>-QFf*7lMBK'ޥ,K6!uwpYs$6+VR1sΫ7m)8cK-uu BE]5Gh{dy{5_o/&K>%,t c
+ibUSX?%fT31
+GIT"!H6n5*)rLPc5P])TH]F1vRxճqBKo媬j2XnGwrRdK},o"ɯ
+=k]Qcx{{_L/5]Ǿ<y"@`PU_xm$7,T\ ђDB1p\jGA_ΑO	 zCAȁ42\ӭ8
+sL0(#0-~y$8IƃnH_dʾڕov
+"Uo U|@w@L7
+ɭXVM>4o"Cc=Jf|S7#ril8d {b˜9accr5,Rh)MxT6j8A*<[ NZ56D-5<QJiCP.yQ1b->QvBؚǤq#yE]5SƉA,> r5Uu/Ģ0jMq#oqIĻHL2| ^0ܥ27H+K{C#mͰ:Ι?/ڕ˩b0ḃKWEH9ݹbU,¬&4o|5{	]7_R6OdR}S9g}S8%_W~JW!h6-BZb:L9 
+`m"-^,B;JѮ_BIZ}oȫ&)S^δPN$sdRwoJ2bL{prP%O
+͍%ϣ1(gmq&"]
+
+)C֟ĉ=fVu.rhKsϋmf=d( >5|,Ψ x;U4A̫r^><D@dALE--22 5BB:2JjW'P=K)$rΛ2~GIlD|qԞU(XT% 9ekӛ4w'fSzIvc3/5211E% ^<dĕ\2ŇkGկ
+s
+T;P,VS(ޙ7Wf."+j^`Z׬۶k^w̌P~Y#s.ybƅV֨QtX#Y=MS%ABItWIj.嵉!{p;!kTrRʊŉ%"XZ'%\5&Rڈ bX+w֫]Q)$ĚWbdŔ%MF~-S>\ZZmfwi_]mk\]׾f@A`SjG#CPם*S PbبT* cP0>9L6//x gώ3)e$ȵِКoi!E0?N%l Dso1BEG*P17__!IYVMWOVT*
+(C0R܈\uQ9 H
+M,@A@^:`(L-_@QF	$^zVja<mҰ:H̰i~
+WoOGb+o}z3j&{h w1*22}kՎ8P4Jgg1|¡!!yRa@
+\E0=<
+-~gGmr=cLٴYk~ǲ7SjۖsuܹuMlß0s=ՈW)_W}?LbFHF<ă'l ܂@8@: 	ő21vY |9L(0ʝl(Du-YLf	|Dd\91óg	1辍s9d/XXrR	GYeWzPЯE"_ٴw''[:-	@Q T=QkؕJox#2=ę%| 
+x'SD`TcKpuޜ ?'u_o틩+N7s١J-xю1G}%IuzikF&F2;\HQǈb·#7:)U:1^Hm0D"S\Q84@Ĵ&2 "Ye_˞=۾PI3Rd;Ǝ	ZsokU$Τg/8^,N0lou}NwDMD4zA0L,L:."aD9\)NAu 6L
+ f6IlQ	~£^4#m{$O,4'. z)8l;[dAxHYt}}qd{NW*1'5DcͣU{*}
+1ɱηTaHL:I-a&y#,V$?AhwX2L/	KPePhؙBH7Q>Z&̫6YsP╩D-Z.>c}R:%ڄ 	k˭YorzHs"+T9>*!;juƓ1ʱ)M%,hw!.H,AC*PP ֋4"\\.h[6}8urjt#C
+N,|/T;*JhI$I!xo 16\16p ܢT?t[U&LYU֤UԝqRhZk3GH)q.˛-xDC 0RvxL*&4LM
+eUXuuv$. h*	
+091e*Yj 
+
+[:G`,CǀDj&`,6l GXk406췤tʙ|Y./HBH{Q,( Ak3K_U;t6\_CٜۂP\FH9CBa|hڛK8Ԙ瞾a5n`Q
+l100|5RL1QHS\kBH7=t.*h 2gj8{=b߿`OR_ݾy,YVrXr~֣aC*!G
+4IƁAZB*bKi"2CHUEVFHKCvyq!hA&V 
+$j7W~\(l ]n>zcjjq*-	e
+AهKڊ*nC4v`ux^2$UPvQZ|2N}쇳{?y}/;TKVMdϿˠ$HP!EY+
+6
+\YOh;%'z*k,v-h ֽF7mfr<
+4mT(V#Lz>E%!|ܥzI[Yzf-P>fL48X"ϩ?<Ъ.	8xXhᗴq$]ռq		+A0
+&s_/3]	*"Ÿe,FUKՊ|*Jbp ظO֌cٿIJx	I+ZKҜrxl("c@.
+kA,?BhFt2̩qU@ۺꧮQ	'hY1˪?d˘ q8 0Zp.`3<cPAE袩`0j,I@.,gDee
+0;&l PAeE	Su3㈸*%2Uwn؇~s3K2Vb5$Y0
+brd+(0:BhYST37|O;77z'E<DdՒ?6΁ 
+8HV#!r:yݫP*jHYq'Y+>p 搽V(vBiuhvo|wV%S47(57I'>ϞR11Z%ZTfPɛޓ;.Rdݓ~o~lJ4g&Yʔ8:s#IS 
+ZpE 3bA'cZ$+t мA O;qb(	
+^m[{J%_q˵[*";yE@`%׽Em7V0Zgquq]󬳍Q1Ķu)ItVyLT$<U%2%P
+3	M"V"s@̴DxBL $w  d-3*t м
+JoH#]QkPE[Y4A7iuxخT׫]>9z8קr]ЪEH8g9ڶovxB侬v%]ѯ{,ۮt -436
+9x.X(HPPq㜀`K-l̎d.|"t ݕg"O*WBS=^^b1;VC9Z]9i~M;n,Xp#
+<*Pid05WAR6J1$^-bKu dK.(o(3c<:C4>堃;EׁFMݠUF(| ޘΛe y\y7/ik3ݫO^n[<T"8Ff
+<zs(EsS+3mQ?GL~1nhb	sŤ%%{ThH
+aSnc%Rw[z8)
+!~2,*ldEзvcw2kbp 4y!rJ"sǞ)J:60r+==>ybŒr8feօ]UU7l:sJ
+_&ΠBHa*8u<+ذ4@A5b2]7Px)"A;NlS{ٮjoSw)szx oe,m_H-x̊iQ`e b7fjwaSvSFB@F[P#5k?fU|7xʯ{ZWWmS0PlWΒRkT_0RŇLAC
+$AXi*&Uc vF
+9>،5*5K[ۈ1
+h Fq m\u_6rvJa"Z<x3_anem{kpܾc73jiAm2}wLNc%Os*MotȮ?mJjQq.6\{&"tT^QD3wYQ!	Dfgf<dB0z cp.{h `p-\WZZ?bS;O;jE#AbalE^jڏ|Jvk@-eTgotJ;CFvSh.ݿQO)JXίDzʊvFIXSҷRǀC_J@Lpq3ȱ9L5\*٧On~l_'d ["Y̲.E$ӣ%>=;c=>Ց(-IYvΒT[Sv%ٲU&e1=-D7*牭!+(7__ 0`+`0Hlɟ[԰mp@D2LA
+ VS;-=;l]&|y="[.'< LyYHd[''aaKӞZQh1#luIGݔ]Ifd=zT2;)DOrdJM=LT2^#:	2s^\vjʪ̶L^u]_%)|yagL@dh6ZL~_s:*taE<C^Rܹ[!:c|%.|( ؁ZdmV9fY-˅s][u{k ZK0
+
+1..$1@\#!v	Q@\\?>P7c
+wq#OMD,-Cb!eoiyRf0ܲn/쮬f!F,|fh"qzk3a=+*8X@q~sL\{ʒYbRC%V<,soLE*i~0i8IwrS8fgnjl" \)J4 C0X'⎛]{H˯ -oNPF6R|JhQ( A`b,"M3פu/NMU,Pd:` Er1!jqP=ߕ Jy{KkC-*
+d0RNY43$AVH=,Qu0ܧ,D|yysgj|}7Վo,/1X~Tw;WW
+yqJh!**>{IseA,: VC^R4S>i	[īd2$P(t>"
+
+%ҹ4>;n!Zz C}]3f80c1	#N!p
+pk6ɖgAvb
+&]O=afCklj~#nܮ95Rg޷'I*2 ^ݣwc껴KKh@nWDbW*l!eZNع3UYГ$mO⁉^sL}GAHTmr7b8mȟjvԎk}f'8,aafРB9-6>1d{lGR<	aU!?",}oZ%" XsԚRc*h]g~&V<&VHKI\6&Y- ePnl`pkDx>?J]Nہ*'+P.zU9御DĐ6뎷Zէ?ΞsHwsu%z޿ZJov][ZLp7F6'* ^D֒uTerҥn
+Dّ*J]JmKEs:U+I"Ɩ=4喻X^N	b_VzlYŴ COȿܵD!{QGVJf~ziW?۲ve^zn)nU8&6K'D* X:WbZE0>C!ĨE'%,UbNOZr˯Mijy3j+K=rQVs\!֊'Cֹdߣ!@\s{5vm3=ZNo5硉mT'ɋn<ջ,Z f<~9kIёHHB\a$,2 X̲{.Oaa뷲+luM!e[=w?OO޶֨ts%3:YDRTvvOtwJK#^munN}eASjB',G%.fAUL!QB(2).B*>#B>/3n)PKﺑS-ă'
+ IMF(RװUv۬X>94	ZWbiS׼$F(y[3m%g}go]8:x%4tpk1ڛ`a,P6a@}h,⢦ŔxzL L'f:&Bo"Qm**iM꾵
+2nUL1Ė&ۺ| A*'JN94m?4@8~9R{H)Db{UD3v'P2yDHC
+NfN&	"3%㔌J."Uӥȑ0Նj'$sQ䪩'vIښM"O ИL4U)P^RE@i*mMÉR&A<ĭ'#L zLҮVsi)8`{RU"hp\U%U&S9f9YkEύz}Cd5xMՑyzTIMX
+:δ]9~{LQ,~߾K7ۍ>dn7s_-}),h9Kri6u7FeHndlџE%
+, I$u{ig]]6wm*Zu|?*_k{{ZB]Ye&Оo0+´/`8;ilo(;g;f{z^&*%s')7ܰAGeM42mT=qbTbw5&WV'  	2~HnR#-P)
+ʢuLjhGͭ叺838	Rl6&K}42mR'&Qny74paAlo2@L{H.㒔E~Lkݧa֐Egi-4QnC.d"Nt*uńL"U)q6B0D Ro0j$ig
+t44f\Ӷ΢D$'![ٚHh7g++jϸiݍ:pdnn㜻M97ny4rG'g|aDTF)i$H6S*+]ov6[OVRrm5V*f4*c%a,L* L>{-^ph7.YZto#[kHl/[P9qJWy"*R䜲[1V7e^r{kO/7q54YQ8ca]I'-Zz޷OOԎLԲD#Ktr`p5 < 9%84TlR"&-D*) L=5B:)H:GOV`JةI\$o*O@M褊:󮄘&sf߾ު8i(_M"L`4&&(SнFǜСm"D
+Y58	YJB~ٶX͘*
+4MdSN1N	U'4oJ[s7b51 Rݽd$b"T1B1HSMtxRu3Y*qNEjicL!N.J.TF$ĹZ<曭m`RT8sJOrp\p5k"yu,NVRd9\N=YDIr:%ZlqVVjN}-#˔jZ=
+.9 LKvzH,@YVJmȁ4hNietm(DWTȊB]IXy9e$"_zD3)7acdaPGZG2?$m ctYs<!qtij񩠹b55<Y?&X͸0ßQ)(9{IPaH=Uz'U/T9 RܩViXRylSB셀a=)dlÀ0 R{Xy咣1sl*\fM6&8>.o]T3.֣v&9˽DL6yHlޙN)䚎k2QY@BHrXVEj;Y"@#J5~6ЖATmĺ.9 ْM*
+AT+fTїZh 
+{C!Fu"o9
+N1eAg9Mj%d?u*12!&.6ѝ]F;voC-RJ{vڶmyuN7/gdK?Ltj׹G-Sj'5^wSTsZz]J{j̒%\ı&$9 ܈L!ĨD59-g3"F`B2Mb*!EXhJ FZU/26[)9^NBĈ:dTMmFnjQJt9f,"e{q%j3ŕLoJSb'ZsIK4
+A&h 1T9 RI)c1R*~4Ԡ'6YZMcVE-
+kVi":qOF-:<mBo$םxB|ݪeާyӱY?g߬O(3UO5畋47Jn5XWaz9M+R\uxĸ', @*
+ֳ-qxk;wO.P>lSO`AOE#!XoC6	|+Č-KV&Szn-}7DsKnm/|^k?37H ,R@ULgw@(֤ڽ
+O(#TScD&H(|% ٌU&r'iVK!%,$I+Cl֪mM$UϸjhYQ4f%QԘԘ
+ 
+.3U@5Ufگ
+ƥBPhj	;LʱjL50@Ď)59mDZG!jhlbt!iP*9 F˩%BB|aIYGvI(̼nQYG?MQřyNYWF(gggfx٣J,/7*N,	5UT%ꮑ(SM4pIULAME3.100UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU+" UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU                                                                                                                                                                                             '1 RGF&$S~[6\HPNQ
+1\2N0Y9v&E.6B@4hѣ#@
+ 4ssB2&Ȟ#|q   0 s 20LG!ZF'[J"& +c4 F&"D@i Af
+d &Eqy}յcP{u23ӱ!g,r
+RzUV_"ssFVT	}^vng2z\?s~{/s.'䅸,t&"9uS&
+`@df.`  `.r@ @ <DL.B\h]AeZ6PPᇕSw3rQv"+F+!vi7.m?I1Q'^FJn<oKCy6Uɵٻ\*ˍlyy=,Dz4 9QD!2)EY	*XlRY/
+/ ,@  @pXL @L.`8$ّ;ד%rФC	`*L-@s2T]o+xTSCJJ**zX_Nsec訽ɝ3]ɗ `1Q
+P;EgCO]7h$UP6*0;H@@)
+`tx3` ,C>d U00 yIOˬYqykߛĦgx@H""tO}FA6Aɀ	  B2B}!?{64oQDcf=#={}(P <@",?XvX&#lH,^x ̼C`;}yv><*ƮeG99ihOqȚS	[vТd`F/*X6H1*ɜ#0BIv:RtȨvmg?g׆0z~^6-4槺/ǯu\^&틺n#>i\"Z+| E4eFB./*r+/5ҡ]iGd< At(F7Cj22dmV&|{j{\֚,?77y>wIMڈrckc@, ߵE$"5Q&=%,+x ܉۵WZ)Nc
+	B[rؗ|Y:%9bd+Dj$X쓖)ǈ:AP+"s
+ffzsBi3W6j%*fv40KB9%vws3P|kJ>^d   @a1YG4u1T%IGN/kt ܎խ}]ڀ$<|=.蕒HmXѵBkJ[]v[r@\[iC&Ku#f|~[<8Z&VN_bҺc*Q_8XZE2(>,篊huED*C0&{iPGkP*GбD+ 
+06X،%w9``:pq@A3pt{}x8vUQmxQVaMK^l
+ۖCJ9oc/Fn"SÈ*dZ:EL$B
+r*uC	
+D@e<t,&"B#,d
+ 
+1
+Uŀ6Y;]_pBr֡	e;}elŕXTk?ro:'rwc˹gܲwKb{)ѩ)}TU4Z̎jԣFUb3U*PD{ǔH%	BHIHEVVBqEWv@@4pJ8 0"2r@&| A4e!@{D! JEN7]lt'K&Pfr.astfLQΚa$r:r.5hJ2XH[)X2$h"Zaŵ2=\%8$THH/DF3`NH0(x @0D4-Y8z-kLԑDoE>Z6IѠt\PtQ8B<o}?\sT̆"BC1ɺm+YfT{K#"{סǵf$`C 3NN0"zp.׈۹JJUÉ0m}ߍR^KK?C(| zZiscW?ڤ
+Mv8]{x08$z7֙}xeK2z_-
+ՙSid\ڜ"1B<}[EƓPO,[?@K[I^"nO1b }ɠyEx6A9eU( Zo.Qi@&&y]@Tē5tZLͧVeT΃TZE(j2IAAKAU<@!B Rܾ"4+RgK(2=I1љ"tud<@^%ZiYXO/ՓBc;g' ^5|n?븏5ţ|w_xyX,6TSPeb	& $åB$ B$@ۤp?lyhC9W1`:	$79T$ p
+(s& Td	$RE3B}cH^B^VbԭҤdz}'t ZmڍWUiIֵWZ6KbN"% <  L4rx0T0Tl4,܊ԛxquy2ٴk\IH՝n
+sZ~~5jKL0 C
+R[{iiWk+e5$f!øx"Ē&+x Q:RACy
+fWɂCAV; @@Ơ./Gu&^(|#ǕW͈N'l.Y=lsIUÔDk??XYKrzڎYZ?Y^*$#q8DpK?Rvxc(0R26n0BCĬ&+t &L
+&08p2]җ^?\gA6wkby93d2{|GDB!5{meAcHR 1Ƙc
+)y1JdՔ9A0(cȽ6CORkÏ<T@ౌ8$ٲ&| ܐTQ&&E]稺>^bң2m+ u']4zMr2(BYb
+ N..,6I."n0F]
+&:M:+
+̗N6*FZV*IZINQW.F%*| FzXvgwbڭ9FmjY^MY=
+#P䇲
+1ZyUh~';ykȞR^N}&"Ԇi&h	^?.ڂ%x*;}d]PFDQb :rqX)
+Ԯ[Ş"X"BFPx$j)K: 0w+CwK,DTL2쑗2aiObe^)ҝ6y+TV@/+hMϬ>n/0u!!?nBK'a,UB[r`lY҂ KbkĚ$6hV
+:wvnDcw8ۚ(Քz=B)E gK>P1km;: r)ɀB|PXA+8mPmHq9=8/$p/BNhtT(6NaiPf@zFuCE&J؆NR(ѡnJW77q~ԉQWugU(TP#	8e~7uߣs;L0(* XihK^qyjP789q,O	lN^@(+^IzGʏN=K6R'4$RgW<Gq!Rb
+Ln)aݽlea[}2HUQM,O/#eڥwe:g;!x*3ȨSiB& XRStK)()tD%)`Tw_qe\3RʢK̙
+^l?rѸH°ڴzխG0<+a\(0oVַ'JZfÐM`])g6*]LD&GUOsl+NT+VY% XBP!Д}X=D&5%k:ZZlZֶ̭m|~(-@v؏;E$]$u\5s_tRZ*Zׯ}_M{LZ^ƲB&ba-*,MI,HMG
+"`T\8ZוZrFt$PP@ 8Eo_&RfZhIA3DTi"]<}gxտ8˃>bgɒ̿@1A`{	_lLT*Lrk.yg~f@Δ>3,Uϸih#!xX`.ĔH|:@ orhsq˘aԏ2 8 Kkw:;o;[
+ bVڶt^sAwysaz;2Vx|	.(ے41Ǟ`a tC7! DpF1bg$R&-L͙C%-f`5f7>7ɏ3lɆz:~X&M[heВGQ(}ĥX{-"J:G0}1'%TC)r`~'V]]zobV3j:/7x`&Tsh|h{9/%+E%aYb<L<5E26E!+ 1M\uM^jb{~z_<{-判js{.xðUX*jPiA]US47us%_0},/TWTϵ2k(K!Hg:,Pw敞Q`cͱB W'+f ֐Uv*_i.#Ca''YLΗc1gbk-?ulc
+t0h l!īWŏRD1M`)S&*?yާ]ԍ`WRuYc{t
+gAPZ͕YRaqPh]֡鰂!SF (0R+& θgɈED8
+m`'=[vL1j\Xn4S D\A
+45Y^yղq	:jgO:k;LluUԽ
+C2`adLQ↔P7+PC+X1  050# /`b Յv kC& ʸ]OEe7h%\XVʬjQfqv9jV*$4 TVS)Jq5/^,И:++0uDa?u7[CZ* 8sdA0t
+
+h FbhB04Є lDh*kR!/xaUOyYNK0@vPQ
+^%y| ҔA@:BffG+&Ұ!=px S ŝu8˒"҄@b@Z7A!2w0
+2>dM
+ d0` L	zŨ٦sSVP0.")PLDEUuZ	XdY={&x ҘD^f4uO֯L5(
+H y3tP1ٓ+I 92Q$1[x		)7.UC'yq3;i)lw;+ɢCa IЯ0`B)WeYU&9hnDE!yvSwē'l Ҙ!0=JӺ* ssitLH"kW5)h2hB! fa 4&$mUP ٻ]}$k]c2/_D}~b+9*puS*Wv[ΟkLz%.
+W܏_#
+A*^QLPcy)
+AĦ#~h ؔ$ibMq   n
+Tru?	I/(i^'-VҮ dfŘakhx#R=L-W\H1+DBU|f*)",lP0&LP @8!A88chԻƖrH-e7`f $b\ Ҕ2I
+
+pj(;eW\ҹiI_d$NQ[(y->1uiڋNC(fnKe9 0R#8N<8ӎ_iUFmodC*4ER{c_b[
++23Y@C(5!r0xdވAI\1Q@@&!0!D@,T 掽]V q&KuM/@'-G(R
+4SPC<9d9-c32`n' (G~
+&zsVɤdFky9Oݨ~O}~hzJXsjJU-Fx
+%W9Xd\<V\H@L;| rzҩT[_6,3L T\e2
+my&Uz5fa_,.4V-G'U&-K)'!޿M;==ܶK-u4^	4:EU!uCu A|R)ORɆud2[TW,C_vӝ3q=o7	X%)a+xi?La,b:< Ttxu[YR]ʼfTUrZJM6޵1sV^v֎fn;\V%4џ
+n/.?_mv>;|ڪE~n-vޭMST!0RCyx
+_ZskPW
+1HZ!@tF"+p%]FSK,n, \~F4^sqm\o$FeŢ٦ጋVYo<'Cv?/SDhqzǃ.1rFݵ.d<-=*sf>#9y~m,^w7GZQOVf%1unEDU#]$Z$*yT-:  ymn,
+"nM3#'Aؿ"z
+;e8)\MZR5ŘLLI*R4J7i&X$^$v!8d%.<RNqeI2liZ@T􀶑5,Se9QˮIቩm*JDlQJ̝TiKFɔ[CDNv),
+ L݃Lɇp%MZ`7
+38]\qʄ$#/6iDseƠAF@TmN7Mu8F(RI+ ^0ƣ)loR4rs,RHڽb6̜Kcj,5Y+މEM6QiD
+K{QX j%̔Mzv>X0: R2ZF$=*¿c%і95:Q5hSiSWwH yZUCMCnnq٫|fkwTt^n"4;OhI+qm
+t,c6rʭ+e;Me6)HJKr^*aE^$jII5"eK'{ YUXZIl	kdXfW5I%D~wUҎ^5m,ejYd٠?f	4b7ԜHdk2|;w"Q[Ȅ61!|zlFNM%H*Ar!/)Ʋ.T(TI.>|C"&QbeHdUvEILm-j+  LJIx[%!"k)"+h]#l@(H"7EfaÝrĉm7B?)(!iDK&bܒ1,	~)04\KΎ1@PTK7
+yU+kw,fmnw6eUmj.JzRȲiB%q8]
+ioi-- L#v(M10-Hd'
+IctI
+9(ZJ\Fћ$u$M9$H$<(1DAQDɔ(H3|[J<n
+ŝjh+$T;BHs$[n;L4_
+i~?Ȝ?5R
+'l(|Wa=Ԙ#IW7.\9 LoHHR}v/Ab+B2;5-eJC0C,dnO
+<34k=Ъ/3WWz<G4HTUa(*+乘3»cB5pDr$!)I&.*J{41.{mhVtkVZ>&{ Fs.{WYڭk]AN3ULj^ԣ0a@`
+p`UX
+H{W&=H2T3fHQ!U( ł7SLAME3.1000[ ݪ
 ```
 
 |-- images/

@@ -3,3 +3,4 @@ uvicorn[standard]
 google-generativeai
 python-dotenv
 httpx
+python-pexels

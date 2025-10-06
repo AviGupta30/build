@@ -291,18 +291,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ idea, platform: selectedPlatform, tone, creativity, formality, smart_emojis: smartEmojis, auto_hashtag: autoHashtag, contextual_suggestions: contextualSuggestions, target_audience: targetAudience }),
             });
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred." }));
-                throw new Error(`HTTP error! Status: ${response.status} - ${errorData.detail}`);
+                const errorData = await response.json().catch(() => ({ detail: "An unknown error occurred on the server." }));
+                throw new Error(`${errorData.detail}`);
             }
             const data = await response.json();
             if (data.versions && data.versions.length > 0) {
                 displayResults(data.versions);
             } else {
+                // This case should now be rare due to the improved backend error handling
                 throw new Error("Received an empty or invalid versions array from the server.");
             }
         } catch (error) {
             console.error('Error:', error);
-            outputText.value = `A frontend error occurred. \n\nDetails: ${error.message}`;
+            outputText.value = `An error occurred.\n\nDetails: ${error.message}`;
         } finally {
             setLoadingState(false);
         }
@@ -333,8 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.char-count').forEach(el => el.remove());
         justificationBox.innerHTML = '';
         justificationBox.classList.add('hidden');
-        videoPlayerContainer.classList.add('hidden');
-        videoPlayer.src = "";
+        if (videoPlayerContainer) videoPlayerContainer.classList.add('hidden');
+        if (videoPlayer) videoPlayer.src = "";
     }
 
     function displayResults(versions) {
@@ -370,11 +371,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const { content, analysis, justification } = versionData;
         let formattedContent = "";
         document.querySelectorAll('.char-count').forEach(el => el.remove());
+        
         if (typeof content === 'string') {
             formattedContent = content;
-        } else if (content.caption && content.script) {
-            formattedContent = `${content.caption}\n\n${content.script}`;
-        } else if (content.thread && Array.isArray(content.thread)) {
+        } else if (content && content.caption && content.script) {
+            // NEW: Added labels for clarity
+            formattedContent = `CAPTION:\n${content.caption}\n\n---\n\nSCRIPT:\n${content.script}`;
+        } else if (content && content.thread && Array.isArray(content.thread)) {
             const X_CHAR_LIMIT = 280;
             formattedContent = "";
             const wrapper = outputText.parentElement;
@@ -389,6 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (charLength > X_CHAR_LIMIT) { charCountEl.classList.add('over-limit'); }
                 wrapper.appendChild(charCountEl);
             });
+        } else {
+            // Fallback for unexpected content structures, e.g. for LinkedIn/Blog if AI returns an object
+            formattedContent = "Error: Received unexpected content format.\n\n" + JSON.stringify(content, null, 2);
         }
         outputText.value = formattedContent.trim();
 
@@ -411,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- THREE.JS & PRELOADER LOGIC ---
     let scoreScenes = [], scoreCameras = [], scoreRenderers = [], wireframeMeshes = [], solidMeshes = [];
     function initScoreShapes() { const canvases = [document.getElementById('shape-canvas-1'), document.getElementById('shape-canvas-2'), document.getElementById('shape-canvas-3')]; canvases.forEach(canvas => { if (!canvas) return; const scene = new THREE.Scene(); scoreScenes.push(scene); const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000); camera.position.z = 2; scoreCameras.push(camera); const renderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true }); renderer.setSize(canvas.clientWidth, canvas.clientHeight); renderer.setPixelRatio(window.devicePixelRatio); scoreRenderers.push(renderer); const geometry = new THREE.IcosahedronGeometry(1, 0); const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x6a6aff, wireframe: true }); const wireframeMesh = new THREE.Mesh(geometry, wireframeMaterial); scene.add(wireframeMesh); wireframeMeshes.push(wireframeMesh); const solidMaterial = new THREE.MeshBasicMaterial({ color: 0x8282ff, transparent: true, opacity: 0.5 }); const solidMesh = new THREE.Mesh(geometry, solidMaterial); solidMesh.scale.set(0, 0, 0); scene.add(solidMesh); solidMeshes.push(solidMesh) }) }
-    function animateScoreShapes() { wireframeMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); solidMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); for (let i = 0; i < scoreScenes.length; i++) { scoreRenderers[i].render(scoreScenes[i], scoreCameras[i]); } }
+    function animateScoreShapes() { if(wireframeMeshes.every(el => el === undefined)) return; wireframeMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); solidMeshes.forEach(mesh => { mesh.rotation.x += 0.002; mesh.rotation.y += 0.003; }); for (let i = 0; i < scoreScenes.length; i++) { if(scoreRenderers[i]) scoreRenderers[i].render(scoreScenes[i], scoreCameras[i]); } }
     function updateShape(index, percentage) { if (!solidMeshes[index]) return; const targetScale = percentage / 100; const mesh = solidMeshes[index]; const startScale = mesh.scale.x; const deltaScale = targetScale - startScale; let duration = 1000; let startTime = null; function animationStep(timestamp) { if (!startTime) startTime = timestamp; const progress = Math.min((timestamp - startTime) / duration, 1); const newScale = startScale + deltaScale * progress; mesh.scale.set(newScale, newScale, newScale); if (progress < 1) { requestAnimationFrame(animationStep); } } requestAnimationFrame(animationStep); }
     let plexusScene, plexusCamera, plexusRenderer, particles, group; function initPlexusAnimation() { const container = document.querySelector('.network-canvas-container'); const canvas = document.getElementById('plexus-canvas'); if (!container || !canvas) return; plexusScene = new THREE.Scene(); plexusCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000); plexusCamera.position.z = 15; plexusRenderer = new THREE.WebGLRenderer({ canvas: canvas, antalias: true, alpha: true }); plexusRenderer.setSize(container.clientWidth, container.clientHeight); plexusRenderer.setPixelRatio(window.devicePixelRatio); const particleCount = 100; const particlesGeometry = new THREE.BufferGeometry(); const positions = new Float32Array(particleCount * 3); for (let i = 0; i < particleCount; i++) { positions[i * 3] = (Math.random() - 0.5) * 30; positions[i * 3 + 1] = (Math.random() - 0.5) * 15; positions[i * 3 + 2] = (Math.random() - 0.5) * 10 } particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3)); const particleMaterial = new THREE.PointsMaterial({ color: 0x32b9f7, size: 0.1, blending: THREE.AdditiveBlending, transparent: true }); particles = new THREE.Points(particlesGeometry, particleMaterial); const lineGeometry = new THREE.BufferGeometry(); const linePositions = new Float32Array(particleCount * particleCount * 3); lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3)); const lineMaterial = new THREE.LineBasicMaterial({ color: 0x32b9f7, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending }); const lines = new THREE.LineSegments(lineGeometry, lineMaterial); group = new THREE.Group(); group.add(particles); group.add(lines); plexusScene.add(group) }
     function animatePlexus() { if (!particles || !group || !plexusRenderer) return; group.rotation.y += 0.0005; const positions = particles.geometry.attributes.position.array; const linePositions = group.children[1].geometry.attributes.position.array; let vertexPos = 0; const particleCount = positions.length / 3; for (let i = 0; i < particleCount; i++) { for (let j = i + 1; j < particleCount; j++) { const dx = positions[i * 3] - positions[j * 3]; const dy = positions[i * 3 + 1] - positions[j * 3 + 1]; const dz = positions[i * 3 + 2] - positions[j * 3 + 2]; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz); if (dist < 4) { linePositions[vertexPos++] = positions[i * 3]; linePositions[vertexPos++] = positions[i * 3 + 1]; linePositions[vertexPos++] = positions[i * 3 + 2]; linePositions[vertexPos++] = positions[j * 3]; linePositions[vertexPos++] = positions[j * 3 + 1]; linePositions[vertexPos++] = positions[j * 3 + 2] } } } group.children[1].geometry.setDrawRange(0, vertexPos / 3); group.children[1].geometry.attributes.position.needsUpdate = true; plexusRenderer.render(plexusScene, plexusCamera) }
@@ -419,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function animatePreloaderPlexus() { if (!preloaderGroup || !preloaderRenderer) return; preloaderGroup.rotation.y += 0.001; preloaderGroup.rotation.x += 0.0005; const positions = preloaderParticles.geometry.attributes.position.array; const linePositions = preloaderGroup.children[1].geometry.attributes.position.array; let vertexPos = 0; const particleCount = positions.length / 3; for (let i = 0; i < particleCount; i++) { for (let j = i + 1; j < particleCount; j++) { const dx = positions[i * 3] - positions[j * 3]; const dy = positions[i * 3 + 1] - positions[j * 3 + 1]; const dz = positions[i * 3 + 2] - positions[j * 3 + 2]; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz); if (dist < 6) { linePositions[vertexPos++] = positions[i * 3]; linePositions[vertexPos++] = positions[i * 3 + 1]; linePositions[vertexPos++] = positions[i * 3 + 2]; linePositions[vertexPos++] = positions[j * 3]; linePositions[vertexPos++] = positions[j * 3 + 1]; linePositions[vertexPos++] = positions[j * 3 + 2]; } } } preloaderGroup.children[1].geometry.setDrawRange(0, vertexPos / 3); preloaderGroup.children[1].geometry.attributes.position.needsUpdate = true; preloaderRenderer.render(preloaderScene, preloaderCamera); }
     function animate() { requestAnimationFrame(animate); animateScoreShapes(); animatePlexus(); animatePreloaderPlexus(); }
     const toggleableOptions = document.querySelectorAll('.toggleable-option'); toggleableOptions.forEach(option => { option.addEventListener('click', () => { const isActive = option.dataset.active === 'true'; option.dataset.active = !isActive }) });
-    function onWindowResize() { if (plexusCamera && plexusRenderer) { const plexusContainer = document.querySelector('.network-canvas-container'); plexusCamera.aspect = plexusContainer.clientWidth / plexusContainer.clientHeight; plexusCamera.updateProjectionMatrix(); plexusRenderer.setSize(plexusContainer.clientWidth, plexusContainer.clientHeight) } for (let i = 0; i < scoreCameras.length; i++) { const container = scoreRenderers[i].domElement.parentElement; scoreCameras[i].aspect = container.clientWidth / container.clientHeight; scoreCameras[i].updateProjectionMatrix(); scoreRenderers[i].setSize(container.clientWidth, container.clientHeight) } }; window.addEventListener('resize', onWindowResize, false);
+    function onWindowResize() { if (plexusCamera && plexusRenderer) { const plexusContainer = document.querySelector('.network-canvas-container'); if(plexusContainer) {plexusCamera.aspect = plexusContainer.clientWidth / plexusContainer.clientHeight; plexusCamera.updateProjectionMatrix(); plexusRenderer.setSize(plexusContainer.clientWidth, plexusContainer.clientHeight)} } for (let i = 0; i < scoreCameras.length; i++) { if(scoreRenderers[i]) {const container = scoreRenderers[i].domElement.parentElement; if(container){scoreCameras[i].aspect = container.clientWidth / container.clientHeight; scoreCameras[i].updateProjectionMatrix(); scoreRenderers[i].setSize(container.clientWidth, container.clientHeight)}} } }; window.addEventListener('resize', onWindowResize, false);
     initScoreShapes();
     initPlexusAnimation();
     initPreloaderPlexus();

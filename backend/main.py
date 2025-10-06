@@ -1,15 +1,23 @@
 import os
 import asyncio
 import json
+import shutil
 import httpx
 import google.generativeai as genai
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, model_validator
 from typing import List, Literal, Union, Optional
-
 from dotenv import load_dotenv
+
+# --- FIX: Temporarily comment out video/audio libraries to allow the server to run ---
+# from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
+#                             concatenate_videoclips, TextClip)
+# from pexels_api import API
+# from gtts import gTTS
+# ------------------------------------------------------------------------------------
+
 
 # --- SETUP ---
 load_dotenv()
@@ -42,16 +50,32 @@ class GenerationRequest(BaseModel):
     contextual_suggestions: bool
     target_audience: str = ""
 
-class RefineRequest(GenerationRequest):
-    original_content: Union[str, 'InstagramContent', 'XContent']
-    refinement_instruction: str
-
 class InstagramContent(BaseModel):
     caption: str
     script: str
 
 class XContent(BaseModel):
     thread: List[str]
+
+class RefineRequest(GenerationRequest):
+    original_content: Union[str, InstagramContent, XContent]
+    refinement_instruction: str
+
+    # --- FIX: Added validator to correctly process original_content for refinement ---
+    @model_validator(mode='before')
+    @classmethod
+    def check_original_content_type(cls, data):
+        if isinstance(data, dict):
+            original_content = data.get('original_content')
+            platform = data.get('platform')
+            if isinstance(original_content, dict):
+                if platform == 'Instagram' and 'caption' in original_content and 'script' in original_content:
+                    data['original_content'] = InstagramContent(**original_content)
+                elif platform == 'X' and 'thread' in original_content:
+                    data['original_content'] = XContent(**original_content)
+        return data
+    # ------------------------------------------------------------------------------
+
 
 class AnalysisScores(BaseModel):
     readability: int
@@ -72,6 +96,10 @@ class HumanizeRequest(BaseModel):
 
 class HumanizeResponse(BaseModel):
     humanized_text: str
+
+class VideoRequest(BaseModel):
+    script: str
+    idea: str
 
 Version.model_rebuild()
 RefineRequest.model_rebuild()
@@ -116,13 +144,14 @@ def build_prompt(request: Union[GenerationRequest, RefineRequest]) -> str:
     """
 
     if isinstance(request, RefineRequest):
+        original_content_json = json.dumps(request.original_content.dict() if isinstance(request.original_content, (InstagramContent, XContent)) else request.original_content)
         return f"""
         {base_prompt}
 
         You are now REFINING the following content based on a user's instruction.
         ---
         ORIGINAL CONTENT:
-        {json.dumps(request.original_content, default=lambda o: o.dict())}
+        {original_content_json}
         ---
         USER'S REFINEMENT INSTRUCTION: "{request.refinement_instruction}"
         ---
@@ -134,9 +163,7 @@ def build_prompt(request: Union[GenerationRequest, RefineRequest]) -> str:
 @app.post("/generate", response_model=MultiVersionResponse)
 async def generate_versions(request: GenerationRequest):
     print(f"\n--- [START] AI Generation for {request.platform} ---")
-    
     prompt = build_prompt(request)
-    
     async def generate_single_version(client, version_num):
         full_content_str = None
         try:
@@ -161,8 +188,14 @@ async def generate_versions(request: GenerationRequest):
             json_str_cleaned = full_content_str.strip().replace("```json", "").replace("```", "")
             data = json.loads(json_str_cleaned)
             content_payload = data['content']
-            if request.platform == "Instagram": content_payload = InstagramContent(**data['content'])
-            elif request.platform == "X": content_payload = XContent(**data['content'])
+            if request.platform not in ["Instagram", "X"]:
+                if isinstance(content_payload, dict) and 'content' in content_payload and isinstance(content_payload.get('content'), str):
+                    print("--> Backend Correction: Un-nesting a malformed content object from the AI.")
+                    content_payload = content_payload['content']
+            if request.platform == "Instagram":
+                content_payload = InstagramContent(**content_payload)
+            elif request.platform == "X":
+                content_payload = XContent(**content_payload)
             return Version(content=content_payload, analysis=AnalysisScores(**data['analysis']))
         except (json.JSONDecodeError, ValidationError, Exception) as parse_e:
             return {"content": f"Error parsing response: {parse_e}\nRaw: {full_content_str}", "analysis": {"readability": 0, "engagement_potential": 0, "human_likeness": 0}}
@@ -172,6 +205,10 @@ async def generate_versions(request: GenerationRequest):
         versions_data = await asyncio.gather(*tasks)
 
     versions = [v for v in versions_data if isinstance(v, Version)]
+    if not versions:
+        error_details = [str(v.get('content', 'Unknown error')) for v in versions_data if not isinstance(v, Version)]
+        raise HTTPException(status_code=500, detail=f"The AI failed to generate any valid content after 3 attempts. Please try rephrasing your idea or check the AI model status. Raw errors: {error_details}")
+
     if len(versions) > 0:
         try:
             print("\n--- [START] Performance Prediction Analysis ---")
@@ -197,7 +234,6 @@ async def generate_versions(request: GenerationRequest):
             print("--- [END] Performance Prediction Complete ---")
         except Exception as e:
             print(f"Performance prediction step failed: {e}")
-            
     return {"versions": [v.dict() for v in versions]}
 
 @app.post("/refine", response_model=Version)
@@ -271,8 +307,114 @@ async def humanize_text(request: HumanizeRequest):
     return HumanizeResponse(humanized_text=humanized_text.strip())
 
 
+# --- VIDEO GENERATION ENDPOINT ---
+@app.post("/generate-video")
+async def generate_video(request: VideoRequest):
+    # This endpoint is preserved but will fail gracefully if libraries are not installed.
+    try:
+        from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
+                                    concatenate_videoclips, TextClip)
+        from pexels_api import API
+        from gtts import gTTS
+    except ImportError:
+        raise HTTPException(status_code=501, detail="Video generation libraries (moviepy, pexels_api, gtts) are not installed or enabled on the server.")
+
+    print("\n--- [START] Video Generation ---")
+    
+    video_dir = "static/videos"
+    if not os.path.exists(video_dir):
+        os.makedirs(video_dir)
+        
+    unique_id = httpx.get("https://www.uuidgenerator.net/api/version4").text
+    audio_path = os.path.join(video_dir, f"{unique_id}_audio.mp3")
+    video_path = os.path.join(video_dir, f"{unique_id}_final.mp4")
+    temp_video_files = []
+    final_clips = []
+    audio_clip = None
+
+    try:
+        print("Step 1: Generating audio from script...")
+        tts = gTTS(text=request.script, lang='en', slow=False)
+        tts.save(audio_path)
+        audio_clip = AudioFileClip(audio_path)
+        audio_duration = audio_clip.duration
+        print(f"Audio duration: {audio_duration:.2f} seconds")
+
+        print("Step 2: Searching for stock videos...")
+        PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY")
+        if not PEXELS_API_KEY:
+            raise HTTPException(status_code=500, detail="PEXELS_API_KEY not found in environment variables.")
+            
+        api = API(PEXELS_API_KEY)
+        
+        api.search(request.idea, media_type='videos', page=1, results_per_page=5)
+        videos = api.get_entries()
+        
+        if not videos:
+            raise HTTPException(status_code=404, detail=f"Could not find any stock videos for the idea: '{request.idea}'")
+        
+        print(f"Found {len(videos)} potential videos.")
+
+        print("Step 3: Downloading and assembling video clips...")
+        total_duration = 0
+        for video in videos:
+            if total_duration >= audio_duration:
+                break
+            
+            video_file = next((vf for vf in sorted(video.video_files, key=lambda x: x.height or 0, reverse=True) if vf.height and 720 <= vf.height <= 1920), None)
+            
+            if video_file:
+                try:
+                    temp_path = os.path.join(video_dir, f"temp_{video.id}.mp4")
+                    async with httpx.AsyncClient() as client:
+                        async with client.stream("GET", video_file.link, follow_redirects=True, timeout=60) as response:
+                            response.raise_for_status()
+                            with open(temp_path, "wb") as f:
+                                async for chunk in response.aiter_bytes():
+                                    f.write(chunk)
+                    
+                    temp_video_files.append(temp_path)
+
+                    clip = VideoFileClip(temp_path).set_fps(24)
+                    clip = clip.resize(height=1920)
+                    clip = clip.crop(x_center=clip.w/2, width=1080)
+
+                    final_clips.append(clip)
+                    total_duration += clip.duration
+                except Exception as e:
+                    print(f"Warning: Could not process video {video.id}. Reason: {e}")
+
+        if not final_clips:
+            raise HTTPException(status_code=500, detail="Failed to download or process any video clips.")
+
+        final_video_clip = concatenate_videoclips(final_clips).subclip(0, audio_duration)
+        final_video_clip = final_video_clip.set_audio(audio_clip)
+
+        print("Step 4: Exporting final video...")
+        final_video_clip.write_videofile(video_path, codec="libx264", audio_codec="aac", threads=4)
+        
+        print("--- [SUCCESS] Video Generation Complete ---")
+        return {"video_url": f"/{video_path}"}
+
+    except Exception as e:
+        print(f"--- [ERROR] Video Generation Failed ---")
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+        
+    finally:
+        print("Cleaning up temporary files...")
+        if audio_clip: audio_clip.close()
+        for clip in final_clips: clip.close()
+        if 'final_video_clip' in locals() and final_video_clip: final_video_clip.close()
+        
+        for f in [audio_path] + temp_video_files:
+             if f and os.path.exists(f):
+                try: os.remove(f)
+                except Exception as e: print(f"Error cleaning up file {f}: {e}")
+
 # --- FILE SERVING ---
 app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 async def read_index():
     return FileResponse('static/index.html')
+
