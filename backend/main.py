@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, ValidationError, model_validator
 from typing import List, Literal, Union, Optional
-from pathlib import Path  # <-- ADD THIS IMPORT FOR THE FIX
+from pathlib import Path
 from moviepy.editor import (VideoFileClip, AudioFileClip, CompositeVideoClip, 
                             concatenate_videoclips, TextClip)
 from pexels_api import API
@@ -19,10 +19,7 @@ from dotenv import load_dotenv
 # --- SETUP ---
 load_dotenv()
 app = FastAPI()
-
-# --- FIX: Define absolute path to the static directory for deployment ---
 STATIC_DIR = Path(__file__).parent / "static"
-# --------------------------------------------------------------------
 
 
 # --- CONFIGURE ALL APIS ---
@@ -58,7 +55,7 @@ class InstagramContent(BaseModel):
 
 class XContent(BaseModel):
     thread: List[str]
-    
+
 class RefineRequest(GenerationRequest):
     original_content: Union[str, InstagramContent, XContent]
     refinement_instruction: str
@@ -166,6 +163,15 @@ async def generate_versions(request: GenerationRequest):
     async def generate_single_version(client, version_num):
         full_content_str = None
         try:
+            # --- DIAGNOSTIC PRINT STATEMENTS ---
+            key_to_check = os.environ.get("OPENROUTER_API_KEY", "KEY_NOT_FOUND")
+            print(f"DEBUG: Key found? {'Yes' if key_to_check != 'KEY_NOT_FOUND' else 'No'}")
+            if key_to_check != "KEY_NOT_FOUND":
+                print(f"DEBUG: Key length: {len(key_to_check)}")
+                print(f"DEBUG: Key starts with: '{key_to_check[:5]}...'")
+                print(f"DEBUG: Key ends with: '...{key_to_check[-5:]}'")
+            # --- END DIAGNOSTIC ---
+
             print(f"Ver {version_num}: Attempting Primary (DeepSeek)...")
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
             payload = {"model": PRIMARY_MODEL, "messages": [{"role": "user", "content": prompt}], "response_format": {"type": "json_object"}, "max_tokens": 2048}
@@ -402,9 +408,8 @@ async def generate_video(request: VideoRequest):
                 try: os.remove(f)
                 except Exception as e: print(f"Error cleaning up file {f}: {e}")
 
-# --- FILE SERVING (FIXED FOR DEPLOYMENT) ---
+# --- FILE SERVING ---
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 @app.get("/")
 async def read_index():
     return FileResponse(STATIC_DIR / "index.html")
-
